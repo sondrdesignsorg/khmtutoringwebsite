@@ -10,10 +10,12 @@ export function PortalChrome({
   session,
   crumbs,
   showAdminLink,
+  showLeadsLink,
 }: {
   session: StaffSession;
   crumbs: { label: string; href?: string }[];
   showAdminLink?: boolean;
+  showLeadsLink?: boolean;
 }) {
   const router = useRouter();
   const initial = session.name.trim().charAt(0).toUpperCase();
@@ -48,6 +50,14 @@ export function PortalChrome({
             <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-2.5 py-[3px] text-[11px] font-bold text-[hsl(215_45%_20%)]">
               <Settings className="size-3" />ADMIN
             </span>
+          )}
+          {showLeadsLink && session.role === 'admin' && (
+            <button
+              onClick={() => router.push('/staff/diagnostic-leads')}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+            >
+              Leads
+            </button>
           )}
           {showAdminLink && session.role === 'admin' && (
             <button

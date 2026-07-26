@@ -124,7 +124,7 @@ export function AdminClient({
 
   return (
     <div className="min-h-[70vh] bg-background">
-      <PortalChrome session={session} crumbs={[{ label: 'Resource Library', href: '/staff/library' }, { label: 'Library Admin' }]} />
+      <PortalChrome session={session} crumbs={[{ label: 'Resource Library', href: '/staff/library' }, { label: 'Library Admin' }]} showLeadsLink />
 
       <div className="mx-auto max-w-[1280px] px-6 pb-20 pt-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">

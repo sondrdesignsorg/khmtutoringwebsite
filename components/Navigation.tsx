@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -60,8 +60,8 @@ export function Navigation() {
                   href={item.href}
                   className={cn(
                     'px-5 py-2.5 rounded-lg font-medium text-base',
-                    isActive 
-                      ? 'text-primary bg-primary/10' 
+                    isActive
+                      ? 'text-primary bg-primary/10'
                       : 'text-foreground/80 hover:text-primary'
                   )}
                 >
@@ -69,6 +69,18 @@ export function Navigation() {
                 </Link>
               );
             })}
+            <Link
+              href="/diagnostic-test"
+              className={cn(
+                'ml-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border-2 transition-colors',
+                pathname === '/diagnostic-test'
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'border-primary text-primary hover:bg-primary hover:text-primary-foreground'
+              )}
+            >
+              <Brain className="w-4 h-4" />
+              Free Diagnostic
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -99,8 +111,8 @@ export function Navigation() {
                       onClick={closeMobileMenu}
                       className={cn(
                         'px-4 py-3 rounded-lg font-medium text-lg',
-                        isActive 
-                          ? 'text-primary bg-primary/10' 
+                        isActive
+                          ? 'text-primary bg-primary/10'
                           : 'text-foreground/80'
                       )}
                     >
@@ -108,6 +120,14 @@ export function Navigation() {
                     </Link>
                   );
                 })}
+                <Link
+                  href="/diagnostic-test"
+                  onClick={closeMobileMenu}
+                  className="mt-2 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-base bg-primary text-primary-foreground"
+                >
+                  <Brain className="w-4 h-4" />
+                  Free Academic Diagnostic
+                </Link>
               </div>
             </div>
           </div>

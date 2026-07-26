@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Users } from 'lucide-react';
+import { ArrowRight, Brain } from 'lucide-react';
 
 export function CTASection() {
   return (
@@ -36,9 +36,9 @@ export function CTASection() {
               variant="outline"
               className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-6 py-5 md:px-8 md:py-6 rounded-full w-full sm:w-auto"
             >
-              <Link href="/educators">
-                <Users className="mr-2" />
-                View Educators
+              <Link href="/diagnostic-test">
+                <Brain className="mr-2" />
+                Free Diagnostic Test
               </Link>
             </Button>
           </div>
