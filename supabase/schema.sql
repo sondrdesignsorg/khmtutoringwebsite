@@ -127,3 +127,46 @@ create policy "admin_update" on public.resources
 create policy "admin_delete" on public.resources
   for delete to authenticated
   using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+-- Diagnostic Test leads
+create table if not exists public.diagnostic_leads (
+  id              uuid primary key default gen_random_uuid(),
+  parent_name     text not null,
+  student_name    text not null,
+  student_grade   text,
+  email           text not null,
+  phone           text,
+  age_group       text not null check (age_group in ('elementary','middle','high','satact')),
+  subject         text not null check (subject in ('math','reading')),
+  length          integer not null,
+  score           integer not null,
+  tier            text not null,
+  topic_breakdown jsonb not null,
+  answers         jsonb,
+  emailed_at      timestamptz,
+  booked_at       timestamptz,
+  created_at      timestamptz not null default now()
+);
+
+create index if not exists diagnostic_leads_email_idx on public.diagnostic_leads (email);
+create index if not exists diagnostic_leads_created_idx on public.diagnostic_leads (created_at desc);
+
+alter table public.diagnostic_leads enable row level security;
+
+drop policy if exists "staff_read_leads"     on public.diagnostic_leads;
+drop policy if exists "service_insert_leads" on public.diagnostic_leads;
+drop policy if exists "service_update_leads" on public.diagnostic_leads;
+
+create policy "staff_read_leads" on public.diagnostic_leads
+  for select to authenticated using (true);
+
+create policy "service_insert_leads" on public.diagnostic_leads
+  for insert to service_role with check (true);
+
+create policy "service_update_leads" on public.diagnostic_leads
+  for update to service_role using (true) with check (true);
+
+alter table public.diagnostic_leads add column if not exists client_status text not null default 'new' check (client_status in ('new', 'contacted', 'client'));
+alter table public.diagnostic_leads add column if not exists notes text;
+
+create index if not exists diagnostic_leads_status_idx on public.diagnostic_leads (client_status);

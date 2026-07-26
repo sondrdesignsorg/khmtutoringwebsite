@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Users, TrendingUp, GraduationCap, Star } from 'lucide-react';
+import { ArrowRight, Users, TrendingUp, GraduationCap, Star, Brain } from 'lucide-react';
 
 const stats = [
   { icon: Users, value: '300+', label: 'Students Helped', color: 'text-primary' },
@@ -48,6 +48,17 @@ export function HeroSection() {
                 <Link href="/contact">
                   Book Free Consultation
                   <ArrowRight className="ml-2" />
+                </Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                asChild
+                className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground text-base md:text-lg px-6 py-5 md:px-8 md:py-6 rounded-full w-full sm:w-auto"
+              >
+                <Link href="/diagnostic-test">
+                  <Brain className="mr-2 w-5 h-5" />
+                  Free Diagnostic Test
                 </Link>
               </Button>
             </div>

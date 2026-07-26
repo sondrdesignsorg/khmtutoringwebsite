@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Mail, Clock, CheckCircle2, AlertCircle, Phone, ChevronRight } from 'lucide-react';
+import { Mail, Clock, CheckCircle2, AlertCircle, Phone, ChevronRight, Brain } from 'lucide-react';
 import Link from 'next/link';
 import emailjs from '@emailjs/browser';
 import {
@@ -39,6 +39,26 @@ export function ContactContent() {
     subject: '',
     message: '',
   });
+  const [diagnosticLeadId, setDiagnosticLeadId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('name');
+    const email = params.get('email');
+    const ref = params.get('ref');
+    if (name || email) {
+      setFormData((prev) => ({
+        ...prev,
+        name: prev.name || name || '',
+        email: prev.email || email || '',
+      }));
+    }
+    if (ref && ref.startsWith('diagnostic:')) {
+      const id = ref.slice('diagnostic:'.length);
+      if (id) setDiagnosticLeadId(id);
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -81,6 +101,14 @@ export function ContactContent() {
       };
 
       await emailjs.send(serviceId, templateId, templateParams, publicKey);
+
+      if (diagnosticLeadId) {
+        fetch('/api/diagnostic/booked', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ leadId: diagnosticLeadId }),
+        }).catch((err) => console.error('diagnostic booked notify failed:', err));
+      }
 
       setSubmittedName(formData.name);
       setSubmitStatus('success');
@@ -177,6 +205,32 @@ export function ContactContent() {
           </div>
         </div>
       </section>
+      {/* Diagnostic nudge */}
+      <section className="py-6 md:py-8">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-4 p-5 rounded-2xl border-2 border-primary/20 bg-primary/5">
+              <div className="p-3 bg-primary/10 rounded-xl shrink-0">
+                <Brain className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <p className="font-semibold text-foreground">Not sure where your child stands?</p>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Take our free 5-minute academic diagnostic first — it pinpoints exactly which topics need attention so we can hit the ground running.
+                </p>
+              </div>
+              <Link
+                href="/diagnostic-test"
+                className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+              >
+                Take the Test
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Form & Info */}
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">
