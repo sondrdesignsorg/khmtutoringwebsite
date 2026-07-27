@@ -356,12 +356,12 @@ export function EducatorsContent() {
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEducatorClick(originalIndex); } }}
                     className="flex-1 flex flex-col"
                   >
-                    <div className={cn('relative aspect-square min-h-28 overflow-hidden flex-shrink-0 flex items-center justify-center', educator.imageBg ?? 'bg-gradient-to-br from-primary/20 to-secondary/20')}>
+                    <div className="relative aspect-square min-h-28 overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 flex-shrink-0 flex items-center justify-center">
                       <Image
                         src={educator.image}
                         alt={`${educator.name} - Expert tutor in Hawaii`}
                         fill
-                        className={cn('object-cover object-top', educator.imageClass)}
+                        className="object-cover object-top"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         priority={index < 2}
                       />
