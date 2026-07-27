@@ -46,7 +46,7 @@ export default function DiagnosticTestPage() {
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4 max-w-3xl text-center space-y-4">
           <h2 className="text-2xl md:text-3xl font-heading font-bold">
-            Why Take a Free Academic Diagnostic in Hawaii?
+            Why Take a Free Academic Diagnostic?
           </h2>
           <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
             Every student learns differently. Our free diagnostic test identifies exactly which math and English topics your
