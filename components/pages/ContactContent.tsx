@@ -149,8 +149,8 @@ export function ContactContent() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="mb-3 md:mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold">
-              Get in{' '}
-              <span className="text-gradient font-bold">Touch</span>
+              Contact KHM Tutoring{' '}
+              <span className="text-gradient font-bold">in Honolulu</span>
             </h1>
             <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto px-4">
               Contact KHM Tutoring in Hawaii and Honolulu. Schedule a session or ask us anything about our tutoring services.

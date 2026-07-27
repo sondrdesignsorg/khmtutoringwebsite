@@ -13,6 +13,13 @@ export const metadata: Metadata = {
     title: 'Meet Our Expert Tutors | KHM Tutoring Hawaii',
     description: 'Meet 10+ expert tutors from Harvard, Princeton & Phillips Exeter. Math, English, SAT, SSAT, AP prep in Hawaii.',
     url: 'https://www.khmtutoring.com/educators',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'KHM Tutoring Expert Tutors in Hawaii' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Meet Our Expert Tutors | KHM Tutoring Hawaii',
+    description: 'Meet 10+ expert tutors from Harvard, Princeton & Phillips Exeter. Math, English, SAT, SSAT, AP prep in Hawaii.',
+    images: ['/og-image.png'],
   },
 };
 

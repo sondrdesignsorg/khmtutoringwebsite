@@ -1,5 +1,5 @@
 interface StructuredDataProps {
-  type: 'organization' | 'home' | 'about' | 'educators' | 'contact';
+  type: 'organization' | 'home' | 'about' | 'educators' | 'contact' | 'diagnostic';
 }
 
 const baseUrl = 'https://www.khmtutoring.com';
@@ -371,6 +371,44 @@ const educatorPersonSchemas = [
   },
 ];
 
+const diagnosticPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${baseUrl}/diagnostic-test`,
+  name: 'Free Academic Diagnostic Test',
+  description: 'A free, level-appropriate diagnostic test that shows strengths and gaps by topic for K-12 students in Hawaii.',
+  url: `${baseUrl}/diagnostic-test`,
+  isPartOf: { '@id': `${baseUrl}/#website` },
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+      { '@type': 'ListItem', position: 2, name: 'Free Diagnostic Test', item: `${baseUrl}/diagnostic-test` },
+    ],
+  },
+};
+
+const diagnosticServiceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Free Academic Diagnostic Test',
+  provider: { '@id': `${baseUrl}/#organization` },
+  serviceType: 'Educational Assessment',
+  description: 'A free diagnostic test for K-12 students in Hawaii that identifies academic strengths and gaps by topic across Math and English.',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+    eligibleCustomerType: 'https://schema.org/Individual',
+    description: 'Free academic diagnostic test with personalized topic breakdown and free consultation.',
+  },
+  areaServed: [
+    { '@type': 'City', name: 'Honolulu' },
+    { '@type': 'AdministrativeArea', name: 'Oahu' },
+    { '@type': 'AdministrativeArea', name: 'Hawaii' },
+  ],
+};
+
 const contactPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'ContactPage',
@@ -413,6 +451,8 @@ export function StructuredData({ type }: StructuredDataProps) {
         return [organizationSchema, ...educatorPersonSchemas, getBreadcrumbSchema('Educators', `${baseUrl}/educators`)];
       case 'contact':
         return [organizationSchema, localBusinessSchema, contactPageSchema, faqSchema, getBreadcrumbSchema('Contact', `${baseUrl}/contact`)];
+      case 'diagnostic':
+        return [organizationSchema, diagnosticPageSchema, diagnosticServiceSchema, getBreadcrumbSchema('Free Diagnostic Test', `${baseUrl}/diagnostic-test`)];
       case 'organization':
       default:
         return [organizationSchema];
