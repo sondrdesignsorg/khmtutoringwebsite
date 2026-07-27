@@ -59,46 +59,6 @@ const organizationSchema = {
   },
 };
 
-const localBusinessSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
-  '@id': `${baseUrl}/#localbusiness`,
-  name: 'KHM Tutoring',
-  description: 'Expert K-12 tutoring services in Hawaii. Personalized one-on-one tutoring in Math, English, SAT, SSAT, and AP subjects.',
-  url: baseUrl,
-  logo: `${baseUrl}/images/khm-tutoring-logo.png`,
-  image: `${baseUrl}/images/khm-tutoring-hero.jpeg`,
-  telephone: '(808) 381-7856',
-  email: 'khmtutoring1@gmail.com',
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Honolulu',
-    addressRegion: 'HI',
-    addressCountry: 'US',
-  },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude: '21.3069',
-    longitude: '-157.8583',
-  },
-  openingHoursSpecification: [
-    {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      opens: '08:00',
-      closes: '22:00',
-    },
-  ],
-  priceRange: '$$',
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '5.0',
-    bestRating: '5',
-    worstRating: '1',
-    ratingCount: '300',
-  },
-};
-
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
@@ -444,13 +404,13 @@ export function StructuredData({ type }: StructuredDataProps) {
   const getSchemas = () => {
     switch (type) {
       case 'home':
-        return [organizationSchema, localBusinessSchema, websiteSchema, serviceSchema, faqSchema, ...reviewSchemas];
+        return [organizationSchema, websiteSchema, serviceSchema, faqSchema, ...reviewSchemas];
       case 'about':
-        return [organizationSchema, localBusinessSchema, getBreadcrumbSchema('About', `${baseUrl}/about`)];
+        return [organizationSchema, getBreadcrumbSchema('About', `${baseUrl}/about`)];
       case 'educators':
         return [organizationSchema, ...educatorPersonSchemas, getBreadcrumbSchema('Educators', `${baseUrl}/educators`)];
       case 'contact':
-        return [organizationSchema, localBusinessSchema, contactPageSchema, faqSchema, getBreadcrumbSchema('Contact', `${baseUrl}/contact`)];
+        return [organizationSchema, contactPageSchema, faqSchema, getBreadcrumbSchema('Contact', `${baseUrl}/contact`)];
       case 'diagnostic':
         return [organizationSchema, diagnosticPageSchema, diagnosticServiceSchema, getBreadcrumbSchema('Free Diagnostic Test', `${baseUrl}/diagnostic-test`)];
       case 'organization':
