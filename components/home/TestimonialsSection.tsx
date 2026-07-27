@@ -6,6 +6,12 @@ import { cn } from '@/lib/utils';
 
 const testimonials = [
   {
+    name: 'Yelp Reviewer',
+    role: 'Parent — via Yelp',
+    content: "Our son got accepted early action to Massachusetts Institute of Technology! Again, thank you Kody and Peter for making his dream come true!",
+    rating: 5,
+  },
+  {
     name: 'Sarah Johnson',
     role: 'Parent of 10th grader',
     content: "KHM Tutoring transformed my daughter's confidence in math. She went from struggling with algebra to acing her tests. The personalized attention made all the difference!",
