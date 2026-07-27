@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-const subjects = ['All', 'Math', 'English', 'Test Prep', 'AP Subjects', 'Chemistry', 'Biology'];
+const subjects = ['All', 'SAT/SSAT', 'Math', 'English', 'AP Subjects', 'Chemistry', 'Biology'];
 
 const educators = [
   {
@@ -31,7 +31,7 @@ const educators = [
     certifications: 'Punahou School, University of California, Irvine',
     funFact: 'Founder of KHM Tutoring',
     grades: 'K-12',
-    category: 'Test Prep',
+    category: 'SAT/SSAT',
   },
   {
     name: 'Andrew Holzman',
@@ -50,7 +50,7 @@ const educators = [
     certifications: 'Phillips Exeter Academy, University of Chicago',
     funFact: 'MCAT score in top 0.5% nationwide',
     grades: '9-12, College',
-    category: 'Test Prep',
+    category: 'SAT/SSAT',
   },
   {
     name: 'Noah Agena',
@@ -208,7 +208,7 @@ const educators = [
     certifications: 'Veteran K-12 educator',
     funFact: 'Coaches his daughters in Judo, Wrestling, Jiu Jitsu, and Surfing',
     grades: 'K-12',
-    category: 'Test Prep',
+    category: 'SAT/SSAT',
   },
   {
     name: 'Jacob Bergeron',
@@ -275,7 +275,7 @@ export function EducatorsContent() {
     const filterMap: Record<string, string[]> = {
       'Math': ['Math', 'Mathematics', 'Calculus', 'Physics', 'Pre-Calculus'],
       'English': ['English', 'Essay Writing', 'Reading Comprehension', 'College Essay Writing', 'Writing'],
-      'Test Prep': ['SAT', 'ACT', 'SSAT', 'MCAT', 'Test Prep'],
+      'SAT/SSAT': ['SAT', 'ACT', 'SSAT', 'MCAT', 'Test Prep'],
       'AP Subjects': ['AP', 'Advanced Placement'],
       'Chemistry': ['Chemistry'],
       'Biology': ['Biology', 'Cell & Molecular Biology', 'Genetics']
