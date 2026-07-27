@@ -197,8 +197,6 @@ const educators = [
     subjects: ['Math', 'Test Prep', 'Social Studies', 'PE'],
     tagline: 'Veteran teacher of 20 years',
     image: '/images/tutors/omar-saidy.jpeg',
-    imageClass: 'object-contain',
-    imageBg: 'bg-[#c2bfbb]',
     bio: 'Veteran K-12 educator with 20 years of experience, well-versed in Mathematics, Test Preparation, Social Studies, and Physical Education. Currently teaching Middle School Mathematics.',
     achievements: [
       '20+ years of K-12 teaching experience',
