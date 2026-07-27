@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Users, TrendingUp, GraduationCap, Star, Brain } from 'lucide-react';
 
 const stats = [
-  { icon: Users, value: '300+', label: 'Students Helped', color: 'text-primary' },
-  { icon: TrendingUp, value: '+15%', label: 'Avg. Score Boost', color: 'text-emerald-500' },
-  { icon: GraduationCap, value: '10+', label: 'Expert Tutors', color: 'text-secondary' },
-  { icon: Star, value: '5.0', label: 'Parent Rating', color: 'text-yellow-500' },
+  { icon: Users, value: '300+', label: 'Students Helped', color: 'text-primary', fill: '' },
+  { icon: TrendingUp, value: '+15%', label: 'Avg. Score Boost', color: 'text-emerald-500', fill: '' },
+  { icon: GraduationCap, value: '10+', label: 'Expert Tutors', color: 'text-secondary', fill: '' },
+  { icon: Star, value: '5.0', label: 'Parent Rating', color: 'text-yellow-500', fill: 'fill-yellow-500' },
 ];
 
 export function HeroSection() {
@@ -67,7 +67,7 @@ export function HeroSection() {
               {stats.map((stat) => (
                 <div key={stat.label} className="text-center lg:text-left">
                   <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
-                    <stat.icon className={`w-4 h-4 md:w-5 md:h-5 ${stat.color}`} />
+                    <stat.icon className={`w-4 h-4 md:w-5 md:h-5 ${stat.color} ${stat.fill}`} />
                     <span className={`text-xl md:text-2xl font-bold ${stat.color}`}>
                       {stat.value}
                     </span>
