@@ -35,3 +35,8 @@ next-env.d.ts
 # local migration exports
 KHM Resources*/
 *.zip
+
+# local preview logs
+dev-server.log
+dev-server.err.log
+
