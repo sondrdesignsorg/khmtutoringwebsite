@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "library:audit": "node scripts/audit-library-resources.cjs",
+    "library:clean": "node scripts/audit-library-resources.cjs --delete --yes"
   },
   "dependencies": {
     "@ai-sdk/gateway": "^4.0.12",

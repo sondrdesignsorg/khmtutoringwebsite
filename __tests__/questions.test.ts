@@ -13,7 +13,7 @@ import {
 
 const AGE_IDS = AGE_GROUPS.map((g) => g.id) as AgeGroupId[];
 const SUBJECT_IDS = SUBJECTS.map((s) => s.id) as SubjectId[];
-const LENGTHS_LIST = [5, 12, 25] as const;
+const LENGTHS_LIST = [20, 50, 100] as const;
 
 // ─── generateTest: structure ────────────────────────────────────────────────
 
@@ -97,8 +97,8 @@ describe('generateTest — math topic cycling', () => {
     satact: ['Algebra', 'Data Analysis', 'Geometry', 'Advanced Math', 'Systems of Equations', 'Probability'],
   };
 
-  it.each(AGE_IDS)('%s math 25q cycles through all topics', (ageGroup) => {
-    const qs = generateTest(ageGroup, 'math', 25);
+  it.each(AGE_IDS)('%s math 50q cycles through all topics', (ageGroup) => {
+    const qs = generateTest(ageGroup, 'math', 50);
     const seen = new Set(qs.map((q) => q.topic));
     for (const t of TOPIC_COUNTS[ageGroup]) {
       expect(seen).toContain(t);
@@ -122,9 +122,9 @@ describe('generateTest — math topic cycling', () => {
   it('question ids are unique within a test', () => {
     for (const ageGroup of AGE_IDS) {
       for (const subject of SUBJECT_IDS) {
-        const qs = generateTest(ageGroup, subject, 25);
+        const qs = generateTest(ageGroup, subject, 50);
         const ids = qs.map((q) => q.id);
-        expect(new Set(ids).size).toBe(25);
+        expect(new Set(ids).size).toBe(50);
       }
     }
   });
@@ -178,7 +178,7 @@ describe('generateTest — math generator stress (50 runs each)', () => {
     }
   });
 
-  it('satact Geometry (Pythagorean): hypotenuse is a positive integer', () => {
+  it('satact Geometry: answer is a positive integer (hypotenuse or sector area)', () => {
     for (let i = 0; i < 50; i++) {
       const qs = generateTest('satact', 'math', 6);
       const geo = qs.filter((q) => q.topic === 'Geometry');
@@ -205,7 +205,7 @@ describe('generateTest — reading bank', () => {
 
   it('reading bank: no correctIndex out of range', () => {
     for (const ageGroup of AGE_IDS) {
-      const qs = generateTest(ageGroup, 'reading', 25);
+      const qs = generateTest(ageGroup, 'reading', 20);
       for (const q of qs) {
         expect(q.correctIndex).toBeGreaterThanOrEqual(0);
         expect(q.correctIndex).toBeLessThan(q.choices.length);
@@ -214,9 +214,9 @@ describe('generateTest — reading bank', () => {
   });
 
   it('reading questions cycle when length > bank size', () => {
-    // Elementary has 5 passages × 4 qs = 20 reading questions; 25 should still work
-    const qs = generateTest('elementary', 'reading', 25);
-    expect(qs).toHaveLength(25);
+    // Elementary has 5 passages × 4 qs = 20 reading questions; 50 should still work via cycling
+    const qs = generateTest('elementary', 'reading', 50);
+    expect(qs).toHaveLength(50);
     for (const q of qs) {
       expect(q.passage).toBeTruthy();
     }
@@ -260,22 +260,22 @@ describe('scoreQuiz — score calculation', () => {
     expect(score).toBe(40);
   });
 
-  it('12 correct out of 25 → 48%', () => {
-    const qs = generateTest('high', 'math', 25);
+  it('24 correct out of 50 → 48%', () => {
+    const qs = generateTest('high', 'math', 50);
     const answers: Array<number | null> = qs.map((q, i) =>
-      i < 12 ? q.correctIndex : null,
+      i < 24 ? q.correctIndex : null,
     );
     const { score } = scoreQuiz(qs, answers);
     expect(score).toBe(48);
   });
 
-  it('25 correct out of 25 → 100% with correct topic totals', () => {
-    const qs = generateTest('high', 'math', 25);
+  it('50 correct out of 50 → 100% with correct topic totals', () => {
+    const qs = generateTest('high', 'math', 50);
     const answers = qs.map((q) => q.correctIndex);
     const { score, topicBreakdown } = scoreQuiz(qs, answers);
     expect(score).toBe(100);
     const totalQ = topicBreakdown.reduce((s, t) => s + t.total, 0);
-    expect(totalQ).toBe(25);
+    expect(totalQ).toBe(50);
   });
 });
 
@@ -424,14 +424,14 @@ describe('full pipeline: generate → score → tier → percentile', () => {
     correctFraction: number;
     expectedTier: string;
   }> = [
-    { label: 'elementary math perfect', ageGroup: 'elementary', subject: 'math', length: 25, correctFraction: 1, expectedTier: 'Excelling' },
-    { label: 'middle reading 80%', ageGroup: 'middle', subject: 'reading', length: 25, correctFraction: 0.8, expectedTier: 'Strong Foundation' },
-    { label: 'high math 72%', ageGroup: 'high', subject: 'math', length: 25, correctFraction: 0.72, expectedTier: 'Strong Foundation' },
-    { label: 'satact reading 60%', ageGroup: 'satact', subject: 'reading', length: 25, correctFraction: 0.6, expectedTier: 'Building Skills' },
-    { label: 'elementary reading 30%', ageGroup: 'elementary', subject: 'reading', length: 25, correctFraction: 0.3, expectedTier: 'Needs Support' },
-    { label: 'middle math 0%', ageGroup: 'middle', subject: 'math', length: 5, correctFraction: 0, expectedTier: 'Needs Support' },
-    { label: 'high reading 5q short', ageGroup: 'high', subject: 'reading', length: 5, correctFraction: 0.6, expectedTier: 'Building Skills' },
-    { label: 'satact math 12q medium 90%', ageGroup: 'satact', subject: 'math', length: 12, correctFraction: 0.9, expectedTier: 'Excelling' },
+    { label: 'elementary math perfect', ageGroup: 'elementary', subject: 'math', length: 50, correctFraction: 1, expectedTier: 'Excelling' },
+    { label: 'middle reading 80%', ageGroup: 'middle', subject: 'reading', length: 50, correctFraction: 0.8, expectedTier: 'Strong Foundation' },
+    { label: 'high math 72%', ageGroup: 'high', subject: 'math', length: 50, correctFraction: 0.72, expectedTier: 'Strong Foundation' },
+    { label: 'satact reading 60%', ageGroup: 'satact', subject: 'reading', length: 50, correctFraction: 0.6, expectedTier: 'Building Skills' },
+    { label: 'elementary reading 30%', ageGroup: 'elementary', subject: 'reading', length: 50, correctFraction: 0.3, expectedTier: 'Needs Support' },
+    { label: 'middle math 0%', ageGroup: 'middle', subject: 'math', length: 20, correctFraction: 0, expectedTier: 'Needs Support' },
+    { label: 'high reading 20q short', ageGroup: 'high', subject: 'reading', length: 20, correctFraction: 0.6, expectedTier: 'Building Skills' },
+    { label: 'satact math 50q medium 90%', ageGroup: 'satact', subject: 'math', length: 50, correctFraction: 0.9, expectedTier: 'Excelling' },
   ];
 
   it.each(scenarios)('$label: correct=$correctFraction → $expectedTier', ({ ageGroup, subject, length, correctFraction, expectedTier }) => {
@@ -470,9 +470,9 @@ describe('exported constants', () => {
     expect(SUBJECTS.map((s) => s.id)).toContain('reading');
   });
 
-  it('LENGTHS has 5, 12, 25', () => {
+  it('LENGTHS has 20, 50, 100', () => {
     expect(LENGTHS).toHaveLength(3);
-    expect(LENGTHS.map((l) => l.id)).toEqual([5, 12, 25]);
+    expect(LENGTHS.map((l) => l.id)).toEqual([20, 50, 100]);
   });
 });
 

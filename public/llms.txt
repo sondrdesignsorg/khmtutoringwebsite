@@ -12,12 +12,12 @@ KHM Tutoring is a premium K-12 tutoring service in Honolulu, Hawaii, founded in 
 - [About](https://www.khmtutoring.com/about): Company story, mission, team approach, and founder background
 - [Educators](https://www.khmtutoring.com/educators): Full team of 10+ tutors with bios, credentials, and subject specialties
 - [Contact](https://www.khmtutoring.com/contact): Contact form, email, phone, and hours for booking consultations
-- [Free Diagnostic Test](https://www.khmtutoring.com/diagnostic-test): Free 5–15 minute academic assessment for K-12 students in Hawaii — identifies strengths and gaps by topic in Math or English, with a personalized report emailed to parents and a free consultation offer
+- [Free Diagnostic Test](https://www.khmtutoring.com/diagnostic-test): Free 10–40 minute academic assessment for K-12 students in Hawaii — identifies strengths and gaps by topic in Math or English, with a personalized report emailed to parents and a free consultation offer
 - [Privacy Policy](https://www.khmtutoring.com/privacy): Data collection and usage policies
 
 ## Free Diagnostic Test
 
-KHM Tutoring offers a free, no-login academic diagnostic test at https://www.khmtutoring.com/diagnostic-test. The test takes 5–15 minutes and covers grade-appropriate topics for Elementary (K–5), Middle School (6–8), or High School (9–12) in Math or English. After completing the test, parents receive a personalized topic-by-topic breakdown by email along with an invitation for a free tutoring consultation. Results are confidential and the test is available to all families regardless of whether they become customers.
+KHM Tutoring offers a free, no-login academic diagnostic test at https://www.khmtutoring.com/diagnostic-test. The test takes 10–40 minutes and covers grade-appropriate topics for Elementary (K–5), Middle School (6–8), or High School (9–12) in Math or English. After completing the test, parents receive a personalized topic-by-topic breakdown by email along with an invitation for a free tutoring consultation. Results are confidential and the test is available to all families regardless of whether they become customers.
 
 ## Services
 

@@ -29,7 +29,7 @@ const SubmitSchema = z.object({
   phone: z.string().trim().max(40).optional().nullable(),
   ageGroup: z.enum(['elementary', 'middle', 'high', 'satact']),
   subject: z.enum(['math', 'reading']),
-  length: z.number().int().min(1).max(50),
+  length: z.number().int().min(1).max(100),
   score: z.number().int().min(0).max(100),
   tier: z.string().min(1).max(60),
   topicBreakdown: z.array(TopicResultSchema).min(1),
@@ -48,8 +48,8 @@ const SUBJECT_LABEL: Record<string, string> = {
   reading: 'Reading',
 };
 
-const STAFF_EMAIL = 'khmtutoring1@gmail.com';
-const FROM_ADDRESS = 'KHM Tutoring <onboarding@resend.dev>';
+const STAFF_EMAIL = process.env.DIAGNOSTIC_STAFF_EMAIL || 'khmtutoring1@gmail.com';
+const FROM_ADDRESS = process.env.RESEND_FROM_ADDRESS || 'KHM Tutoring <onboarding@resend.dev>';
 
 type TopicResult = z.infer<typeof TopicResultSchema>;
 

@@ -92,9 +92,9 @@ export function ResultsScreen({
             >
               Take another test
             </button>
-            {testLength < 25 && (
+            {testLength < 100 && (
               <p className="text-xs text-white/60 max-w-xs leading-relaxed">
-                Tip: A 25-question test gives a significantly more accurate picture of your child&apos;s level than this {testLength}-question diagnostic.
+                Tip: A 100-question test gives the most accurate picture of your child&apos;s level compared with this {testLength}-question diagnostic.
               </p>
             )}
           </div>
@@ -146,9 +146,9 @@ export function ResultsScreen({
         >
           Take another test
         </button>
-        {testLength < 25 && (
+        {testLength < 100 && (
           <p className="text-xs text-muted-foreground text-center max-w-sm leading-relaxed relative z-[1]">
-            Tip: A 25-question test gives a significantly more accurate picture of your child&apos;s level than this {testLength}-question diagnostic.
+            Tip: A 100-question test gives the most accurate picture of your child&apos;s level compared with this {testLength}-question diagnostic.
           </p>
         )}
       </div>

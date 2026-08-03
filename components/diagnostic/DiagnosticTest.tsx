@@ -30,7 +30,7 @@ export function DiagnosticTest() {
   const [screen, setScreen] = useState<Screen>('start');
   const [ageGroup, setAgeGroup] = useState<AgeGroupId>('elementary');
   const [subject, setSubject] = useState<SubjectId>('math');
-  const [length, setLength] = useState<LengthId>(12);
+  const [length, setLength] = useState<LengthId>(50);
 
   const [parentName, setParentName] = useState('');
   const [studentName, setStudentName] = useState('');

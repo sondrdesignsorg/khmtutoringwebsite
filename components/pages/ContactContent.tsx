@@ -216,7 +216,7 @@ export function ContactContent() {
               <div className="flex-1 text-center sm:text-left">
                 <p className="font-semibold text-foreground">Not sure where your child stands?</p>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  Take our free 5-minute academic diagnostic first — it pinpoints exactly which topics need attention so we can hit the ground running.
+                  Take our free 10-minute academic diagnostic first — it pinpoints exactly which topics need attention so we can hit the ground running.
                 </p>
               </div>
               <Link

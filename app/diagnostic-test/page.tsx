@@ -55,7 +55,7 @@ export default function DiagnosticTestPage() {
             diagnostic results to skip the guesswork and start making real progress immediately.
           </p>
           <p className="text-muted-foreground text-base leading-relaxed">
-            The test takes 5–15 minutes and covers grade-appropriate topics in Math or English. After submission, you
+            The test takes 15 to 70 minutes and covers grade-appropriate topics in Math or English. After submission, you
             receive a detailed topic-by-topic breakdown by email, plus an invitation for a <strong>free consultation</strong>{' '}
             with one of our tutors.
           </p>

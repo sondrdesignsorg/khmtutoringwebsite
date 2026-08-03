@@ -1,3 +1,4 @@
+import { del } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 import type { Resource } from '@/lib/staff/types';
 import { requireAdmin } from '@/lib/staff/auth';
@@ -33,8 +34,22 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
 
   const { id } = await params;
   const db = createAdminClient();
-  const { error } = await db.from('resources').delete().eq('id', id);
+  const { data: row, error: loadError } = await db
+    .from('resources')
+    .select('storage_provider, storage_key')
+    .eq('id', id)
+    .maybeSingle();
 
+  if (loadError) return NextResponse.json({ error: loadError.message }, { status: 500 });
+
+  const { error } = await db.from('resources').delete().eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if (row?.storage_provider === 'vercel_blob' && row.storage_key) {
+    await del(row.storage_key).catch((err) => {
+      console.error('resource blob delete failed:', err);
+    });
+  }
+
   return NextResponse.json({ id, deleted: true });
 }
