@@ -2,6 +2,7 @@
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { AlertCircle } from 'lucide-react';
 
 interface Props {
   parentName: string;
@@ -10,6 +11,7 @@ interface Props {
   email: string;
   phone: string;
   error: string;
+  emailFieldError?: boolean;
   summary: string;
   onChangeField: (field: string, value: string) => void;
   onSubmit: () => void;
@@ -22,6 +24,7 @@ export function LeadScreen({
   email,
   phone,
   error,
+  emailFieldError,
   summary,
   onChangeField,
   onSubmit,
@@ -87,7 +90,15 @@ export function LeadScreen({
               placeholder="jane@email.com"
               className="h-11"
               required
+              aria-required="true"
+              aria-invalid={emailFieldError || undefined}
             />
+            {emailFieldError && (
+              <p className="text-xs text-destructive flex items-center gap-1 mt-1">
+                <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                Email is required to receive your results.
+              </p>
+            )}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="phone" className="text-sm">
@@ -105,7 +116,10 @@ export function LeadScreen({
         </div>
 
         {error && (
-          <div className="mt-3.5 text-sm text-destructive">{error}</div>
+          <div className="mt-4 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-3.5 py-3 text-sm text-destructive">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
         )}
 
         <div className="flex gap-3 mt-6">
