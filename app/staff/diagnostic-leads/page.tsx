@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getStaffSession } from '@/lib/staff/auth';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { listDiagnosticLeads } from '@/lib/diagnostic/leads';
 import { DiagnosticLeadsClient, type DiagnosticLead } from '@/components/staff/DiagnosticLeadsClient';
 
 export default async function DiagnosticLeadsPage() {
@@ -8,15 +8,9 @@ export default async function DiagnosticLeadsPage() {
   if (!session) redirect('/staff/login?from=/staff/diagnostic-leads');
   if (session.role !== 'admin') redirect('/staff/library');
 
-  const db = createAdminClient();
-  const { data, error } = await db
-    .from('diagnostic_leads')
-    .select('id, parent_name, student_name, student_grade, email, phone, age_group, subject, length, score, tier, topic_breakdown, emailed_at, booked_at, client_status, notes, created_at')
-    .order('created_at', { ascending: false });
+  const data = await listDiagnosticLeads();
 
-  if (error) throw new Error(`Unable to load diagnostic leads: ${error.message}`);
-
-  const leads: DiagnosticLead[] = (data ?? []).map((row) => ({
+  const leads: DiagnosticLead[] = data.map((row) => ({
     id: row.id as string,
     parentName: row.parent_name as string,
     studentName: row.student_name as string,

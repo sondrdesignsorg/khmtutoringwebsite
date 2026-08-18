@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getStaffSession } from '@/lib/staff/auth';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { updateDiagnosticLead } from '@/lib/diagnostic/leads';
 
 export const runtime = 'nodejs';
 
@@ -37,15 +37,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     return NextResponse.json({ error: 'Nothing to update' }, { status: 400 });
   }
 
-  const db = createAdminClient();
-  const { data, error } = await db
-    .from('diagnostic_leads')
-    .update(updates)
-    .eq('id', id)
-    .select('id, client_status, notes')
-    .single();
+  const data = await updateDiagnosticLead(id, updates);
 
-  if (error || !data) {
+  if (!data) {
     return NextResponse.json({ error: 'Update failed' }, { status: 500 });
   }
 

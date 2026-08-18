@@ -1,7 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import emailjs from '@emailjs/browser';
+import { useEffect, useMemo, useState } from 'react';
 import {
   AGE_GROUPS,
   LENGTHS,
@@ -57,6 +56,12 @@ export function DiagnosticTest() {
   const ageLabel = AGE_GROUPS.find((g) => g.id === ageGroup)?.label ?? '';
   const subjectLabel = SUBJECTS.find((s) => s.id === subject)?.label ?? '';
   const configSummary = `${ageLabel} · ${subjectLabel} · ${length} Questions`;
+
+  useEffect(() => {
+    if (subject === 'reading' && length !== 20) {
+      setLength(20);
+    }
+  }, [subject, length]);
 
   const progressPct = useMemo(() => {
     if (screen !== 'quiz' || questions.length === 0) return 0;
@@ -126,44 +131,6 @@ export function DiagnosticTest() {
     setTopicBreakdown(breakdown);
     setScreen('results');
 
-    // Fire staff notification via EmailJS immediately — non-blocking
-    const ejService = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-    const ejTemplate = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-    const ejKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-    if (ejService && ejTemplate && ejKey) {
-      const topicLines = breakdown
-        .map((t) => `• ${t.topic}: ${t.correct}/${t.total} — ${t.strong ? 'Strong' : 'Needs Work'}`)
-        .join('\n');
-      emailjs
-        .send(
-          ejService,
-          ejTemplate,
-          {
-            to_email: 'khmtutoring1@gmail.com',
-            from_name: parentName.trim(),
-            from_email: email.trim(),
-            phone: phone.trim() || 'Not provided',
-            grade: studentGrade.trim() || 'Not provided',
-            school: '(Diagnostic Test)',
-            subject: `New Diagnostic Lead: ${studentName.trim()} scored ${finalScore}% — ${tier.label}`,
-            message:
-              `NEW DIAGNOSTIC LEAD\n\n` +
-              `Parent: ${parentName.trim()}\n` +
-              `Student: ${studentName.trim()}\n` +
-              `Email: ${email.trim()}\n` +
-              `Phone: ${phone.trim() || 'Not provided'}\n` +
-              `Grade: ${studentGrade.trim() || 'Not provided'}\n\n` +
-              `Test: ${ageLabel} ${subjectLabel} — ${length} Questions\n` +
-              `Score: ${finalScore}%\n` +
-              `Tier: ${tier.label}\n\n` +
-              `Topic Breakdown:\n${topicLines}\n\n` +
-              `View leads: https://www.khmtutoring.com/staff/diagnostic-leads`,
-            reply_to: email.trim(),
-          },
-          ejKey,
-        )
-        .catch((err) => console.error('EmailJS diagnostic notification failed:', err));
-    }
 
     setSubmitting(true);
     setSubmitError('');

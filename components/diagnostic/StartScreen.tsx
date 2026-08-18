@@ -31,6 +31,8 @@ export function StartScreen({
   onSelectLength,
   onStart,
 }: Props) {
+  const lengthOptions = subject === 'reading' ? LENGTHS.filter((l) => l.id === 20) : LENGTHS;
+
   if (layout === 'B') {
     return (
       <div className="w-full relative overflow-hidden">
@@ -94,7 +96,7 @@ export function StartScreen({
             </StepBlock>
             <StepBlock title="3. Choose length">
               <div className="flex flex-wrap gap-2.5">
-                {LENGTHS.map((l) => (
+                {lengthOptions.map((l) => (
                   <TwoLineButton
                     key={l.id}
                     active={l.id === length}
@@ -171,7 +173,7 @@ export function StartScreen({
           </StepBlock>
           <StepBlock title="3. Choose length" centered>
             <div className="flex flex-wrap gap-2.5 justify-center">
-              {LENGTHS.map((l) => (
+              {lengthOptions.map((l) => (
                 <TwoLineButton
                   key={l.id}
                   active={l.id === length}

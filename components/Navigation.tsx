@@ -11,6 +11,7 @@ const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About Us' },
   { href: '/educators', label: 'Educators' },
+  { href: '/group-sat-prep', label: 'Group SAT', isNew: true },
   { href: '/contact', label: 'Contact Us' },
 ];
 
@@ -51,7 +52,7 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-0.5">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -59,20 +60,23 @@ export function Navigation() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'px-5 py-2.5 rounded-lg font-medium text-base',
+                    'relative px-3 py-2 rounded-lg font-medium text-sm',
                     isActive
                       ? 'text-primary bg-primary/10'
                       : 'text-foreground/80 hover:text-primary'
                   )}
                 >
                   {item.label}
+                  {item.isNew && (
+                    <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-background" />
+                  )}
                 </Link>
               );
             })}
             <Link
               href="/diagnostic-test"
               className={cn(
-                'ml-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border-2 transition-colors',
+                'ml-2 inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold border-2 transition-colors whitespace-nowrap',
                 pathname === '/diagnostic-test'
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'border-primary text-primary hover:bg-primary hover:text-primary-foreground'
@@ -86,7 +90,7 @@ export function Navigation() {
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden p-3 rounded-lg z-50"
+            className="lg:hidden p-3 rounded-lg z-50"
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
@@ -99,7 +103,7 @@ export function Navigation() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden fixed inset-x-0 top-[72px] bg-background shadow-lg border-t border-border">
+          <div className="lg:hidden fixed inset-x-0 top-[72px] bg-background shadow-lg border-t border-border">
             <div className="px-4 py-4">
               <div className="flex flex-col space-y-1">
                 {navItems.map((item) => {
@@ -110,13 +114,18 @@ export function Navigation() {
                       href={item.href}
                       onClick={closeMobileMenu}
                       className={cn(
-                        'px-4 py-3 rounded-lg font-medium text-lg',
+                        'inline-flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-lg',
                         isActive
                           ? 'text-primary bg-primary/10'
                           : 'text-foreground/80'
                       )}
                     >
                       {item.label}
+                      {item.isNew && (
+                        <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 leading-none">
+                          New
+                        </span>
+                      )}
                     </Link>
                   );
                 })}

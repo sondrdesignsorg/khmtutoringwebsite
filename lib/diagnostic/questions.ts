@@ -52,16 +52,27 @@ function buildChoiceQ(
   topic: string,
 ): Omit<Question, 'id'> {
   const uniq: Array<number | string> = [];
+  const used = new Set<string>([String(correct)]);
   for (const d of distractors) {
-    if (d !== correct && !uniq.includes(d)) uniq.push(d);
+    const key = String(d);
+    if (!used.has(key)) {
+      uniq.push(d);
+      used.add(key);
+    }
     if (uniq.length === 3) break;
   }
+  let fillerStep = 1;
   while (uniq.length < 3) {
     const filler =
       typeof correct === 'number'
-        ? correct + randInt(1, 9) * (Math.random() < 0.5 ? -1 : 1)
-        : correct + '_';
-    if (filler !== correct && !uniq.includes(filler)) uniq.push(filler);
+        ? correct + fillerStep * (fillerStep % 2 === 0 ? -1 : 1)
+        : `${correct}_${fillerStep}`;
+    fillerStep += 1;
+    const key = String(filler);
+    if (!used.has(key)) {
+      uniq.push(filler);
+      used.add(key);
+    }
   }
   const choices = shuffle<number | string>([correct, ...uniq]);
   return {
@@ -74,472 +85,333 @@ function buildChoiceQ(
 
 type MathGen = () => Omit<Question, 'id'>;
 
+function formatFraction(num: number, den: number): string {
+  const sign = num * den < 0 ? '-' : '';
+  const n = Math.abs(num);
+  const d = Math.abs(den);
+  const g = gcd(n, d);
+  const rn = n / g;
+  const rd = d / g;
+  return rd === 1 ? `${sign}${rn}` : `${sign}${rn}/${rd}`;
+}
+
 const MATH_GENERATORS: Record<AgeGroupId, Record<string, MathGen>> = {
   elementary: {
     Addition: () => {
-      const a = randInt(101, 450), b = randInt(101, 450);
-      const c = a + b;
-      return buildChoiceQ(`${a} + ${b} = ?`, c, [c + 10, c - 10, c + 100], 'Addition');
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const a = randInt(120, 780), b = randInt(90, 640);
+        const c = a + b;
+        return buildChoiceQ(`${a} + ${b} = ?`, c, [c + 10, c - 10, c + 100], 'Addition');
+      }
+      const hundreds = randInt(2, 8) * 100;
+      const tens = randInt(2, 9) * 10;
+      const ones = randInt(1, 9);
+      const c = hundreds + tens + ones;
+      return buildChoiceQ(
+        `What number equals ${hundreds} + ${tens} + ${ones}?`,
+        c,
+        [hundreds + ones, hundreds + tens, c + 10],
+        'Addition',
+      );
     },
     Subtraction: () => {
-      const a = randInt(200, 900), b = randInt(50, Math.floor(a * 0.8));
+      const a = randInt(350, 980), b = randInt(80, 320);
       const c = a - b;
-      return buildChoiceQ(`${a} − ${b} = ?`, c, [c + 10, c - 10, a + b], 'Subtraction');
+      return buildChoiceQ(`${a} - ${b} = ?`, c, [c + 10, c - 10, a + b], 'Subtraction');
     },
     Multiplication: () => {
-      const a = randInt(12, 25), b = randInt(3, 9);
-      const c = a * b;
-      return buildChoiceQ(`${a} × ${b} = ?`, c, [c + b, c - a, c + a], 'Multiplication');
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const a = randInt(11, 24), b = randInt(3, 9);
+        const c = a * b;
+        return buildChoiceQ(`${a} x ${b} = ?`, c, [c + b, c - a, c + a], 'Multiplication');
+      }
+      const groups = randInt(4, 9), perGroup = randInt(6, 12);
+      const c = groups * perGroup;
+      return buildChoiceQ(
+        `There are ${groups} boxes with ${perGroup} markers in each box. How many markers are there?`,
+        c,
+        [groups + perGroup, c - perGroup, c + groups],
+        'Multiplication',
+      );
     },
     'Word Problems': () => {
-      const price = randInt(3, 12), qty = randInt(4, 9), extra = randInt(2, 8);
-      const c = price * qty + extra;
+      const type = randInt(0, 1);
+      if (type === 0) {
+        const price = randInt(3, 12), qty = randInt(4, 9), extra = randInt(2, 8);
+        const c = price * qty + extra;
+        return buildChoiceQ(
+          `A student buys ${qty} pencil packs at $${price} each and a notebook for $${extra}. How much is the total cost?`,
+          c,
+          [price * qty, c - extra, c + price],
+          'Word Problems',
+        );
+      }
+      const total = randInt(48, 96), used = randInt(12, 35), added = randInt(8, 24);
+      const c = total - used + added;
       return buildChoiceQ(
-        `Jake buys ${qty} pencil packs at $${price} each and also spends $${extra} on a notebook. How much does Jake spend in total?`,
+        `A classroom had ${total} sheets of paper. The class used ${used}, then the teacher added ${added}. How many sheets are there now?`,
         c,
-        [price * qty, c - extra, c + price],
+        [total - used, total + added, c + used],
         'Word Problems',
       );
     },
     Division: () => {
-      const b = randInt(4, 12), q = randInt(8, 20);
-      const a = b * q;
-      return buildChoiceQ(`${a} ÷ ${b} = ?`, q, [q + 1, q - 1, q + b], 'Division');
+      const divisor = randInt(4, 12), quotient = randInt(7, 18);
+      const total = divisor * quotient;
+      return buildChoiceQ(`${total} / ${divisor} = ?`, quotient, [quotient + 1, quotient - 1, quotient + divisor], 'Division');
     },
     Decimals: () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
       if (type === 0) {
-        const whole1 = randInt(1, 9), dec1 = randInt(1, 8);
-        const whole2 = randInt(1, 9), dec2 = randInt(1, 8);
-        const c = parseFloat(((whole1 * 10 + dec1 + whole2 * 10 + dec2) / 10).toFixed(1));
-        return buildChoiceQ(
-          `${whole1}.${dec1} + ${whole2}.${dec2} = ?`,
-          c,
-          [parseFloat((c + 0.2).toFixed(1)), parseFloat((c - 0.1).toFixed(1)), whole1 + whole2],
-          'Decimals',
-        );
-      } else {
-        const a = randInt(2, 9), b = randInt(2, 9);
-        const c = parseFloat((a * b / 10).toFixed(1));
-        return buildChoiceQ(
-          `${a} × 0.${b} = ?`,
-          c,
-          [parseFloat((c + 0.2).toFixed(1)), parseFloat((c + 1).toFixed(1)), a + b],
-          'Decimals',
-        );
+        const a = randInt(12, 89) / 10, b = randInt(11, 74) / 10;
+        const c = Number((a + b).toFixed(1));
+        return buildChoiceQ(`${a.toFixed(1)} + ${b.toFixed(1)} = ?`, c, [Number((c + 0.2).toFixed(1)), Number((c - 0.1).toFixed(1)), Math.floor(a + b)], 'Decimals');
       }
+      if (type === 1) {
+        const n = randInt(1, 9), d = [2, 4, 5, 10][randInt(0, 3)];
+        const c = Number((n / d).toFixed(2));
+        return buildChoiceQ(`What decimal equals ${n}/${d}?`, c, [Number(((n + 1) / d).toFixed(2)), Number((n / (d + 1)).toFixed(2)), n + d], 'Decimals');
+      }
+      const dollars = randInt(2, 12), cents = [25, 50, 75][randInt(0, 2)];
+      const c = Number((dollars + cents / 100).toFixed(2));
+      return buildChoiceQ(`Write $${dollars} and ${cents} cents as a decimal.`, c.toFixed(2), [dollars.toString(), `${dollars}.${cents + 10}`, `${dollars + 1}.${cents}`], 'Decimals');
     },
   },
   middle: {
     Fractions: () => {
-      const denPairs: [number, number][] = [[2,3],[2,5],[3,4],[3,5],[4,5],[2,6],[3,6]];
+      const type = randInt(0, 1);
+      const denPairs: [number, number][] = [[3,4],[3,5],[4,5],[5,6],[6,8],[8,12]];
       const [d1, d2] = denPairs[randInt(0, denPairs.length - 1)];
-      const L = lcm(d1, d2);
-      const n1 = randInt(1, d1 - 1);
-      const n2 = randInt(1, d2 - 1);
-      const numL = n1 * (L / d1) + n2 * (L / d2);
-      const g = gcd(numL, L);
-      const rn = numL / g, rd = L / g;
-      const correct = rd === 1 ? `${rn}` : `${rn}/${rd}`;
-      return buildChoiceQ(
-        `${n1}/${d1} + ${n2}/${d2} = ?`,
-        correct,
-        [`${n1 + n2}/${d1 + d2}`, `${n1 * n2}/${L}`, `${rn + 1}/${rd}`],
-        'Fractions',
-      );
+      const n1 = randInt(1, d1 - 1), n2 = randInt(1, d2 - 1);
+      if (type === 0) {
+        const L = lcm(d1, d2);
+        const correct = formatFraction(n1 * (L / d1) + n2 * (L / d2), L);
+        return buildChoiceQ(`${n1}/${d1} + ${n2}/${d2} = ?`, correct, [`${n1 + n2}/${d1 + d2}`, formatFraction(n1 + n2, L), formatFraction(n1 * n2, d1 * d2)], 'Fractions');
+      }
+      const correct = formatFraction(n1 * n2, d1 * d2);
+      return buildChoiceQ(`${n1}/${d1} x ${n2}/${d2} = ?`, correct, [`${n1 + n2}/${d1 + d2}`, formatFraction(n1 * n2, d1 + d2), formatFraction(n1 + n2, d1 * d2)], 'Fractions');
     },
     'Ratios & Percentages': () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
       if (type === 0) {
-        const original = randInt(20, 80) * 2;
-        const pct = [10, 15, 20, 25, 50][randInt(0, 4)];
+        const original = [40, 60, 80, 120, 160][randInt(0, 4)];
+        const pct = [10, 15, 20, 25, 30][randInt(0, 4)];
         const c = original + Math.round(original * pct / 100);
-        return buildChoiceQ(
-          `A jacket costs $${original}. After a ${pct}% price increase, what is the new price?`,
-          c,
-          [original + pct, original - Math.round(original * pct / 100), original * 2],
-          'Ratios & Percentages',
-        );
-      } else {
-        const total = [40, 60, 80, 120, 200][randInt(0, 4)];
-        const frac = [0.25, 0.30, 0.40, 0.60, 0.75][randInt(0, 4)];
-        const part = Math.round(total * frac);
-        const c = Math.round(part / total * 100);
-        return buildChoiceQ(
-          `${part} is what percent of ${total}?`,
-          c,
-          [c + 10, c - 10, Math.round(total / part * 100)],
-          'Ratios & Percentages',
-        );
+        return buildChoiceQ(`A $${original} item increases by ${pct}%. What is the new price?`, c, [original + pct, original - Math.round(original * pct / 100), original * 2], 'Ratios & Percentages');
       }
+      if (type === 1) {
+        const a = randInt(3, 8), b = randInt(4, 10), scale = randInt(3, 9);
+        return buildChoiceQ(`The ratio of red to blue tiles is ${a}:${b}. If there are ${a * scale} red tiles, how many blue tiles are there?`, b * scale, [a * scale + b, b * scale + scale, a * b], 'Ratios & Percentages');
+      }
+      const total = [80, 120, 160, 200][randInt(0, 3)], pct = [15, 20, 25, 40][randInt(0, 3)];
+      const c = Math.round(total * pct / 100);
+      return buildChoiceQ(`What is ${pct}% of ${total}?`, c, [pct + total / 10, c + 10, total - c], 'Ratios & Percentages');
     },
     'Basic Algebra': () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
+      const x = randInt(2, 15);
       if (type === 0) {
-        const x = randInt(2, 15), a = randInt(3, 9), b = randInt(5, 30);
-        const c = a * x + b;
-        return buildChoiceQ(
-          `Solve for x: ${a}x + ${b} = ${c}`,
-          x,
-          [x + 1, x - 1, Math.floor(c / a)],
-          'Basic Algebra',
-        );
-      } else {
-        const a = randInt(2, 6), c2 = randInt(3, 12), b = randInt(1, 15);
-        const x = a * c2 - b;
-        return buildChoiceQ(
-          `Solve for x: (x + ${b}) / ${a} = ${c2}`,
-          x,
-          [x + a, a * c2 + b, x - a],
-          'Basic Algebra',
-        );
+        const a = randInt(3, 9), b = randInt(5, 30), c = a * x + b;
+        return buildChoiceQ(`Solve for x: ${a}x + ${b} = ${c}`, x, [x + 1, x - 1, Math.floor(c / a)], 'Basic Algebra');
       }
+      if (type === 1) {
+        const a = randInt(2, 6), b = randInt(1, 15), c = a * (x + b);
+        return buildChoiceQ(`Solve for x: ${a}(x + ${b}) = ${c}`, x, [x + b, x - b, c / a], 'Basic Algebra');
+      }
+      const m = randInt(2, 6), b = randInt(1, 8), y = m * x + b;
+      return buildChoiceQ(`If y = ${m}x + ${b}, what is x when y = ${y}?`, x, [x + 2, y - b, Math.floor(y / m)], 'Basic Algebra');
     },
     'Word Problems': () => {
       const type = randInt(0, 1);
       if (type === 0) {
-        const rate = randInt(4, 14), hrs = randInt(3, 9), bonus = randInt(10, 50);
-        const c = rate * hrs + bonus;
-        return buildChoiceQ(
-          `Maya earns $${rate} per hour working ${hrs} hours and receives a $${bonus} bonus. What are her total earnings?`,
-          c,
-          [rate * hrs, c - bonus, c + rate],
-          'Word Problems',
-        );
-      } else {
-        const groups = randInt(4, 8), size = randInt(4, 7), extras = randInt(2, 6);
-        const c = groups * size + extras;
-        return buildChoiceQ(
-          `A class has ${groups} groups of ${size} students, plus ${extras} students who work alone. How many students total?`,
-          c,
-          [groups * size, c - extras, c + size],
-          'Word Problems',
-        );
+        const rate = randInt(8, 18), hrs = randInt(4, 9), fee = randInt(12, 45);
+        const c = rate * hrs + fee;
+        return buildChoiceQ(`A tutor charges $${fee} plus $${rate} per hour. What is the cost for ${hrs} hours?`, c, [rate * hrs, c - fee, c + rate], 'Word Problems');
       }
+      const start = randInt(20, 45), weekly = randInt(4, 9), weeks = randInt(5, 12);
+      const c = start + weekly * weeks;
+      return buildChoiceQ(`A student has ${start} points and earns ${weekly} points each week for ${weeks} weeks. How many points total?`, c, [weekly * weeks, c + weekly, start * weeks], 'Word Problems');
     },
     Geometry: () => {
       const type = randInt(0, 2);
       if (type === 0) {
-        const base = randInt(4, 14), h = randInt(4, 12);
+        const base = randInt(6, 18), h = randInt(5, 14);
         const c = Math.round(base * h / 2);
-        return buildChoiceQ(
-          `A triangle has a base of ${base} and a height of ${h}. What is its area?`,
-          c,
-          [base * h, c + h, c - base],
-          'Geometry',
-        );
-      } else if (type === 1) {
-        const r = randInt(3, 9);
-        const c = Math.round(Math.PI * r * r);
-        return buildChoiceQ(
-          `What is the area of a circle with radius ${r}? (Use π ≈ 3.14, round to nearest whole number)`,
-          c,
-          [Math.round(2 * Math.PI * r), c + r, c - r],
-          'Geometry',
-        );
-      } else {
-        const l = randInt(4, 14), w = randInt(3, 10);
-        const c = l * w;
-        return buildChoiceQ(
-          `A rectangle has length ${l} and width ${w}. What is its area?`,
-          c,
-          [2 * (l + w), c + l, c - w],
-          'Geometry',
-        );
+        return buildChoiceQ(`A triangle has base ${base} and height ${h}. What is its area?`, c, [base * h, c + h, c - base], 'Geometry');
       }
+      if (type === 1) {
+        const r = randInt(3, 9), c = Math.round(3.14 * r * r);
+        return buildChoiceQ(`What is the area of a circle with radius ${r}? Use pi = 3.14 and round to the nearest whole number.`, c, [Math.round(2 * 3.14 * r), c + r, c - r], 'Geometry');
+      }
+      const l = randInt(5, 16), w = randInt(4, 12);
+      return buildChoiceQ(`A rectangle has length ${l} and width ${w}. What is its perimeter?`, 2 * (l + w), [l * w, l + w, 2 * l + w], 'Geometry');
     },
     'Negative Numbers': () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
       if (type === 0) {
-        const a = randInt(-12, -2), b = randInt(-9, -1);
-        const c = a + b;
-        return buildChoiceQ(`${a} + (${b}) = ?`, c, [c + 1, Math.abs(a) + Math.abs(b), c - 1], 'Negative Numbers');
-      } else {
-        const a = randInt(-6, -2), b = randInt(-6, -2);
-        const c = a * b;
-        return buildChoiceQ(`${a} × ${b} = ?`, c, [-c, c + Math.abs(a), c - Math.abs(b)], 'Negative Numbers');
+        const a = randInt(-14, -3), b = randInt(-12, -2);
+        return buildChoiceQ(`${a} + (${b}) = ?`, a + b, [a - b, Math.abs(a) + Math.abs(b), a + b + 2], 'Negative Numbers');
       }
+      if (type === 1) {
+        const a = randInt(-12, -3), b = randInt(2, 12);
+        return buildChoiceQ(`${a} + ${b} = ?`, a + b, [a - b, b - a, a + b + 1], 'Negative Numbers');
+      }
+      const a = randInt(-8, -2), b = randInt(-7, -2);
+      return buildChoiceQ(`${a} x ${b} = ?`, a * b, [-(a * b), a * b + Math.abs(a), a * b - Math.abs(b)], 'Negative Numbers');
     },
   },
   high: {
     Algebra: () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
       if (type === 0) {
-        const x = randInt(2, 10), y = randInt(1, x);
-        const a = randInt(2, 5);
-        const sumEq = a * x + y;
-        const diffEq = x - y;
-        return buildChoiceQ(
-          `If ${a}x + y = ${sumEq} and x − y = ${diffEq}, what is x?`,
-          x,
-          [x + 1, y, x - 1],
-          'Algebra',
-        );
-      } else {
-        const a = randInt(2, 6), c2 = randInt(2, 10), b = randInt(1, 15);
-        const x = a * c2 - b;
-        return buildChoiceQ(
-          `Solve for x: (x + ${b}) / ${a} = ${c2}`,
-          x,
-          [x + a, a * c2 + b, x - a],
-          'Algebra',
-        );
+        const x = randInt(2, 10), y = randInt(1, x), a = randInt(2, 5);
+        return buildChoiceQ(`If ${a}x + y = ${a * x + y} and x - y = ${x - y}, what is x?`, x, [x + 1, y, x - 1], 'Algebra');
       }
+      if (type === 1) {
+        const x = randInt(2, 8), a = randInt(2, 5), b = randInt(1, 8), c = randInt(2, 5);
+        return buildChoiceQ(`Solve for x: ${a}(x + ${b}) - ${c} = ${a * (x + b) - c}`, x, [x + b, x - 1, x + c], 'Algebra');
+      }
+      const slope = randInt(2, 6), intercept = randInt(-5, 8), x = randInt(2, 9);
+      return buildChoiceQ(`A line has equation y = ${slope}x + ${intercept}. What is y when x = ${x}?`, slope * x + intercept, [slope + x + intercept, slope * x, slope * (x + 1) + intercept], 'Algebra');
     },
     Geometry: () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
       if (type === 0) {
-        const l = randInt(3, 10), w = randInt(3, 10), h = randInt(2, 8);
-        const c = l * w * h;
-        return buildChoiceQ(
-          `A rectangular box has length ${l}, width ${w}, and height ${h}. What is its volume?`,
-          c,
-          [2 * (l * w + l * h + w * h), l * w + w * h, c + l],
-          'Geometry',
-        );
-      } else {
-        const b1 = randInt(5, 14), b2 = randInt(3, 10), h = randInt(3, 9);
-        const c = Math.round((b1 + b2) * h / 2);
-        return buildChoiceQ(
-          `A trapezoid has parallel bases of ${b1} and ${b2} with height ${h}. What is its area? (A = ½(b₁ + b₂)h)`,
-          c,
-          [(b1 + b2) * h, c + h, b1 * b2],
-          'Geometry',
-        );
+        const l = randInt(4, 12), w = randInt(4, 12), h = randInt(3, 9);
+        return buildChoiceQ(`A rectangular prism has length ${l}, width ${w}, and height ${h}. What is its volume?`, l * w * h, [2 * (l * w + l * h + w * h), l * w + w * h, l * w * h + l], 'Geometry');
       }
+      if (type === 1) {
+        const b1 = randInt(6, 16), b2 = randInt(4, 12), h = randInt(4, 10);
+        const c = Math.round((b1 + b2) * h / 2);
+        return buildChoiceQ(`A trapezoid has bases ${b1} and ${b2} and height ${h}. What is its area?`, c, [(b1 + b2) * h, c + h, b1 * b2], 'Geometry');
+      }
+      const x = randInt(3, 8), y = randInt(2, 7);
+      const distSq = x * x + y * y;
+      return buildChoiceQ(`What is the squared distance between (0, 0) and (${x}, ${y})?`, distSq, [x + y, 2 * (x + y), distSq + x], 'Geometry');
     },
     Functions: () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
       if (type === 0) {
         const a = randInt(2, 5), b = randInt(1, 8), c2 = randInt(2, 4), d = randInt(1, 6);
         const inner = c2 * 2 + d;
-        const c = a * inner + b;
-        return buildChoiceQ(
-          `If f(x) = ${a}x + ${b} and g(x) = ${c2}x + ${d}, what is f(g(2))?`,
-          c,
-          [a * 2 + b, c + a, c - b],
-          'Functions',
-        );
-      } else {
-        const a = randInt(1, 3), b = randInt(1, 10), x = randInt(2, 5);
-        const c = a * x * x + b;
-        return buildChoiceQ(
-          `If f(x) = ${a}x² + ${b}, what is f(${x})?`,
-          c,
-          [a * x + b, c + x, (a + b) * x],
-          'Functions',
-        );
+        return buildChoiceQ(`If f(x) = ${a}x + ${b} and g(x) = ${c2}x + ${d}, what is f(g(2))?`, a * inner + b, [a * 2 + b, a * inner, a * inner + b + c2], 'Functions');
       }
+      if (type === 1) {
+        const a = randInt(1, 3), b = randInt(1, 10), x = randInt(2, 5);
+        return buildChoiceQ(`If f(x) = ${a}x^2 + ${b}, what is f(${x})?`, a * x * x + b, [a * x + b, a * x * x, (a + b) * x], 'Functions');
+      }
+      const m = randInt(2, 6), b = randInt(-4, 6), x = randInt(2, 8);
+      return buildChoiceQ(`For f(x) = ${m}x + ${b}, which value equals f(${x}) - f(${x - 1})?`, m, [b, m + b, x], 'Functions');
     },
     'Word Problems': () => {
       const type = randInt(0, 1);
       if (type === 0) {
-        const qty1 = randInt(3, 8), price1 = randInt(2, 6);
-        const qty2 = randInt(3, 8), price2 = randInt(price1 + 1, price1 + 5);
-        const c = qty1 * price1 + qty2 * price2;
-        return buildChoiceQ(
-          `Carla buys ${qty1} pens at $${price1} each and ${qty2} notebooks at $${price2} each. How much does she spend in total?`,
-          c,
-          [qty1 * price2 + qty2 * price1, c + price1, c - price2],
-          'Word Problems',
-        );
-      } else {
-        const rate1 = randInt(25, 55), time1 = randInt(2, 4);
-        const rate2 = randInt(rate1 + 5, rate1 + 30), time2 = randInt(1, 3);
-        const c = rate1 * time1 + rate2 * time2;
-        return buildChoiceQ(
-          `A truck travels ${rate1} mph for ${time1} hours, then ${rate2} mph for ${time2} more hours. What is the total distance?`,
-          c,
-          [rate1 * time1, (rate1 + rate2) * (time1 + time2) / 2, c - rate1],
-          'Word Problems',
-        );
+        const start = randInt(20, 80), rate = randInt(8, 18), weeks = randInt(4, 12);
+        return buildChoiceQ(`A savings account starts with $${start} and grows by $${rate} each week. How much is in the account after ${weeks} weeks?`, start + rate * weeks, [rate * weeks, start * weeks, start + rate + weeks], 'Word Problems');
       }
+      const rate1 = randInt(35, 60), time1 = randInt(2, 4), rate2 = randInt(60, 85), time2 = randInt(1, 3);
+      const c = rate1 * time1 + rate2 * time2;
+      return buildChoiceQ(`A car travels ${rate1} mph for ${time1} hours, then ${rate2} mph for ${time2} hours. What is the total distance?`, c, [rate1 * time1, (rate1 + rate2) * (time1 + time2) / 2, c - rate1], 'Word Problems');
     },
     Statistics: () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
       if (type === 0) {
-        const n1 = randInt(3, 8), avg1 = randInt(60, 80);
-        const n2 = randInt(3, 8), avg2 = randInt(75, 95);
-        const total = n1 * avg1 + n2 * avg2;
-        const c = Math.round(total / (n1 + n2));
-        return buildChoiceQ(
-          `Group A: ${n1} students, average ${avg1}. Group B: ${n2} students, average ${avg2}. What is the combined average? (Round to nearest whole number)`,
-          c,
-          [Math.round((avg1 + avg2) / 2), c + 5, c - 3],
-          'Statistics',
-        );
-      } else {
-        const nums = Array.from({ length: 6 }, () => randInt(10, 50)).sort((a, b) => a - b);
-        const median = parseFloat(((nums[2] + nums[3]) / 2).toFixed(1));
-        return buildChoiceQ(
-          `What is the median of: ${nums.join(', ')}?`,
-          median,
-          [nums[2], nums[3], Math.round(nums.reduce((a, b) => a + b) / 6)],
-          'Statistics',
-        );
+        const n1 = randInt(4, 9), avg1 = randInt(60, 80), n2 = randInt(4, 9), avg2 = randInt(75, 95);
+        const c = Math.round((n1 * avg1 + n2 * avg2) / (n1 + n2));
+        return buildChoiceQ(`Group A has ${n1} students with average ${avg1}. Group B has ${n2} students with average ${avg2}. What is the combined average?`, c, [Math.round((avg1 + avg2) / 2), c + 5, c - 3], 'Statistics');
       }
+      const nums = Array.from({ length: type === 1 ? 6 : 7 }, () => randInt(10, 60)).sort((a, b) => a - b);
+      const c = type === 1 ? Number(((nums[2] + nums[3]) / 2).toFixed(1)) : nums[3];
+      return buildChoiceQ(`What is the median of: ${nums.join(', ')}?`, c, [nums[1], nums[nums.length - 2], Math.round(nums.reduce((a, b) => a + b) / nums.length)], 'Statistics');
     },
     Quadratics: () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
+      const r1 = randInt(1, 7), r2 = randInt(1, 7);
+      const b = -(r1 + r2), c2 = r1 * r2;
+      const bStr = b < 0 ? `- ${Math.abs(b)}x` : `+ ${b}x`;
       if (type === 0) {
-        const r1 = randInt(1, 7), r2 = randInt(1, 7);
-        const b = -(r1 + r2), c2 = r1 * r2;
-        const bStr = b < 0 ? `− ${Math.abs(b)}x` : `+ ${b}x`;
-        const cStr = c2 > 0 ? `+ ${c2}` : `− ${Math.abs(c2)}`;
-        return buildChoiceQ(
-          `One solution of x² ${bStr} ${cStr} = 0 is x = ${r1}. What is the other solution?`,
-          r2,
-          [r1 + r2, r2 + 1, r2 - 1],
-          'Quadratics',
-        );
-      } else {
-        const r1 = randInt(1, 7), r2 = randInt(1, 7);
-        const b = -(r1 + r2), c2 = r1 * r2;
-        const bStr = b < 0 ? `− ${Math.abs(b)}x` : `+ ${b}x`;
-        const cStr = c2 > 0 ? `+ ${c2}` : `− ${Math.abs(c2)}`;
-        return buildChoiceQ(
-          `The solutions of x² ${bStr} ${cStr} = 0 are both positive. What is the product of the two solutions?`,
-          r1 * r2,
-          [r1 + r2, r1 * r2 + r1, r1 * r2 - 1],
-          'Quadratics',
-        );
+        return buildChoiceQ(`One solution of x^2 ${bStr} + ${c2} = 0 is x = ${r1}. What is the other solution?`, r2, [r1 + r2, r2 + 1, Math.max(1, r2 - 1)], 'Quadratics');
       }
+      if (type === 1) {
+        return buildChoiceQ(`The solutions of x^2 ${bStr} + ${c2} = 0 are both positive. What is their product?`, r1 * r2, [r1 + r2, r1 * r2 + r1, Math.max(1, r1 * r2 - 1)], 'Quadratics');
+      }
+      const x = randInt(8, 12);
+      return buildChoiceQ(`If f(x) = x^2 - ${r1 + r2}x + ${c2}, what is f(${x})?`, x * x - (r1 + r2) * x + c2, [x * x + c2, x - r1, x + r2], 'Quadratics');
     },
   },
   satact: {
     Algebra: () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
       if (type === 0) {
-        const x = randInt(2, 10);
-        const k = x * x;
-        return buildChoiceQ(
-          `If x > 0 and x² = ${k}, what is the value of 3x + 5?`,
-          3 * x + 5,
-          [3 * x - 5, x + 5, 3 * (x + 1) + 5],
-          'Algebra',
-        );
-      } else {
-        const a = randInt(2, 6), bMult = randInt(2, 5), c2 = randInt(2, 8);
-        const bClean = a * bMult;
-        const xClean = bClean * c2 / a;
-        return buildChoiceQ(
-          `If ${a}/${bClean} = ${c2}/x, what is x?`,
-          xClean,
-          [xClean + c2, a * c2, xClean - a],
-          'Algebra',
-        );
+        const x = randInt(2, 10), k = x * x;
+        return buildChoiceQ(`If x > 0 and x^2 = ${k}, what is 3x + 5?`, 3 * x + 5, [3 * x - 5, x + 5, 3 * (x + 1) + 5], 'Algebra');
       }
+      if (type === 1) {
+        const a = randInt(2, 6), bMult = randInt(2, 5), c2 = randInt(2, 8);
+        const bClean = a * bMult, xClean = bClean * c2 / a;
+        return buildChoiceQ(`If ${a}/${bClean} = ${c2}/x, what is x?`, xClean, [xClean + c2, a * c2, xClean - a], 'Algebra');
+      }
+      const x = randInt(2, 9), a = randInt(2, 5), b = randInt(1, 6), c = a * x + b;
+      return buildChoiceQ(`If ${a}x + ${b} = ${c}, what is ${a}x - ${b}?`, a * x - b, [x, c - b, a * (x - b)], 'Algebra');
     },
     'Data Analysis': () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
+      const nums = Array.from({ length: type === 0 ? 7 : 6 }, () => randInt(10, 90)).sort((a, b) => a - b);
       if (type === 0) {
-        const nums = Array.from({ length: 7 }, () => randInt(10, 90)).sort((a, b) => a - b);
-        const q1 = nums[1], q3 = nums[5];
-        const iqr = q3 - q1;
-        return buildChoiceQ(
-          `Find the interquartile range (IQR) of: ${nums.join(', ')}`,
-          iqr,
-          [nums[6] - nums[0], q3, q1 + q3],
-          'Data Analysis',
-        );
-      } else {
-        const nums = Array.from({ length: 6 }, () => randInt(10, 90)).sort((a, b) => a - b);
-        const median = parseFloat(((nums[2] + nums[3]) / 2).toFixed(1));
-        return buildChoiceQ(
-          `What is the median of the data set: ${nums.join(', ')}?`,
-          median,
-          [nums[2], nums[3], Math.round(nums.reduce((a, b) => a + b) / 6)],
-          'Data Analysis',
-        );
+        const q1 = nums[1], q3 = nums[5], iqr = q3 - q1;
+        return buildChoiceQ(`Find the interquartile range (IQR) of: ${nums.join(', ')}`, iqr, [nums[6] - nums[0], q3, q1 + q3], 'Data Analysis');
       }
+      if (type === 1) {
+        const median = Number(((nums[2] + nums[3]) / 2).toFixed(1));
+        return buildChoiceQ(`What is the median of the data set: ${nums.join(', ')}?`, median, [nums[2], nums[3], Math.round(nums.reduce((a, b) => a + b) / 6)], 'Data Analysis');
+      }
+      const initial = randInt(80, 140), final = initial + randInt(12, 40);
+      const pct = Math.round((final - initial) / initial * 100);
+      return buildChoiceQ(`A value increases from ${initial} to ${final}. What is the percent increase, rounded to the nearest percent?`, pct, [final - initial, pct + 10, Math.round(final / initial * 100)], 'Data Analysis');
     },
     Geometry: () => {
       const type = randInt(0, 1);
       if (type === 0) {
-        const leg1 = randInt(3, 14), leg2 = randInt(3, 14);
-        const hyp = Math.round(Math.sqrt(leg1 * leg1 + leg2 * leg2));
-        return buildChoiceQ(
-          `A right triangle has legs of length ${leg1} and ${leg2}. What is the hypotenuse, rounded to the nearest whole number?`,
-          hyp,
-          [hyp + 2, hyp - 1, leg1 + leg2],
-          'Geometry',
-        );
-      } else {
-        const r = [4, 5, 6, 8, 10][randInt(0, 4)];
-        const deg = [30, 45, 60, 90, 120][randInt(0, 4)];
-        const sector = Math.round(Math.PI * r * r * deg / 360);
-        return buildChoiceQ(
-          `A circle has radius ${r}. What is the area of a sector with a ${deg}° central angle? (Use π ≈ 3.14, round to nearest whole number)`,
-          sector,
-          [Math.round(2 * Math.PI * r * deg / 360), sector + r, Math.round(Math.PI * r * r)],
-          'Geometry',
-        );
+        const leg1 = randInt(3, 14), leg2 = randInt(3, 14), hyp = Math.round(Math.sqrt(leg1 * leg1 + leg2 * leg2));
+        return buildChoiceQ(`A right triangle has legs ${leg1} and ${leg2}. What is the hypotenuse, rounded to the nearest whole number?`, hyp, [hyp + 2, Math.max(1, hyp - 1), leg1 + leg2], 'Geometry');
       }
+      const r = [4, 5, 6, 8, 10][randInt(0, 4)], deg = [30, 45, 60, 90, 120][randInt(0, 4)];
+      const sector = Math.round(3.14 * r * r * deg / 360);
+      return buildChoiceQ(`A circle has radius ${r}. What is the area of a ${deg}-degree sector? Use pi = 3.14 and round.`, sector, [Math.round(2 * 3.14 * r * deg / 360), sector + r, Math.round(3.14 * r * r)], 'Geometry');
     },
     'Advanced Math': () => {
-      const type = randInt(0, 1);
+      const type = randInt(0, 2);
       if (type === 0) {
-        const n = randInt(3, 8);
-        const c = Math.pow(2, n);
-        return buildChoiceQ(
-          `What is 2^${n}?`,
-          c,
-          [n * 2, c + n, c - 1],
-          'Advanced Math',
-        );
-      } else {
-        const a = randInt(5, 15), b = randInt(2, 8);
-        const x1 = a + b, x2 = a - b;
-        return buildChoiceQ(
-          `If |x − ${a}| = ${b}, what is the larger value of x?`,
-          x1,
-          [x2, a, x1 + 1],
-          'Advanced Math',
-        );
+        const n = randInt(3, 8), c = Math.pow(2, n);
+        return buildChoiceQ(`What is 2^${n}?`, c, [n * 2, c + n, c - 1], 'Advanced Math');
       }
+      if (type === 1) {
+        const a = randInt(5, 15), b = randInt(2, 8);
+        return buildChoiceQ(`If |x - ${a}| = ${b}, what is the larger value of x?`, a + b, [a - b, a, a + b + 1], 'Advanced Math');
+      }
+      const base = randInt(2, 5), exp1 = randInt(2, 5), exp2 = randInt(1, 4);
+      return buildChoiceQ(`Which exponent equals (${base}^${exp1})(${base}^${exp2})?`, exp1 + exp2, [exp1 * exp2, exp1 + exp2 + base, Math.abs(exp1 - exp2)], 'Advanced Math');
     },
     'Systems of Equations': () => {
-      const x = randInt(2, 9), y = randInt(1, 8);
-      const a1 = randInt(2, 4), a2 = randInt(1, 3);
-      const sumEq = a1 * x + a2 * y;
-      const diffEq = a1 * x - a2 * y;
-      return buildChoiceQ(
-        `If ${a1}x + ${a2}y = ${sumEq} and ${a1}x − ${a2}y = ${diffEq}, what is x?`,
-        x,
-        [x + y, a1 * x, x - 1],
-        'Systems of Equations',
-      );
+      const x = randInt(2, 9), y = randInt(1, 8), a1 = randInt(2, 4), a2 = randInt(1, 3);
+      const sumEq = a1 * x + a2 * y, diffEq = a1 * x - a2 * y;
+      return buildChoiceQ(`If ${a1}x + ${a2}y = ${sumEq} and ${a1}x - ${a2}y = ${diffEq}, what is x?`, x, [x + y, a1 * x, Math.max(1, x - 1)], 'Systems of Equations');
     },
     Probability: () => {
       const type = randInt(0, 1);
       if (type === 0) {
         const total = randInt(8, 14), favored = randInt(2, total - 2);
-        const pNum = favored * (favored - 1);
-        const pDen = total * (total - 1);
-        const g = gcd(pNum, pDen);
-        const c = `${pNum / g}/${pDen / g}`;
-        return buildChoiceQ(
-          `A bag has ${favored} red and ${total - favored} blue marbles. What is the probability of drawing 2 red marbles in a row without replacement?`,
-          c,
-          [`${favored}/${total}`, `${favored * favored}/${total * total}`, `${favored - 1}/${total - 1}`],
-          'Probability',
-        );
-      } else {
-        const red = randInt(3, 8), blue = randInt(3, 10);
-        const total = red + blue;
-        const g = gcd(red, total);
-        const c = `${red / g}/${total / g}`;
-        return buildChoiceQ(
-          `A bag has ${red} red and ${blue} blue marbles. What is P(drawing red)?`,
-          c,
-          [`${red}/${total + 1}`, `${blue}/${total}`, `${red + 1}/${total}`],
-          'Probability',
-        );
+        const c = formatFraction(favored * (favored - 1), total * (total - 1));
+        return buildChoiceQ(`A bag has ${favored} red and ${total - favored} blue marbles. What is the probability of drawing 2 red marbles in a row without replacement?`, c, [`${favored}/${total}`, formatFraction(favored * favored, total * total), `${favored - 1}/${total - 1}`], 'Probability');
       }
+      const red = randInt(3, 8), blue = randInt(3, 10), total = red + blue;
+      const c = formatFraction(red, total);
+      return buildChoiceQ(`A bag has ${red} red and ${blue} blue marbles. What is P(drawing red)?`, c, [`${red}/${total + 1}`, `${blue}/${total}`, `${red + 1}/${total}`], 'Probability');
     },
   },
 };
-
 interface ReadingEntry {
   passage: string;
   qs: Array<{

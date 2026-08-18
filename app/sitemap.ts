@@ -29,6 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/group-sat-prep`,
+      lastModified: new Date('2026-08-03'),
+      changeFrequency: 'weekly',
+      priority: 0.95,
+    },
+    {
       url: `${baseUrl}/diagnostic-test`,
       lastModified: new Date('2026-07-24'),
       changeFrequency: 'monthly',

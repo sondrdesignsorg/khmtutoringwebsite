@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { Resend } from 'resend';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { createDiagnosticLead, markDiagnosticLeadEmailed } from '@/lib/diagnostic/leads';
+import { getEmailConfig, sendEmail } from '@/lib/email/resend';
 
 export const runtime = 'nodejs';
 
@@ -48,8 +48,6 @@ const SUBJECT_LABEL: Record<string, string> = {
   reading: 'Reading',
 };
 
-const STAFF_EMAIL = process.env.DIAGNOSTIC_STAFF_EMAIL || 'khmtutoring1@gmail.com';
-const FROM_ADDRESS = process.env.RESEND_FROM_ADDRESS || 'KHM Tutoring <onboarding@resend.dev>';
 
 type TopicResult = z.infer<typeof TopicResultSchema>;
 
@@ -275,36 +273,32 @@ async function sendResultsEmail(params: {
   tier: string;
   topicBreakdown: TopicResult[];
 }): Promise<{ ok: boolean; error?: string }> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    return { ok: false, error: 'RESEND_API_KEY is not configured.' };
+  const config = getEmailConfig();
+  if (!config) {
+    return { ok: false, error: 'RESEND_API_KEY and RESEND_FROM_ADDRESS must be configured.' };
   }
 
-  const resend = new Resend(apiKey);
-
   const [parentResult, staffResult] = await Promise.allSettled([
-    resend.emails.send({
-      from: FROM_ADDRESS,
+    sendEmail({
       to: params.email,
-      replyTo: STAFF_EMAIL,
-      subject: `${params.studentName}'s KHM Diagnostic Results — ${params.tier}`,
+      replyTo: config.staffEmail,
+      subject: `${params.studentName}'s KHM Diagnostic Results - ${params.tier}`,
       html: parentEmailHtml(params),
     }),
-    resend.emails.send({
-      from: FROM_ADDRESS,
-      to: STAFF_EMAIL,
+    sendEmail({
+      to: config.staffEmail,
       replyTo: params.email,
-      subject: `New Lead: ${params.studentName} scored ${params.score}% (${params.tier})`,
+      subject: `New Diagnostic Lead: ${params.studentName} scored ${params.score}% (${params.tier})`,
       html: staffEmailHtml(params),
     }),
   ]);
 
-  const parentOk = parentResult.status === 'fulfilled' && !parentResult.value.error;
+  const parentOk = parentResult.status === 'fulfilled' && parentResult.value.ok;
 
-  if (staffResult.status === 'rejected' || staffResult.value.error) {
+  if (staffResult.status === 'rejected' || !staffResult.value.ok) {
     const err = staffResult.status === 'rejected'
       ? (staffResult.reason as Error)?.message
-      : staffResult.value.error?.message;
+      : staffResult.value.error;
     console.error('diagnostic staff email failed:', err);
   }
 
@@ -314,7 +308,7 @@ async function sendResultsEmail(params: {
         ok: false,
         error:
           parentResult.status === 'fulfilled'
-            ? (parentResult.value.error?.message ?? 'Unknown Resend error')
+            ? (parentResult.value.error ?? 'Unknown Resend error')
             : (parentResult.reason as Error)?.message,
       };
 }
@@ -336,35 +330,29 @@ export async function POST(req: Request) {
   }
   const data = parsed.data;
 
-  const db = createAdminClient();
-  const { data: inserted, error: insertError } = await db
-    .from('diagnostic_leads')
-    .insert({
-      parent_name: data.parentName,
-      student_name: data.studentName,
-      student_grade: data.studentGrade || null,
+  let leadId: string;
+  try {
+    leadId = await createDiagnosticLead({
+      parentName: data.parentName,
+      studentName: data.studentName,
+      studentGrade: data.studentGrade || null,
       email: data.email,
       phone: data.phone || null,
-      age_group: data.ageGroup,
+      ageGroup: data.ageGroup,
       subject: data.subject,
       length: data.length,
       score: data.score,
       tier: data.tier,
-      topic_breakdown: data.topicBreakdown,
+      topicBreakdown: data.topicBreakdown,
       answers: data.answers ?? null,
-    })
-    .select('id')
-    .single();
-
-  if (insertError || !inserted) {
-    console.error('diagnostic_leads insert failed:', insertError);
+    });
+  } catch (err) {
+    console.error('diagnostic lead insert failed:', err);
     return NextResponse.json(
       { error: 'Could not save your results. Please try again.' },
       { status: 500 },
     );
   }
-
-  const leadId = inserted.id as string;
 
   const emailResult = await sendResultsEmail({
     leadId,
@@ -382,13 +370,9 @@ export async function POST(req: Request) {
   });
 
   if (emailResult.ok) {
-    const { error: updateError } = await db
-      .from('diagnostic_leads')
-      .update({ emailed_at: new Date().toISOString() })
-      .eq('id', leadId);
-    if (updateError) {
-      console.error('diagnostic_leads emailed_at update failed:', updateError);
-    }
+    await markDiagnosticLeadEmailed(leadId).catch((err) => {
+      console.error('diagnostic lead emailed_at update failed:', err);
+    });
   } else {
     console.error('diagnostic email send failed:', emailResult.error);
   }
