@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const TARGET_START = 'September 6, 2026';
+const TARGET_START = 'September 21, 2026';
 const TOTAL_HOURS = 20;
 
 const schedules = [
