@@ -18,6 +18,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { GROUP_SAT_GRADES } from '@/lib/sat-group/inquiry-security';
 
 const TARGET_START = 'September 21, 2026';
 const TOTAL_HOURS = 20;
@@ -50,7 +51,7 @@ const pillars = [
   {
     icon: TimerReset,
     title: 'Real Test Rhythm',
-    desc: 'Timed sets, pacing decisions, and pressure practice help students feel less surprised when test day arrives.',
+    desc: 'Timed sets, pacing decisions, and pressure practice in a live class setting help students feel less surprised when test day arrives.',
   },
   {
     icon: Target,
@@ -75,7 +76,7 @@ const pillars = [
   {
     icon: Award,
     title: '20 Hours Total',
-    desc: 'Families pay for the full session: a complete 20-hour block of live instruction and guided SAT practice.',
+    desc: 'Families pay for the full course: a complete 20-hour block of live in-person instruction and guided SAT practice.',
   },
 ];
 
@@ -93,7 +94,7 @@ const flow = [
   {
     step: '03',
     title: 'Start the 20-hour session',
-    desc: `Target start date: ${TARGET_START}. Final cohort details are coordinated by email.`,
+    desc: `Target start date: ${TARGET_START} at 1025 Waimanu St, Honolulu. Final cohort details are coordinated by email.`,
   },
 ];
 
@@ -161,6 +162,8 @@ export function SatGroupContent() {
   const [submitted, setSubmitted] = useState(false);
   const [emailStatus, setEmailStatus] = useState<'sent' | 'pending'>('pending');
   const [error, setError] = useState('');
+  const [website, setWebsite] = useState('');
+  const [formStartedAt] = useState(() => Date.now());
 
   const selectedCohort = useMemo(
     () => schedules.find((cohort) => cohort.name === form.cohort) ?? schedules[0],
@@ -189,6 +192,8 @@ export function SatGroupContent() {
           currentScore: form.currentScore || null,
           goals: form.goals || null,
           notes: form.notes || null,
+          website,
+          formStartedAt,
         }),
       });
 
@@ -215,12 +220,19 @@ export function SatGroupContent() {
             <Zap className="h-3.5 w-3.5" />
             Target Start: {TARGET_START}
           </div>
-          <h1 className="mb-6 text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl">
-            SAT Prep That Feels Like the Test
+          <h1 className="mb-3 text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl">
+            SAT Prep Classes That Feel Like the Test
           </h1>
-          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-            Small cohorts work through SAT content, timing, and decision-making in a live setting so students build the habits they need before test day.
+          <p className="mb-5 text-base font-semibold text-primary md:text-lg">
+            In-Person SAT Class &mdash; Honolulu, Hawaii
           </p>
+          <p className="mx-auto mb-6 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+            Small cohorts meet in person at our Honolulu location and work through SAT content, timing, and decision-making so students build the habits they need before test day.
+          </p>
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-muted-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            In person only · 1025 Waimanu St, Honolulu, HI 96814
+          </div>
           <div className="mb-10 flex flex-wrap justify-center gap-6">
             {[
               { icon: Users, label: '6-8 Students', sub: 'matched by fit' },
@@ -302,6 +314,10 @@ export function SatGroupContent() {
             <p className="mx-auto max-w-xl text-muted-foreground">
               Final cohorts will be coordinated by email after KHM reviews level, goals, and group fit. Weekday morning sessions are not offered.
             </p>
+            <p className="mt-3 text-sm font-medium text-muted-foreground">
+              Sessions held in person at{' '}
+              <span className="font-semibold text-foreground">1025 Waimanu St, Honolulu, HI 96814</span>
+            </p>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {schedules.map((cohort) => (
@@ -367,6 +383,18 @@ export function SatGroupContent() {
               </div>
             ) : (
               <div className="space-y-4">
+                <div className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                  <label htmlFor="group-sat-website">Website</label>
+                  <input
+                    id="group-sat-website"
+                    name="website"
+                    type="text"
+                    value={website}
+                    onChange={(event) => setWebsite(event.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Parent name" value={form.parentName} onChange={(value) => updateField('parentName', value)} required />
                   <Field label="Student name" value={form.studentName} onChange={(value) => updateField('studentName', value)} required />
@@ -376,8 +404,18 @@ export function SatGroupContent() {
                   <Field label="Phone" value={form.phone} onChange={(value) => updateField('phone', value)} />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Grade" value={form.grade} onChange={(value) => updateField('grade', value)} />
-                  <Field label="Target SAT date" value={form.satDate} onChange={(value) => updateField('satDate', value)} />
+                  <label className="block">
+                    <span className="mb-1.5 block text-sm font-semibold text-foreground">Grade</span>
+                    <select
+                      value={form.grade}
+                      onChange={(event) => updateField('grade', event.target.value)}
+                      className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+                    >
+                      <option value="">Select grade</option>
+                      {GROUP_SAT_GRADES.map((grade) => <option key={grade} value={grade}>{grade}</option>)}
+                    </select>
+                  </label>
+                  <Field label="Target SAT date" type="date" value={form.satDate} onChange={(value) => updateField('satDate', value)} />
                 </div>
                 <label className="block">
                   <span className="mb-1.5 block text-sm font-semibold text-foreground">Preferred cohort</span>

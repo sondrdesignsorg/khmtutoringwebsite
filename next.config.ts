@@ -13,6 +13,25 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  async redirects() {
+    return [
+      {
+        source: '/sat-prep-class-honolulu',
+        destination: '/group-sat-prep',
+        permanent: true,
+      },
+      {
+        source: '/group-sat-class-honolulu',
+        destination: '/group-sat-prep',
+        permanent: true,
+      },
+      {
+        source: '/sat-prep-honolulu',
+        destination: '/group-sat-prep',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

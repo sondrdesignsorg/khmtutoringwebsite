@@ -22,8 +22,9 @@ export function AboutContent() {
             <h1 className="mb-3 md:mb-4 text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-900">
               About{' '}
               <span className="text-primary font-bold">
-                KHM | Expert Tutoring
+                KHM Tutoring
               </span>
+              {' '}— Honolulu&apos;s Expert K-12 Tutors
             </h1>
             <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg font-medium">
               Empowering Students to Reach Their Full Potential

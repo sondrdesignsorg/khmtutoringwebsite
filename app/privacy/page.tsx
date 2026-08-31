@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     canonical: 'https://www.khmtutoring.com/privacy',
   },
   robots: {
-    index: true,
+    index: false,
     follow: true,
   },
 };

@@ -1,19 +1,19 @@
 interface StructuredDataProps {
-  type: 'organization' | 'home' | 'about' | 'educators' | 'contact' | 'diagnostic';
+  type: 'organization' | 'home' | 'about' | 'educators' | 'contact' | 'diagnostic' | 'group-sat-prep';
 }
 
 const baseUrl = 'https://www.khmtutoring.com';
 
 const organizationSchema = {
   '@context': 'https://schema.org',
-  '@type': 'EducationalOrganization',
+  '@type': ['LocalBusiness', 'EducationalOrganization'],
   '@id': `${baseUrl}/#organization`,
   name: 'KHM Tutoring',
   description: 'Expert K-12 tutoring services in Hawaii. Math, English, SAT, SSAT, and AP prep. Serving Honolulu, Oahu, and all of Hawaii.',
   url: baseUrl,
   logo: `${baseUrl}/images/khm-tutoring-logo.png`,
   image: `${baseUrl}/images/khm-tutoring-hero.jpeg`,
-  telephone: '(808) 381-7856',
+  telephone: '+18083817856',
   email: 'khmtutoring1@gmail.com',
   foundingDate: '2016',
   founder: {
@@ -24,13 +24,30 @@ const organizationSchema = {
     '@type': 'PostalAddress',
     addressLocality: 'Honolulu',
     addressRegion: 'HI',
+    postalCode: '96813',
     addressCountry: 'US',
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: '21.3069',
-    longitude: '-157.8583',
+    latitude: '21.30694',
+    longitude: '-157.85830',
   },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ],
+      opens: '08:00',
+      closes: '22:00',
+    },
+  ],
   areaServed: [
     {
       '@type': 'City',
@@ -55,7 +72,8 @@ const organizationSchema = {
     ratingValue: '5.0',
     bestRating: '5',
     worstRating: '1',
-    ratingCount: '300',
+    ratingCount: '11',
+    reviewCount: '11',
   },
 };
 
@@ -447,6 +465,118 @@ const contactPageSchema = {
   },
 };
 
+const groupSatLocation = {
+  '@type': 'Place',
+  name: 'KHM Tutoring',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '1025 Waimanu St',
+    addressLocality: 'Honolulu',
+    addressRegion: 'HI',
+    postalCode: '96814',
+    addressCountry: 'US',
+  },
+};
+
+const groupSatSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  '@id': `${baseUrl}/group-sat-prep#course`,
+  name: 'Small-Cohort SAT Prep',
+  description: 'Small-cohort SAT preparation for high school students in Honolulu, Hawaii. Groups of 6–8 students matched by level and readiness. 20 hours of live instruction focused on SAT strategy, timing, and test-day confidence.',
+  provider: {
+    '@id': `${baseUrl}/#organization`,
+  },
+  url: `${baseUrl}/group-sat-prep`,
+  courseWorkload: 'PT20H',
+  hasCourseInstance: [
+    {
+      '@type': 'CourseInstance',
+      name: 'Sunday Strategy Cohort',
+      courseMode: 'in-person',
+      startDate: '2026-09-21',
+      courseWorkload: 'PT20H',
+      location: groupSatLocation,
+    },
+    {
+      '@type': 'CourseInstance',
+      name: 'Weekday After-School Cohort',
+      courseMode: 'in-person',
+      startDate: '2026-09-21',
+      courseWorkload: 'PT20H',
+      location: groupSatLocation,
+    },
+    {
+      '@type': 'CourseInstance',
+      name: 'Evening Practice Cohort',
+      courseMode: 'in-person',
+      startDate: '2026-09-21',
+      courseWorkload: 'PT20H',
+      location: groupSatLocation,
+    },
+  ],
+  audience: {
+    '@type': 'EducationalAudience',
+    educationalRole: 'student',
+    audienceType: 'High school students preparing for the SAT in Hawaii',
+  },
+};
+
+const groupSatFaqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How many students are in a SAT prep cohort?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Each cohort is planned for 6-8 students. That size gives students enough peer energy to simulate a testing environment while staying small enough for the instructor to adjust pacing and examples.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How are students placed into SAT prep cohorts?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'KHM looks at schedule, current score or diagnostic level, grade, goals, and group fit. The goal is not just to fill seats — it is to create a cohort where students can move at a productive pace together.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What does the full SAT prep session include?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The session is 20 total hours of live SAT instruction. It includes content review, timed practice, test-taking strategy, question pattern recognition, and discussion of the SAT topics students often do not know to study.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is the KHM SAT program mostly content review or strategy?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Both. Students still need math, grammar, reading, and data-analysis skills, but the program also emphasizes the decisions that affect scores under time pressure: pacing, elimination, guessing, section management, and recovery after difficult questions.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Where are the SAT prep sessions held?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sessions are held in person at 1025 Waimanu St, Honolulu, HI 96814. Three schedule windows are available: Sunday mornings, weekday after-school (Tuesday and Thursday), and weekday evenings (Monday and Wednesday).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'When does the SAT prep program start?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The target start date is September 21, 2026. Final cohort details are coordinated by email after KHM reviews each student\'s fit form.',
+      },
+    },
+  ],
+};
+
 function getBreadcrumbSchema(pageName: string, pageUrl: string) {
   return {
     '@context': 'https://schema.org',
@@ -481,6 +611,8 @@ export function StructuredData({ type }: StructuredDataProps) {
         return [organizationSchema, contactPageSchema, faqSchema, getBreadcrumbSchema('Contact', `${baseUrl}/contact`)];
       case 'diagnostic':
         return [organizationSchema, diagnosticPageSchema, diagnosticServiceSchema, getBreadcrumbSchema('Free Diagnostic Test', `${baseUrl}/diagnostic-test`)];
+      case 'group-sat-prep':
+        return [organizationSchema, groupSatSchema, groupSatFaqSchema, getBreadcrumbSchema('Group SAT Prep', `${baseUrl}/group-sat-prep`)];
       case 'organization':
       default:
         return [organizationSchema];

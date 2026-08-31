@@ -12,12 +12,17 @@ KHM Tutoring is a premium K-12 tutoring service in Honolulu, Hawaii, founded in 
 - [About](https://www.khmtutoring.com/about): Company story, mission, team approach, and founder background
 - [Educators](https://www.khmtutoring.com/educators): Full team of 10+ tutors with bios, credentials, and subject specialties
 - [Contact](https://www.khmtutoring.com/contact): Contact form, email, phone, and hours for booking consultations
-- [Free Diagnostic Test](https://www.khmtutoring.com/diagnostic-test): Free 15�70 minute academic assessment for K-12 students in Hawaii — identifies strengths and gaps by topic in Math or English, with a personalized report emailed to parents and a free consultation offer
+- [Group SAT Prep](https://www.khmtutoring.com/group-sat-prep): Small-cohort SAT preparation program — 6-8 students matched by level and readiness, 20 hours of live instruction focused on SAT strategy, timing, and test-day confidence. Sessions start September 21, 2026.
+- [Free Diagnostic Test](https://www.khmtutoring.com/diagnostic-test): Free 15-70 minute academic assessment for K-12 students in Hawaii — identifies strengths and gaps by topic in Math or English, with a personalized report emailed to parents and a free consultation offer
 - [Privacy Policy](https://www.khmtutoring.com/privacy): Data collection and usage policies
 
 ## Free Diagnostic Test
 
-KHM Tutoring offers a free, no-login academic diagnostic test at https://www.khmtutoring.com/diagnostic-test. The test takes 15�70 minutes and covers grade-appropriate topics for Elementary (K–5), Middle School (6–8), or High School (9–12) in Math or English. After completing the test, parents receive a personalized topic-by-topic breakdown by email along with an invitation for a free tutoring consultation. Results are confidential and the test is available to all families regardless of whether they become customers.
+KHM Tutoring offers a free, no-login academic diagnostic test at https://www.khmtutoring.com/diagnostic-test. The test takes 15-70 minutes and covers grade-appropriate topics for Elementary (K-5), Middle School (6-8), or High School (9-12) in Math or English. After completing the test, parents receive a personalized topic-by-topic breakdown by email along with an invitation for a free tutoring consultation. Results are confidential and the test is available to all families regardless of whether they become customers.
+
+## Group SAT Prep Program
+
+KHM Tutoring offers a small-cohort SAT prep program at https://www.khmtutoring.com/group-sat-prep. Cohorts of 6-8 students are organized by level, readiness, and schedule. The program is 20 hours of live instruction covering SAT content, timing, strategy, and pattern recognition. Three schedule windows are available: Sunday mornings, weekday after-school, and weekday evenings. Sessions begin September 21, 2026. Students submit a fit form to be placed in the right cohort.
 
 ## Services
 
@@ -27,6 +32,7 @@ KHM Tutoring offers a free, no-login academic diagnostic test at https://www.khm
 - SSAT Prep (private school admissions test preparation)
 - AP Subject Tutoring (Advanced Placement exam preparation)
 - College Counseling & Essay Writing (applications, admissions consulting)
+- Group SAT Prep (small cohorts of 6-8 students, 20 hours, strategy-focused)
 - Online Tutoring (via Zoom for all of Hawaii)
 - In-Home Tutoring (Honolulu & Oahu)
 
@@ -38,9 +44,9 @@ KHM Tutoring offers a free, no-login academic diagnostic test at https://www.khm
 - Team size: 10+ expert tutors
 - Service area: Honolulu, Oahu, and all of Hawaii
 - Delivery: In-home, library, or online via Zoom
-- Hours: Daily 8 AM – 10 PM
+- Hours: Daily 8 AM - 10 PM
 - Free initial consultation available
-- Not a franchise — locally owned and operated
+- Not a franchise -- locally owned and operated
 - Specialized in Hawaii private school prep (Punahou, Iolani)
 
 ## Contact

@@ -23,7 +23,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.khmtutoring.com'),
   title: {
-    default: 'Hawaii Tutoring | Math & SAT Prep | Honolulu, Oahu',
+    default: 'Math & SAT Tutoring in Honolulu, Hawaii | KHM Tutoring',
     template: '%s | KHM Tutoring Hawaii',
   },
   description: 'Expert tutoring in Hawaii & Honolulu. Math, SAT, SSAT prep with proven results. 300+ students helped. Book your free consultation today!',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://www.khmtutoring.com',
     siteName: 'KHM Tutoring',
-    title: 'Hawaii Tutoring | Math & SAT Prep | Honolulu',
+    title: 'Math & SAT Tutoring in Honolulu, Hawaii | KHM Tutoring',
     description: 'Expert tutoring in Hawaii & Honolulu. Math, SAT, SSAT prep. 300+ students helped. Free consultation!',
     images: [
       {
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Hawaii Tutoring | Math & SAT Prep | Honolulu',
+    title: 'Math & SAT Tutoring in Honolulu, Hawaii | KHM Tutoring',
     description: 'Expert tutoring in Hawaii & Honolulu. Math, SAT prep. 300+ students helped.',
     images: ['/og-image.png'],
   },
