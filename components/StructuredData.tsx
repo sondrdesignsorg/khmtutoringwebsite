@@ -1,3 +1,5 @@
+import { groupSatFaqs } from '@/lib/sat-group/content';
+
 interface StructuredDataProps {
   type: 'organization' | 'home' | 'about' | 'educators' | 'contact' | 'diagnostic' | 'group-sat-prep';
 }
@@ -22,15 +24,11 @@ const organizationSchema = {
   },
   address: {
     '@type': 'PostalAddress',
+    streetAddress: '1025 Waimanu St',
     addressLocality: 'Honolulu',
     addressRegion: 'HI',
-    postalCode: '96813',
+    postalCode: '96814',
     addressCountry: 'US',
-  },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude: '21.30694',
-    longitude: '-157.85830',
   },
   openingHoursSpecification: [
     {
@@ -525,56 +523,14 @@ const groupSatSchema = {
 const groupSatFaqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'How many students are in a SAT prep cohort?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Each cohort is planned for 6-8 students. That size gives students enough peer energy to simulate a testing environment while staying small enough for the instructor to adjust pacing and examples.',
-      },
+  mainEntity: groupSatFaqs.map(({ question, answer }) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: answer,
     },
-    {
-      '@type': 'Question',
-      name: 'How are students placed into SAT prep cohorts?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'KHM looks at schedule, current score or diagnostic level, grade, goals, and group fit. The goal is not just to fill seats — it is to create a cohort where students can move at a productive pace together.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'What does the full SAT prep session include?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'The session is 20 total hours of live SAT instruction. It includes content review, timed practice, test-taking strategy, question pattern recognition, and discussion of the SAT topics students often do not know to study.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Is the KHM SAT program mostly content review or strategy?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Both. Students still need math, grammar, reading, and data-analysis skills, but the program also emphasizes the decisions that affect scores under time pressure: pacing, elimination, guessing, section management, and recovery after difficult questions.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Where are the SAT prep sessions held?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Sessions are held in person at 1025 Waimanu St, Honolulu, HI 96814. Three schedule windows are available: Sunday mornings, weekday after-school (Tuesday and Thursday), and weekday evenings (Monday and Wednesday).',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'When does the SAT prep program start?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'The target start date is September 21, 2026. Final cohort details are coordinated by email after KHM reviews each student\'s fit form.',
-      },
-    },
-  ],
+  })),
 };
 
 function getBreadcrumbSchema(pageName: string, pageUrl: string) {

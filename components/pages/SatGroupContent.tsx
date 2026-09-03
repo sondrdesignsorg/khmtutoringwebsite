@@ -18,10 +18,28 @@ import {
   Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { groupSatFaqs } from '@/lib/sat-group/content';
 import { GROUP_SAT_GRADES } from '@/lib/sat-group/inquiry-security';
 
 const TARGET_START = 'September 21, 2026';
 const TOTAL_HOURS = 20;
+const GOOGLE_ADS_ID = 'AW-17881935420';
+
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+function trackInquiryConversion() {
+  const conversionLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_GROUP_SAT_CONVERSION_LABEL;
+
+  if (!conversionLabel || typeof window.gtag !== 'function') return;
+
+  window.gtag('event', 'conversion', {
+    send_to: `${GOOGLE_ADS_ID}/${conversionLabel}`,
+  });
+}
 
 const schedules = [
   {
@@ -95,33 +113,6 @@ const flow = [
     step: '03',
     title: 'Start the 20-hour session',
     desc: `Target start date: ${TARGET_START} at 1025 Waimanu St, Honolulu. Final cohort details are coordinated by email.`,
-  },
-];
-
-const faqs = [
-  {
-    q: 'How many students are in a cohort?',
-    a: 'Each cohort is planned for 6-8 students. That size gives students enough peer energy to simulate a testing environment while staying small enough for the instructor to adjust pacing and examples.',
-  },
-  {
-    q: 'How are students placed into cohorts?',
-    a: 'KHM looks at schedule, current score or diagnostic level, grade, goals, and group fit. The goal is not just to fill seats; it is to create a cohort where students can move at a productive pace together.',
-  },
-  {
-    q: 'What does the full session include?',
-    a: 'The session is 20 total hours of live SAT instruction. It includes content review, timed practice, test-taking strategy, question pattern recognition, and discussion of the SAT topics students often do not know to study.',
-  },
-  {
-    q: 'Is this mostly content review or strategy?',
-    a: 'Both. Students still need math, grammar, reading, and data-analysis skills, but the program also emphasizes the decisions that affect scores under time pressure: pacing, elimination, guessing, section management, and recovery after difficult questions.',
-  },
-  {
-    q: 'Will there be weekday morning sessions?',
-    a: 'No. Weekday cohorts are scheduled after school or in the evening. Weekend cohorts may include morning or midday options.',
-  },
-  {
-    q: 'What happens after I submit the form?',
-    a: 'Submitting the form sends a confirmation to your email and notifies KHM. Final cohort placement and scheduling details will be coordinated by email once KHM has reviewed the fit.',
   },
 ];
 
@@ -204,6 +195,7 @@ export function SatGroupContent() {
 
       const body = (await res.json()) as { emailed?: boolean };
       setEmailStatus(body.emailed ? 'sent' : 'pending');
+      trackInquiryConversion();
       setSubmitted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not submit the form.');
@@ -213,7 +205,7 @@ export function SatGroupContent() {
   }
 
   return (
-    <main className="pt-20">
+    <div className="pt-20">
       <section className="bg-gradient-to-b from-primary/5 via-background to-background py-14 md:py-20">
         <div className="container mx-auto max-w-4xl px-4 text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-4 py-1.5 text-sm font-semibold text-amber-700">
@@ -221,7 +213,7 @@ export function SatGroupContent() {
             Target Start: {TARGET_START}
           </div>
           <h1 className="mb-3 text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl">
-            SAT Prep Classes That Feel Like the Test
+            Small-Group SAT Prep Classes in Honolulu
           </h1>
           <p className="mb-5 text-base font-semibold text-primary md:text-lg">
             In-Person SAT Class &mdash; Honolulu, Hawaii
@@ -449,13 +441,13 @@ export function SatGroupContent() {
             <h2 className="mb-4 text-3xl font-bold text-foreground md:text-4xl">Questions Parents Ask First</h2>
           </div>
           <div className="space-y-3">
-            {faqs.map(({ q, a }) => (
-              <details key={q} className="group overflow-hidden rounded-2xl border border-border bg-background">
+            {groupSatFaqs.map(({ question, answer }) => (
+              <details key={question} className="group overflow-hidden rounded-2xl border border-border bg-background">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-semibold text-foreground transition-colors hover:bg-muted/30">
-                  <span>{q}</span>
+                  <span>{question}</span>
                   <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground transition-transform group-open:rotate-90" />
                 </summary>
-                <div className="border-t border-border px-5 pb-5 pt-4 text-sm leading-relaxed text-muted-foreground">{a}</div>
+                <div className="border-t border-border px-5 pb-5 pt-4 text-sm leading-relaxed text-muted-foreground">{answer}</div>
               </details>
             ))}
           </div>
@@ -476,7 +468,7 @@ export function SatGroupContent() {
           </Button>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 

@@ -3,28 +3,18 @@ import { SatGroupContent } from '@/components/pages/SatGroupContent';
 import { StructuredData } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
-  title: 'Group SAT Prep Classes in Honolulu, Hawaii',
+  title: {
+    absolute: 'SAT Prep Classes in Honolulu | KHM Tutoring',
+  },
   description:
-    'Small-cohort SAT prep classes in Honolulu, Hawaii. 6–8 students matched by level, 20 hours of in-person instruction focused on SAT strategy, timing, and test-day confidence. Starting September 21, 2026 at 1025 Waimanu St.',
-  keywords: [
-    'group SAT tutoring Honolulu',
-    'SAT prep class Honolulu',
-    'SAT prep course Hawaii',
-    'group SAT class Hawaii',
-    'small cohort SAT prep',
-    'SAT test prep Honolulu',
-    'SAT prep Oahu',
-    'in-person SAT class Honolulu',
-    'SAT course Hawaii',
-    'KHM SAT group',
-  ],
+    'Join small-group SAT prep classes in Honolulu: 6–8 students, 20 hours of in-person strategy and timed practice. Cohorts start September 21, 2026.',
   alternates: {
     canonical: 'https://www.khmtutoring.com/group-sat-prep',
   },
   openGraph: {
-    title: 'Group SAT Prep Classes in Honolulu | KHM Tutoring',
+    title: 'SAT Prep Classes in Honolulu | KHM Tutoring',
     description:
-      'In-person SAT prep classes in Honolulu, Hawaii. 6–8 students per cohort, 20 hours of live instruction starting September 21, 2026 at 1025 Waimanu St.',
+      'Join small-group SAT prep classes in Honolulu: 6–8 students, 20 hours of in-person strategy and timed practice. Cohorts start September 21, 2026.',
     url: 'https://www.khmtutoring.com/group-sat-prep',
     images: [
       {
@@ -37,9 +27,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Group SAT Prep Classes in Honolulu | KHM Tutoring',
+    title: 'SAT Prep Classes in Honolulu | KHM Tutoring',
     description:
-      'In-person SAT prep classes in Honolulu, Hawaii. Small cohorts of 6–8 students, 20 hours of live instruction focused on strategy, timing, and test-day confidence.',
+      'Join small-group SAT prep classes in Honolulu: 6–8 students, 20 hours of in-person strategy and timed practice. Cohorts start September 21, 2026.',
     images: ['/og-image.png'],
   },
 };

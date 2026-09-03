@@ -30,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/group-sat-prep`,
-      lastModified: new Date('2026-08-03'),
+      lastModified: new Date('2026-09-03'),
       changeFrequency: 'weekly',
       priority: 0.95,
     },
