@@ -1,6 +1,6 @@
 // Shared types for the KHM staff resource library.
 
-export type ResourceType = 'worksheet' | 'test';
+export type ResourceType = 'worksheet' | 'quiz' | 'test';
 export type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 export type Confidence = 'high' | 'medium' | 'low';
 export type StorageProvider = 'vercel_blob' | 'supabase' | 'external';

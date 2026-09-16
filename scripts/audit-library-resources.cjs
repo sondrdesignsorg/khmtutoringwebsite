@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /*
- * Audits KHM staff library resources for inaccessible files and likely non-tutoring PDFs.
+ * Audits KHM staff library resources (Vercel Postgres) for inaccessible files
+ * and likely non-tutoring PDFs.
  * Default mode is dry-run. Use --delete --yes to remove flagged DB rows and Vercel Blob files.
  */
 const fs = require('fs');
-const { createClient } = require('@supabase/supabase-js');
 
 const DELETE = process.argv.includes('--delete');
 const YES = process.argv.includes('--yes');
@@ -19,7 +19,7 @@ const PDF_RE = /\.pdf($|[?#])/i;
 loadEnv('.env.local');
 loadEnv('.env');
 
-const required = ['NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'];
+const required = ['POSTGRES_URL'];
 if (DELETE) required.push('BLOB_READ_WRITE_TOKEN');
 for (const key of required) {
   if (!process.env[key]) fatal(`${key} is required. Add it to .env.local or the process environment.`);
@@ -27,20 +27,16 @@ for (const key of required) {
 if (DELETE && !YES) fatal('Refusing to delete without --yes. Run dry-run first, then use --delete --yes.');
 
 async function main() {
-  const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
+  const { sql } = await import('@vercel/postgres');
   const { get, del } = await import('@vercel/blob');
 
-  const { data, error } = await db
-    .from('resources')
-    .select('*')
-    .order('created_at', { ascending: true });
-  if (error) throw error;
+  const { rows } = await sql`
+    SELECT * FROM resources ORDER BY created_at ASC
+  `;
 
-  const rows = (data || []).filter((row) => !ONLY_IDS.size || ONLY_IDS.has(row.id)).slice(0, LIMIT);
+  const selected = (rows || []).filter((row) => !ONLY_IDS.size || ONLY_IDS.has(row.id)).slice(0, LIMIT);
   const report = [];
-  for (const row of rows) {
+  for (const row of selected) {
     const audit = await auditRow(row, get);
     report.push(audit);
   }
@@ -60,8 +56,7 @@ async function main() {
         if (item.storageProvider === 'vercel_blob' && item.storageKey) {
           await del(item.storageKey, { token: process.env.BLOB_READ_WRITE_TOKEN });
         }
-        const { error: deleteError } = await db.from('resources').delete().eq('id', item.id);
-        if (deleteError) throw deleteError;
+        await sql`DELETE FROM resources WHERE id = ${item.id}`;
         deleted += 1;
         if (!JSON_OUT) console.log(`deleted ${item.id} ${item.title}`);
       } catch (err) {

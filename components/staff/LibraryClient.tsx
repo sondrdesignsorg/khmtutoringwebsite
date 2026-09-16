@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from 'react';
 import {
-  ChevronDown, FileText, ClipboardCheck, FolderSearch, Layers, Search, SlidersHorizontal, X,
+  ArrowRight, BookOpen, ChevronDown, ClipboardCheck, ClipboardList, FileText, FolderSearch, Layers, Search, SlidersHorizontal, X,
 } from 'lucide-react';
 import type { Resource, ResourceType } from '@/lib/staff/types';
 import type { StaffSession } from '@/lib/staff/auth';
-import { GRADES, SUBJECTS } from '@/lib/staff/resources';
+import { GRADES, SUBJECTS, TYPE_LABEL } from '@/lib/staff/resources';
 import { PortalChrome } from './PortalChrome';
 import { FileCard } from './FileCard';
 import { FilePreviewModal } from './FilePreviewModal';
@@ -35,6 +35,7 @@ export function LibraryClient({
   const [exportOpen, setExportOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [explored, setExplored] = useState(false);
 
   const toggle = (arr: string[], setArr: (v: string[]) => void, v: string) =>
     setArr(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
@@ -67,6 +68,16 @@ export function LibraryClient({
     .filter(Boolean) as Resource[];
   const activeFilterCount = subjects.length + grades.length + difficulties.length;
   const clearFilters = () => { setSubjects([]); setGrades([]); setDifficulties([]); setQuery(''); };
+
+  const introMode =
+    !explored && !query && subjects.length === 0 && grades.length === 0 &&
+    difficulties.length === 0 && selectedIds.length === 0;
+  const pickType = (t: ResourceType) => { setType(t); setExplored(true); };
+  const pickSubject = (s: string) => { setSubjects([s]); setExplored(true); };
+  const pickGrade = (g: string) => { setGrades([g]); setExplored(true); };
+  const browseAll = () => setExplored(true);
+  const rawName = (session.name ?? '').trim();
+  const firstName = rawName && !rawName.includes('@') ? rawName.split(' ')[0] : 'there';
 
   const reorder = (i: number, dir: -1 | 1) =>
     setSelectedIds((s) => {
@@ -109,35 +120,47 @@ export function LibraryClient({
 
   const counts = {
     worksheet: initialResources.filter((f) => f.type === 'worksheet').length,
+    quiz: initialResources.filter((f) => f.type === 'quiz').length,
     test: initialResources.filter((f) => f.type === 'test').length,
   };
 
   return (
     <div className="min-h-[70vh] bg-background">
-      <PortalChrome session={session} crumbs={[{ label: 'Resource Library' }]} showAdminLink />
+      <PortalChrome session={session} crumbs={[{ label: 'Resource Library' }]} showAdminLink showStaffLink />
 
       <div className="mx-auto max-w-[1280px] px-6 pb-32 pt-8">
         <div className="mb-6">
           <h1 className="mb-1.5 font-heading text-4xl font-bold">Resource Library</h1>
-          <p className="text-base text-muted-foreground">Browse, preview, and assemble worksheets &amp; tests for your students.</p>
+          <p className="text-base text-muted-foreground">Browse, preview, and assemble worksheets, quizzes &amp; tests for your students.</p>
         </div>
 
         {/* Toolbar */}
         <div className="mb-6 flex flex-wrap items-center gap-4">
-          <SegToggle value={type} onChange={setType} counts={counts} />
+          <SegToggle value={type} onChange={pickType} counts={counts} />
           <div className="relative min-w-[240px] flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 size-[18px] -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={`Search ${type === 'worksheet' ? 'worksheets' : 'tests'} by title, topic, or subject...`}
+              onChange={(e) => { setQuery(e.target.value); if (e.target.value) setExplored(true); }}
+              placeholder={`Search ${TYPE_LABEL[type].toLowerCase()}s by title, topic, or subject...`}
               className="h-11 pl-[42px]"
             />
           </div>
           <SortSelect value={sort} onChange={setSort} />
         </div>
 
-        <div className="grid grid-cols-[248px_1fr] items-start gap-7">
+        {introMode ? (
+          <IntroPanel
+            firstName={firstName}
+            counts={counts}
+            resources={initialResources}
+            onPickType={pickType}
+            onPickSubject={pickSubject}
+            onPickGrade={pickGrade}
+            onBrowseAll={browseAll}
+          />
+        ) : (
+          <div className="grid grid-cols-[248px_1fr] items-start gap-7">
           {/* Filters */}
           <FilterPanel
             typeFiles={typeFiltered}
@@ -155,7 +178,7 @@ export function LibraryClient({
           <div>
             <div className="mb-4 flex items-center justify-between">
               <span className="text-sm text-muted-foreground">
-                {results.length} {type === 'worksheet' ? 'worksheet' : 'test'}{results.length === 1 ? '' : 's'}
+                {results.length} {TYPE_LABEL[type].toLowerCase()}{results.length === 1 ? '' : 's'}
                 {activeFilterCount ? ' ?? filtered' : ''}
               </span>
               {selectedIds.length > 0 && (
@@ -184,7 +207,8 @@ export function LibraryClient({
               </div>
             )}
           </div>
-        </div>
+          </div>
+        )}
       </div>
 
       {selectedFiles.length > 0 && (
@@ -224,10 +248,11 @@ function SegToggle({
 }: {
   value: ResourceType;
   onChange: (v: ResourceType) => void;
-  counts: { worksheet: number; test: number };
+  counts: Record<ResourceType, number>;
 }) {
   const opts: { id: ResourceType; label: string; Icon: typeof FileText }[] = [
     { id: 'worksheet', label: 'Worksheets', Icon: FileText },
+    { id: 'quiz', label: 'Quizzes', Icon: ClipboardList },
     { id: 'test', label: 'Tests', Icon: ClipboardCheck },
   ];
   return (
@@ -411,6 +436,113 @@ function SelectionTray({
             <Layers className="size-4" />Combine &amp; Export
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+const TYPE_INTRO: { id: ResourceType; label: string; Icon: typeof FileText; blurb: string }[] = [
+  { id: 'worksheet', label: 'Worksheets', Icon: FileText, blurb: 'Practice problems &amp; drills' },
+  { id: 'quiz', label: 'Quizzes', Icon: ClipboardList, blurb: 'Short check-ins &amp; reviews' },
+  { id: 'test', label: 'Tests', Icon: ClipboardCheck, blurb: 'Full-length assessments' },
+];
+
+function IntroPanel({
+  firstName, counts, resources,
+  onPickType, onPickSubject, onPickGrade, onBrowseAll,
+}: {
+  firstName: string;
+  counts: Record<ResourceType, number>;
+  resources: Resource[];
+  onPickType: (t: ResourceType) => void;
+  onPickSubject: (s: string) => void;
+  onPickGrade: (g: string) => void;
+  onBrowseAll: () => void;
+}) {
+  const subjectCounts = SUBJECTS
+    .map((s) => ({ subject: s, count: resources.filter((f) => f.subject === s).length }))
+    .filter((x) => x.count > 0)
+    .sort((a, b) => b.count - a.count);
+  const usedGrades = GRADES.filter((g) => resources.some((f) => f.grade === g));
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+      <div className="px-8 pb-7 pt-9 text-center">
+        <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/[0.08] px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-primary">
+          <BookOpen className="size-3.5" />Resource Library
+        </span>
+        <h2 className="font-heading text-[32px] font-bold leading-tight">
+          Hi {firstName} — what are you teaching today?
+        </h2>
+        <p className="mx-auto mt-2 max-w-[520px] text-[15px] text-muted-foreground">
+          Search above, or tap a resource type, subject, or grade below to jump straight into the library.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 px-8 pb-8">
+        {TYPE_INTRO.map(({ id, label, Icon, blurb }) => (
+          <button
+            key={id}
+            onClick={() => onPickType(id)}
+            className="group rounded-xl border border-border bg-background p-5 text-left transition-all hover:border-primary/50 hover:shadow-md"
+          >
+            <div className="mb-3 flex size-11 items-center justify-center rounded-lg bg-primary/[0.08] text-primary">
+              <Icon className="size-5" />
+            </div>
+            <div className="flex items-baseline justify-between">
+              <span className="font-heading text-lg font-bold">{label}</span>
+              <span className="rounded-full bg-secondary px-2 py-px text-[11px] font-semibold text-muted-foreground">{counts[id]}</span>
+            </div>
+            <div className="mt-0.5 flex items-center gap-1 text-[13px] text-muted-foreground">
+              {blurb}
+              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {subjectCounts.length > 0 && (
+        <div className="border-t border-border px-8 py-6">
+          <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground">Browse by subject</div>
+          <div className="flex flex-wrap gap-2">
+            {subjectCounts.slice(0, 8).map(({ subject, count }) => (
+              <button
+                key={subject}
+                onClick={() => onPickSubject(subject)}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-[13px] font-semibold text-foreground transition-colors hover:border-primary/50 hover:bg-primary/[0.05]"
+              >
+                {subject}
+                <span className="text-[11px] font-medium text-muted-foreground">{count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {usedGrades.length > 0 && (
+        <div className="border-t border-border px-8 py-6">
+          <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground">Browse by grade</div>
+          <div className="flex flex-wrap gap-2">
+            {usedGrades.map((g) => (
+              <button
+                key={g}
+                onClick={() => onPickGrade(g)}
+                className="inline-flex items-center rounded-full border border-border bg-background px-4 py-2 text-[13px] font-semibold text-foreground transition-colors hover:border-primary/50 hover:bg-primary/[0.05]"
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="border-t border-border bg-secondary/20 px-8 py-5 text-center">
+        <button
+          onClick={onBrowseAll}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:underline"
+        >
+          Browse all {resources.length} resources <ArrowRight className="size-4" />
+        </button>
       </div>
     </div>
   );

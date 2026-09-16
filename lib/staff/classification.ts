@@ -5,7 +5,7 @@ import { GRADES, SUBJECTS } from './resources';
 import type { ClassifiedFile, Difficulty, ResourceType } from './types';
 
 const DIFFICULTIES = ['Beginner', 'Intermediate', 'Advanced'] as const;
-const RESOURCE_TYPES = ['worksheet', 'test'] as const;
+const RESOURCE_TYPES = ['worksheet', 'quiz', 'test'] as const;
 
 const classificationSchema = z.object({
   title: z.string().min(1),

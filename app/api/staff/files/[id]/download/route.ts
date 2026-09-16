@@ -1,19 +1,17 @@
 import { NextResponse } from 'next/server';
 import { get } from '@vercel/blob';
 import { getStaffSession } from '@/lib/staff/auth';
-import { createAdminClient } from '@/lib/supabase/admin';
-import { toResource, type DbResourceRow } from '@/lib/staff/resource-db';
+import { getResource } from '@/lib/staff/resource-repo';
+
+export const runtime = 'nodejs';
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getStaffSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { id } = await params;
-  const db = createAdminClient();
-  const { data, error } = await db.from('resources').select('*').eq('id', id).single();
-  if (error || !data) return NextResponse.json({ error: 'File not found' }, { status: 404 });
-
-  const resource = toResource(data as DbResourceRow);
+  const resource = await getResource(id);
+  if (!resource) return NextResponse.json({ error: 'File not found' }, { status: 404 });
   const url = new URL(req.url);
   const asDownload = url.searchParams.get('download') === '1';
   const filename = resource.originalFilename || `${resource.title}.pdf`;

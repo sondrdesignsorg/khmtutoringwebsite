@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Check, ClipboardCheck, Copy, FileText } from 'lucide-react';
-import { subjectArea, AREA_LABEL } from '@/lib/staff/resources';
+import { Check, ClipboardCheck, ClipboardList, Copy, FileText } from 'lucide-react';
+import { subjectArea, AREA_LABEL, TYPE_LABEL } from '@/lib/staff/resources';
 import type { Resource } from '@/lib/staff/types';
 import { AREA_CHIP, DIFFICULTY_CHIP, typePill } from './badges';
 import { cn } from '@/lib/utils';
@@ -20,6 +20,8 @@ export function FileCard({
 }) {
   const area = subjectArea(file.subject);
   const isTest = file.type === 'test';
+  const isQuiz = file.type === 'quiz';
+  const TypeIcon = isTest ? ClipboardCheck : isQuiz ? ClipboardList : FileText;
   const hasFile = !!(file.storageKey || file.fileUrl);
 
   const thumbRef = useRef<HTMLDivElement>(null);
@@ -95,7 +97,7 @@ export function FileCard({
           <div className="px-4 py-3.5">
             <div className="mb-2 flex items-center gap-[7px]">
               <span className={cn('flex size-[26px] items-center justify-center rounded-[7px]', AREA_CHIP[area])}>
-                {isTest ? <ClipboardCheck className="size-[15px]" /> : <FileText className="size-[15px]" />}
+                <TypeIcon className="size-[15px]" />
               </span>
               <span className={cn('text-[10px] font-bold uppercase tracking-[0.05em]', AREA_CHIP[area].split(' ')[1])}>
                 {AREA_LABEL[area]}
@@ -111,7 +113,7 @@ export function FileCard({
       {/* Body */}
       <div className="px-4 py-3.5">
         <span className={cn('mb-2 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold', typePill(file.type))}>
-          {isTest ? 'Test' : 'Worksheet'}
+          {TYPE_LABEL[file.type]}
         </span>
         <h3 className="mb-1 font-heading text-base font-semibold leading-tight">{file.title}</h3>
         <p className="mb-3 text-[12.5px] text-muted-foreground">{file.subject} · {file.grade}</p>

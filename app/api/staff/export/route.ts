@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import { get } from '@vercel/blob';
 import { PDFDocument } from 'pdf-lib';
 import { getStaffSession } from '@/lib/staff/auth';
-import { createAdminClient } from '@/lib/supabase/admin';
-import { toResource, type DbResourceRow } from '@/lib/staff/resource-db';
+import { getResourcesByIds } from '@/lib/staff/resource-repo';
 import type { Resource } from '@/lib/staff/types';
+
+export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
   const session = await getStaffSession();
@@ -15,12 +16,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'No resource IDs provided' }, { status: 400 });
   }
 
-  const db = createAdminClient();
-  const { data, error } = await db.from('resources').select('*').in('id', ids);
-  if (error || !data) return NextResponse.json({ error: 'Failed to load resources' }, { status: 500 });
+  const rows = await getResourcesByIds(ids);
 
   // Preserve the user's ordering
-  const resourceMap = new Map(data.map((row) => [row.id, toResource(row as DbResourceRow)]));
+  const resourceMap = new Map(rows.map((r) => [r.id, r]));
   const resources = ids.map((id) => resourceMap.get(id)).filter(Boolean) as Resource[];
 
   const merged = await PDFDocument.create();

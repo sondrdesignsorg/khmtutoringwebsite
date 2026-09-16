@@ -1,8 +1,9 @@
 import { redirect } from 'next/navigation';
 import { getStaffSession } from '@/lib/staff/auth';
-import { createAdminClient } from '@/lib/supabase/admin';
-import { toResource, type DbResourceRow } from '@/lib/staff/resource-db';
+import { listResources } from '@/lib/staff/resource-repo';
 import { AdminClient } from '@/components/staff/AdminClient';
+
+export const runtime = 'nodejs';
 
 /** Library Admin - admin role only. Tutors are redirected to the library. */
 export default async function AdminPage() {
@@ -10,14 +11,7 @@ export default async function AdminPage() {
   if (!session) redirect('/staff/login?from=/staff/admin');
   if (session.role !== 'admin') redirect('/staff/library');
 
-  const db = createAdminClient();
-  const { data, error } = await db
-    .from('resources')
-    .select('*')
-    .order('added', { ascending: false })
-    .order('created_at', { ascending: false });
+  const resources = await listResources();
 
-  if (error) throw new Error(`Unable to load staff resources: ${error.message}`);
-
-  return <AdminClient initialResources={(data as DbResourceRow[]).map(toResource)} session={session} />;
+  return <AdminClient initialResources={resources} session={session} />;
 }

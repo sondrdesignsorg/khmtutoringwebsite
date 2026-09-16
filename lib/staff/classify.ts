@@ -44,7 +44,10 @@ export function classifyFilename(name: string, id?: string): ClassifiedFile {
   const reasons: string[] = [];
 
   let type: ResourceType = 'worksheet';
-  if (/(test|exam|quiz|midterm|final|assessment|diagnostic)/i.test(n)) {
+  if (/(quiz|pop ?quiz)/i.test(n)) {
+    type = 'quiz';
+    reasons.push('type: "quiz" keyword');
+  } else if (/(test|exam|midterm|final|assessment|diagnostic)/i.test(n)) {
     type = 'test';
     reasons.push('type: "test" keyword');
   } else if (/(worksheet|practice|set|review|ws)/i.test(n)) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, ClipboardCheck, FileText, Plus } from 'lucide-react';
+import { Check, ClipboardCheck, ClipboardList, FileText, Plus } from 'lucide-react';
 import { GRADES, SUBJECTS } from '@/lib/staff/resources';
 import type { Difficulty, Resource, ResourceDraft, ResourceType } from '@/lib/staff/types';
 import { Modal, ModalCloseButton } from './Modal';
@@ -46,8 +46,8 @@ export function AddEditResourceModal({
         </Field>
 
         <Field label="Type">
-          <div className="grid grid-cols-2 gap-2">
-            {([['worksheet', FileText, 'Worksheet'], ['test', ClipboardCheck, 'Test']] as const).map(
+          <div className="grid grid-cols-3 gap-2">
+            {([['worksheet', FileText, 'Worksheet'], ['quiz', ClipboardList, 'Quiz'], ['test', ClipboardCheck, 'Test']] as const).map(
               ([id, IconC, label]) => {
                 const active = draft.type === id;
                 return (

@@ -1,31 +1,21 @@
 import { NextResponse } from 'next/server';
-import { requireAdmin } from '@/lib/staff/auth';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { requireAdmin, getStaffSession } from '@/lib/staff/auth';
+import { inviteStaff } from '@/lib/staff/access';
 
 // POST /api/staff/admin/invite  -> { email, role }  (admin only)
+// Legacy endpoint — allowlists a Google email and issues a staff PIN.
+// Prefer /api/staff/management/invite, which also emails the invite.
 export async function POST(req: Request) {
   if (!(await requireAdmin())) {
     return NextResponse.json({ error: 'Admin only' }, { status: 403 });
   }
 
-  const { email, role } = await req.json() as { email: string; role?: 'admin' | 'tutor' };
+  const { email, role } = await req.json() as { email?: string; role?: 'admin' | 'tutor' };
   if (!email) return NextResponse.json({ error: 'Email is required' }, { status: 400 });
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-  const db = createAdminClient();
+  const session = await getStaffSession();
+  const result = await inviteStaff({ email, role: role ?? 'tutor', invitedBy: session?.email ?? null });
+  if (!result.ok) return NextResponse.json({ error: result.error }, { status: 500 });
 
-  const { data, error } = await db.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${siteUrl}/auth/callback`,
-  });
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-  // Set role in app_metadata so middleware can read it
-  if (data.user) {
-    await db.auth.admin.updateUserById(data.user.id, {
-      app_metadata: { role: role ?? 'tutor' },
-    });
-  }
-
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, pin: result.pin, resend: result.resend });
 }

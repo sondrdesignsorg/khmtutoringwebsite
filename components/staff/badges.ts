@@ -25,8 +25,8 @@ export const CONFIDENCE_META: Record<
   low: { chip: 'bg-[hsl(0_84%_60%/0.12)] text-[hsl(0_70%_45%)]', label: 'Needs review', icon: 'triangle-alert' },
 };
 
-export function typePill(type: 'worksheet' | 'test'): string {
-  return type === 'test'
-    ? 'bg-[hsl(0_84%_60%/0.12)] text-[hsl(0_70%_45%)]'
-    : 'bg-[hsl(210_35%_80%/0.45)] text-[hsl(215_45%_30%)]';
+export function typePill(type: 'worksheet' | 'quiz' | 'test'): string {
+  if (type === 'test') return 'bg-[hsl(0_84%_60%/0.12)] text-[hsl(0_70%_45%)]';
+  if (type === 'quiz') return 'bg-[hsl(268_65%_55%/0.14)] text-[hsl(268_60%_45%)]';
+  return 'bg-[hsl(210_35%_80%/0.45)] text-[hsl(215_45%_30%)]';
 }

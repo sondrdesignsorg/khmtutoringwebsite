@@ -3,7 +3,7 @@
 import {
   BarChart3, BookOpen, Calendar, Check, Download, FileText, GraduationCap, Plus, Tag, User,
 } from 'lucide-react';
-import { subjectArea, fmtDate } from '@/lib/staff/resources';
+import { subjectArea, fmtDate, TYPE_LABEL } from '@/lib/staff/resources';
 import type { Resource } from '@/lib/staff/types';
 import { Modal, ModalCloseButton } from './Modal';
 import { DocumentPage } from './DocumentPage';
@@ -28,7 +28,6 @@ export function FilePreviewModal({
   onToggleSelect: (id: string) => void;
   onClose: () => void;
 }) {
-  const isTest = file.type === 'test';
   const areaText = AREA_TEXT[subjectArea(file.subject)];
   const fileRoute = `/api/staff/files/${file.id}/download`;
   const hasRealFile = !!(file.storageKey || file.fileUrl);
@@ -61,7 +60,7 @@ export function FilePreviewModal({
         <div className="flex items-start justify-between gap-3 border-b border-border px-[22px] py-5">
           <div>
             <span className={cn('mb-2 inline-block rounded-full px-2.5 py-[3px] text-[11px] font-bold', typePill(file.type))}>
-              {isTest ? 'Test' : 'Worksheet'}
+              {TYPE_LABEL[file.type]}
             </span>
             <h3 className="font-heading text-xl font-bold">{file.title}</h3>
             {file.originalFilename && <p className="mt-1 text-xs text-muted-foreground">{file.originalFilename}</p>}

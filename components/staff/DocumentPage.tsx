@@ -118,6 +118,8 @@ function contentFor(file: Resource): { instructions: string; mc?: boolean; items
 export function DocumentPage({ file }: { file: Resource }) {
   const content = contentFor(file);
   const isTest = file.type === 'test';
+  const isQuiz = file.type === 'quiz';
+  const scored = isTest || isQuiz;
   return (
     <div className="rounded-xl border border-border bg-white px-10 py-9 text-[#1c2c46] shadow-md">
       {/* Letterhead */}
@@ -131,15 +133,15 @@ export function DocumentPage({ file }: { file: Resource }) {
         </div>
         <div className="text-right text-[11px] leading-[1.7] text-[#5c6a85]">
           <div>Name: ______________________</div>
-          {isTest ? <div>Date: __________ Score: ____ / 100</div> : <div>Date: ______________________</div>}
+          {scored ? <div>Date: __________ Score: ____ / {isQuiz ? 20 : 100}</div> : <div>Date: ______________________</div>}
         </div>
       </div>
 
       {/* Title */}
       <div className="mb-4">
         <div className="flex items-center gap-2">
-          <span className={`text-[10px] font-bold uppercase tracking-[0.08em] ${isTest ? 'text-[hsl(0_70%_45%)]' : 'text-primary'}`}>
-            {isTest ? 'Assessment' : 'Practice Worksheet'}
+          <span className={`text-[10px] font-bold uppercase tracking-[0.08em] ${isTest ? 'text-[hsl(0_70%_45%)]' : isQuiz ? 'text-[hsl(268_60%_45%)]' : 'text-primary'}`}>
+            {isTest ? 'Assessment' : isQuiz ? 'Quick Quiz' : 'Practice Worksheet'}
           </span>
           <span className="size-1 rounded-full bg-[#c1cedd]" />
           <span className="text-[10px] text-[#5c6a85]">{file.subject} · {file.grade} Grade</span>
@@ -173,7 +175,7 @@ export function DocumentPage({ file }: { file: Resource }) {
                     ))}
                   </div>
                 ) : (
-                  <div className={`mt-2.5 border-b border-[#dbe3ec] ${isTest ? 'h-7' : ''}`} />
+                  <div className={`mt-2.5 border-b border-[#dbe3ec] ${scored ? 'h-7' : ''}`} />
                 )}
               </div>
             </li>

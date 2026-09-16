@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import {
-  ArrowLeft, BookOpen, ClipboardCheck, Copy, FileText, FolderUp, Pencil, Plus, Search,
+  ArrowLeft, BookOpen, ClipboardCheck, ClipboardList, FileText, FolderUp, Pencil, Plus, Search,
   Sparkles, Trash2, UploadCloud,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { Resource, ResourceDraft, ResourceType } from '@/lib/staff/types';
 import type { StaffSession } from '@/lib/staff/auth';
-import { subjectArea, fmtDate } from '@/lib/staff/resources';
+import { subjectArea, fmtDate, TYPE_LABEL } from '@/lib/staff/resources';
 import { PortalChrome } from './PortalChrome';
 import { AddEditResourceModal, BLANK_DRAFT } from './AddEditResourceModal';
 import { ConfirmDelete } from './ConfirmDelete';
@@ -117,14 +117,14 @@ export function AdminClient({
 
   const stats = [
     { Icon: FileText, label: 'Worksheets', value: files.filter((f) => f.type === 'worksheet').length },
+    { Icon: ClipboardList, label: 'Quizzes', value: files.filter((f) => f.type === 'quiz').length },
     { Icon: ClipboardCheck, label: 'Tests', value: files.filter((f) => f.type === 'test').length },
     { Icon: BookOpen, label: 'Subjects', value: new Set(files.map((f) => f.subject)).size },
-    { Icon: Copy, label: 'Total Pages', value: files.reduce((s, f) => s + f.pages, 0) },
   ];
 
   return (
     <div className="min-h-[70vh] bg-background">
-      <PortalChrome session={session} crumbs={[{ label: 'Resource Library', href: '/staff/library' }, { label: 'Library Admin' }]} showLeadsLink />
+      <PortalChrome session={session} crumbs={[{ label: 'Resource Library', href: '/staff/library' }, { label: 'Library Admin' }]} showLeadsLink showStaffLink />
 
       <div className="mx-auto max-w-[1280px] px-6 pb-20 pt-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -233,17 +233,19 @@ export function AdminClient({
 
 function AdminRow({ file, onEdit, onDelete }: { file: Resource; onEdit: () => void; onDelete: () => void }) {
   const isTest = file.type === 'test';
+  const isQuiz = file.type === 'quiz';
+  const Icon = isTest ? ClipboardCheck : isQuiz ? ClipboardList : FileText;
   return (
     <tr>
       <td className="border-b border-border/50 px-4 py-3 align-middle">
         <div className="flex items-center gap-3">
           <span className={cn('flex size-[34px] shrink-0 items-center justify-center rounded-lg', AREA_CHIP[subjectArea(file.subject)])}>
-            {isTest ? <ClipboardCheck className="size-[17px]" /> : <FileText className="size-[17px]" />}
+            <Icon className="size-[17px]" />
           </span>
           <div className="min-w-0">
             <div className="max-w-[240px] truncate font-semibold">{file.title}</div>
             <div className="text-xs text-muted-foreground">
-              <span className={cn('font-semibold', isTest ? 'text-[hsl(0_70%_45%)]' : 'text-primary')}>{isTest ? 'Test' : 'Worksheet'}</span> - {file.subject}
+              <span className={cn('font-semibold', isTest ? 'text-[hsl(0_70%_45%)]' : isQuiz ? 'text-[hsl(268_60%_45%)]' : 'text-primary')}>{TYPE_LABEL[file.type]}</span> - {file.subject}
             </div>
           </div>
         </div>
@@ -281,7 +283,7 @@ function RowBtn({ children, onClick, danger, label }: { children: React.ReactNod
 }
 
 function MiniToggle({ value, onChange }: { value: 'all' | ResourceType; onChange: (v: 'all' | ResourceType) => void }) {
-  const opts: ['all' | ResourceType, string][] = [['all', 'All'], ['worksheet', 'Worksheets'], ['test', 'Tests']];
+  const opts: ['all' | ResourceType, string][] = [['all', 'All'], ['worksheet', 'Worksheets'], ['quiz', 'Quizzes'], ['test', 'Tests']];
   return (
     <div className="inline-flex gap-0.5 rounded-full bg-secondary/40 p-[3px]">
       {opts.map(([id, label]) => {

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { GRADES, SUBJECTS } from '@/lib/staff/resources';
 import { classifyFilename } from '@/lib/staff/classify';
+import { canonicalResourcePath, titleFromFilename, titleFromMetadata } from '@/lib/staff/naming';
 import type { ClassifiedFile, ResourceDraft } from '@/lib/staff/types';
 import { Modal, ModalCloseButton } from './Modal';
 import { StaffSelect } from './StaffSelect';
@@ -42,19 +43,8 @@ export function BulkUploadModal({
       const file = pdfs[i];
       const id = `u_${i}_${Date.now()}`;
       const checksum = await fileSha256(file);
-      const duplicate = await checkDuplicate({ id, filename: file.name, fileSize: file.size, checksum });
-      const fallback = classifyFilename(file.name, id);
-      let uploadResult: UploadMetadata | { uploadError: string } = {};
 
-      if (!duplicate) {
-        try {
-          uploadResult = await uploadPdf(file);
-        } catch (err) {
-          uploadResult = { uploadError: err instanceof Error ? err.message : 'Upload failed' };
-        }
-      }
-
-      let classified = fallback;
+      let classified = classifyFilename(file.name, id);
       try {
         const res = await fetch('/api/staff/classify', {
           method: 'POST',
@@ -63,10 +53,28 @@ export function BulkUploadModal({
         });
         if (res.ok) {
           const body = await res.json() as { classification?: ClassifiedFile };
-          if (body.classification) classified = { ...fallback, ...body.classification, id };
+          if (body.classification) classified = { ...classified, ...body.classification, id };
         }
       } catch {
-        classified = fallback;
+        classified = classifyFilename(file.name, id);
+      }
+
+      const duplicate = await checkDuplicate({ id, filename: file.name, fileSize: file.size, checksum });
+      let uploadResult: UploadMetadata | { uploadError: string } = {};
+
+      if (!duplicate) {
+        try {
+          uploadResult = await uploadPdf(file, {
+            subject: classified.subject,
+            grade: classified.grade,
+            type: classified.type,
+            topic: classified.suggestedTopic?.trim() || titleFromFilename(file.name),
+            added: new Date().toISOString().slice(0, 10),
+            checksum,
+          });
+        } catch (err) {
+          uploadResult = { uploadError: err instanceof Error ? err.message : 'Upload failed' };
+        }
       }
 
       nextRows.push({
@@ -99,11 +107,11 @@ export function BulkUploadModal({
 
   function doImport() {
     const drafts: ResourceDraft[] = included.map((r) => ({
-      title: titleFromFilename(r.name),
+      title: r.suggestedTitle?.trim() || titleFromMetadata({ type: r.type, topic: r.suggestedTopic?.trim() || titleFromFilename(r.name) }),
       type: r.type,
       subject: r.subject,
       grade: r.grade,
-      topic: r.suggestedTopic?.trim() || 'Imported',
+      topic: r.suggestedTopic?.trim() || titleFromFilename(r.name),
       pages: r.pages,
       difficulty: r.difficulty,
       fileUrl: r.fileUrl,
@@ -190,9 +198,12 @@ async function fileSha256(file: File): Promise<string> {
   return Array.from(new Uint8Array(hashBuffer)).map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-async function uploadPdf(file: File): Promise<UploadMetadata> {
-  const safeName = sanitizeFilename(file.name || 'resource.pdf');
-  const blob = await upload(`staff-library/${new Date().toISOString().slice(0, 10)}/${safeName}`, file, {
+async function uploadPdf(
+  file: File,
+  meta: { subject: string; grade: string; type: ClassifiedFile['type']; topic: string; added: string; checksum: string },
+): Promise<UploadMetadata> {
+  const pathname = canonicalResourcePath(meta);
+  const blob = await upload(pathname, file, {
     access: 'private',
     handleUploadUrl: '/api/staff/files/upload',
     contentType: file.type || 'application/pdf',
@@ -207,15 +218,6 @@ async function uploadPdf(file: File): Promise<UploadMetadata> {
     mimeType: file.type || 'application/pdf',
     fileSize: file.size,
   };
-}
-
-function sanitizeFilename(name: string) {
-  const base = name.trim().replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/-+/g, '-');
-  return base.toLowerCase().endsWith('.pdf') ? base : `${base}.pdf`;
-}
-
-function titleFromFilename(name: string) {
-  return name.replace(/\.pdf$/i, '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 function DropStage({ onStart }: { onStart: (files: File[]) => void }) {
@@ -334,7 +336,7 @@ function ReviewStage({
                   )}
                 </td>
                 <td className="px-3 py-2.5">
-                  <StaffSelect value={r.type} onChange={(v) => update(r.id, { type: v as ClassifiedFile['type'] })} options={[{ value: 'worksheet', label: 'Worksheet' }, { value: 'test', label: 'Test' }]} />
+                  <StaffSelect value={r.type} onChange={(v) => update(r.id, { type: v as ClassifiedFile['type'] })} options={[{ value: 'worksheet', label: 'Worksheet' }, { value: 'quiz', label: 'Quiz' }, { value: 'test', label: 'Test' }]} />
                 </td>
                 <td className="px-3 py-2.5">
                   <StaffSelect value={r.subject} onChange={(v) => update(r.id, { subject: v, subjectKnown: true })} options={SUBJECTS} flag={!r.subjectKnown} />

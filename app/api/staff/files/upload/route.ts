@@ -17,7 +17,10 @@ export async function POST(req: Request) {
     onBeforeGenerateToken: async () => ({
       allowedContentTypes: ['application/pdf'],
       maximumSizeInBytes: MAX_FILE_SIZE,
-      addRandomSuffix: true,
+      // Canonical keys already embed a content checksum, so an identical
+      // re-upload may safely overwrite the same path instead of adding a
+      // random suffix (which would break the library naming convention).
+      allowOverwrite: true,
     }),
   });
 
