@@ -62,12 +62,12 @@ export async function GET(request: NextRequest) {
 
   const isOwner = email === ownerEmail();
   const entry = isOwner ? null : await getAllowlistEntry(email);
-  if (!isOwner && entry?.status === 'disabled') {
+  if (!isOwner && (!entry || entry.status === 'disabled')) {
     return clearState(NextResponse.redirect(`${origin}/staff/login?error=not_staff`));
   }
 
-  // Unknown accounts continue to the PIN gate: entering a valid unclaimed
-  // staff PIN authorizes and binds their account there.
+  // Access is allowlist-only: any Google account that is not in the
+  // allowlist is rejected here and never reaches the PIN gate.
   const role: StaffRole | null = isOwner ? 'admin' : entry ? entry.role : null;
   const pinVerified = isOwner;
   const name = payload.name ?? email.split('@')[0];

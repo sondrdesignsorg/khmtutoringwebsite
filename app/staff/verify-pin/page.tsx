@@ -17,7 +17,8 @@ export default async function VerifyPinPage() {
   if (claims.role && claims.pinVerified) redirect('/staff/library');
 
   const entry = await getAllowlistEntry(claims.sub);
-  if (entry?.status === 'disabled') return <SignOutNotice disabled />;
+  if (!entry) return <SignOutNotice />;
+  if (entry.status === 'disabled') return <SignOutNotice disabled />;
 
   return <VerifyPinForm email={claims.sub} />;
 }

@@ -67,17 +67,11 @@ export async function verifyStaffPin(email: string, pin: string): Promise<
   { ok: true; role: StaffRole } | { ok: false; error: string; locked?: boolean }
 > {
   await ensureStaffSchema();
-  let entry = await getAllowlistEntry(email);
+  const entry = await getAllowlistEntry(email);
 
   if (!entry) {
-    await sql`
-      INSERT INTO staff_allowlist (id, email, role, status, invited_by)
-      VALUES (${randomUUID()}, ${email.toLowerCase().trim()}, 'tutor', 'invited', 'self-claim')
-      ON CONFLICT (email) DO NOTHING
-    `;
-    entry = await getAllowlistEntry(email);
+    return { ok: false, error: 'This Google account is not registered for the KHM staff portal. Contact Kody if you need access.' };
   }
-  if (!entry) return { ok: false, error: 'Something went wrong. Try again.' };
 
   if (entry.status === 'disabled') return { ok: false, error: 'This staff account has been disabled. Contact Kody.' };
 
@@ -85,36 +79,13 @@ export async function verifyStaffPin(email: string, pin: string): Promise<
     return { ok: false, error: 'Too many incorrect PIN attempts. Try again in 15 minutes.', locked: true };
   }
 
-  const isPlaceholder = !entry.pin_hash;
-
-  if (!isPlaceholder && verifyPinHash(pin, entry.pin_hash)) {
-    await activateEntry(entry.id);
-    return { ok: true, role: entry.role };
+  if (!entry.pin_hash) {
+    return { ok: false, error: 'No PIN has been issued for this account yet. Ask Kody or an admin to send one.' };
   }
 
-  // PIN-first authorization: an account with no issued PIN may claim an
-  // unclaimed ('invited') staff entry by entering its PIN. The entry is then
-  // bound to the signing-in Google account.
-  if (isPlaceholder) {
-    const { rows: candidates } = await sql<AllowlistEntry>`
-      SELECT * FROM staff_allowlist
-      WHERE status = 'invited' AND pin_hash IS NOT NULL
-    `;
-    const claimed = candidates.find((c) => verifyPinHash(pin, c.pin_hash));
-
-    if (claimed) {
-      await sql`DELETE FROM staff_allowlist WHERE id = ${entry.id} AND pin_hash IS NULL`;
-      const { rowCount } = await sql`
-        UPDATE staff_allowlist
-        SET email = ${email.toLowerCase().trim()},
-            status = 'active',
-            failed_attempts = 0,
-            locked_until = null,
-            updated_at = now()
-        WHERE id = ${claimed.id} AND status = 'invited'
-      `;
-      if (rowCount) return { ok: true, role: claimed.role };
-    }
+  if (verifyPinHash(pin, entry.pin_hash)) {
+    await activateEntry(entry.id);
+    return { ok: true, role: entry.role };
   }
 
   const failed = (entry.failed_attempts ?? 0) + 1;
