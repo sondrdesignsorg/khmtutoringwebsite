@@ -3,7 +3,8 @@
  * One-time library organizer: copies existing Vercel Blob objects to canonical
  * storage keys and updates the resources table.
  *
- * Canonical key: staff-library/{subject}/{grade}/{type}_{topic}_{date}_{checksum8}.pdf
+ * Canonical key: staff-library/{typeFolder}/{subject}/{grade}/{type}_{topic}_{date}_{checksum8}.pdf
+ * where typeFolder is worksheets|quizzes|tests.
  *
  * Default mode is dry-run. Use --apply --yes to copy blobs and update DB rows.
  */
@@ -45,10 +46,13 @@ function gradeSlug(grade) {
 
 function checksum8(row) {
   if (row.source_checksum && row.source_checksum.length >= 8) return row.source_checksum.slice(0, 8);
+  const existing = String(row.storage_key || '').match(/_([0-9a-f]{8})\.pdf$/i);
+  if (existing) return existing[1].toLowerCase();
   return crypto.createHash('md5').update(row.storage_key || row.id).digest('hex').slice(0, 8);
 }
 
-const CANONICAL_RE = /^staff-library\/[^/]+\/[^/]+\/(worksheet|quiz|test)_[^_/]+(?:_[^_/]+)*_\d{4}-\d{2}-\d{2}_[0-9a-f]{8}\.pdf$/i;
+const TYPE_FOLDER = { worksheet: 'worksheets', quiz: 'quizzes', test: 'tests' };
+const CANONICAL_RE = /^staff-library\/(worksheets|quizzes|tests)\/[^/]+\/[^/]+\/(worksheet|quiz|test)_[^_/]+(?:_[^_/]+)*_\d{4}-\d{2}-\d{2}_[0-9a-f]{8}\.pdf$/i;
 
 function canonicalPath(row) {
   const type = String(row.type).toLowerCase();
@@ -56,9 +60,9 @@ function canonicalPath(row) {
   const subject = slugify(row.subject);
   const grade = gradeSlug(row.grade);
   const topic = slugify(row.topic || row.title);
-  const added = String(row.added || '').slice(0, 10);
+  const added = row.added instanceof Date ? row.added.toISOString().slice(0, 10) : String(row.added || '').slice(0, 10);
   if (!subject || !grade || !topic || !/^\d{4}-\d{2}-\d{2}$/.test(added)) return null;
-  return `staff-library/${subject}/${grade}/${type}_${topic}_${added}_${checksum8(row)}.pdf`;
+  return `staff-library/${TYPE_FOLDER[type]}/${subject}/${grade}/${type}_${topic}_${added}_${checksum8(row)}.pdf`;
 }
 
 async function main() {
@@ -116,18 +120,14 @@ async function main() {
     let errors = 0;
     for (const item of renames) {
       try {
-        if (!item.fileUrl) {
-          console.log(`skip-copy ${item.id} no file_url on row`);
-          continue;
-        }
         const existing = await head(item.to, { token: process.env.BLOB_READ_WRITE_TOKEN }).catch(() => null);
         if (existing) {
           console.log(`skip-copy ${item.id} target already exists: ${item.to}`);
           continue;
         }
-        const { url } = await copy({
-          fromUrl: item.fileUrl,
-          toPath: item.to,
+        const { url } = await copy(item.from, item.to, {
+          access: 'private',
+          allowOverwrite: false,
           token: process.env.BLOB_READ_WRITE_TOKEN,
         });
         await sql`

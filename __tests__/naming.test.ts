@@ -29,7 +29,7 @@ describe('gradeSlug', () => {
 });
 
 describe('canonicalResourcePath', () => {
-  it('builds the canonical staff-library path', () => {
+  it('builds the canonical staff-library path in the worksheets folder', () => {
     expect(
       canonicalResourcePath({
         subject: 'Algebra 1',
@@ -39,10 +39,10 @@ describe('canonicalResourcePath', () => {
         added: '2026-09-14',
         checksum: 'a1b2c3d4e5f6',
       }),
-    ).toBe('staff-library/algebra-1/grade-9/worksheet_linear-equations_2026-09-14_a1b2c3d4.pdf');
+    ).toBe('staff-library/worksheets/algebra-1/grade-9/worksheet_linear-equations_2026-09-14_a1b2c3d4.pdf');
   });
 
-  it('works for quizzes and tests', () => {
+  it('separates quizzes and tests into their own folders', () => {
     expect(
       canonicalResourcePath({
         subject: 'Geometry',
@@ -52,19 +52,30 @@ describe('canonicalResourcePath', () => {
         added: '2026-09-01',
         checksum: 'ffffffff',
       }),
-    ).toBe('staff-library/geometry/grade-10/quiz_triangle-congruence_2026-09-01_ffffffff.pdf');
+    ).toBe('staff-library/quizzes/geometry/grade-10/quiz_triangle-congruence_2026-09-01_ffffffff.pdf');
+
+    expect(
+      canonicalResourcePath({
+        subject: 'Algebra 2',
+        grade: '11th',
+        type: 'test',
+        topic: 'Factoring',
+        added: '2026-09-02',
+        checksum: 'abcdef12',
+      }),
+    ).toBe('staff-library/tests/algebra-2/grade-11/test_factoring_2026-09-02_abcdef12.pdf');
   });
 });
 
 describe('parseCanonicalPath', () => {
   it('round-trips canonical paths', () => {
     const parsed = parseCanonicalPath(
-      'staff-library/algebra-1/grade-9/worksheet_linear-equations_2026-09-14_a1b2c3d4.pdf',
+      'staff-library/quizzes/algebra-1/grade-9/quiz_linear-equations_2026-09-14_a1b2c3d4.pdf',
     );
     expect(parsed).toMatchObject({
       subject: 'algebra-1',
       grade: 'grade-9',
-      type: 'worksheet',
+      type: 'quiz',
       topic: 'linear equations',
       added: '2026-09-14',
     });
@@ -72,8 +83,13 @@ describe('parseCanonicalPath', () => {
 
   it('rejects non-canonical paths', () => {
     expect(parseCanonicalPath('staff-library/2026-09-14/random-file-123.pdf')).toBeNull();
-    expect(parseCanonicalPath('staff-library/algebra-1/grade-9/notes_topic_2026-09-14_a1b2c3d4.pdf')).toBeNull();
-    expect(parseCanonicalPath('staff-library/algebra-1/grade-9/worksheet_topic_2026-09-14_xyz.pdf')).toBeNull();
+    expect(parseCanonicalPath('staff-library/worksheets/algebra-1/grade-9/notes_topic_2026-09-14_a1b2c3d4.pdf')).toBeNull();
+    expect(parseCanonicalPath('staff-library/worksheets/algebra-1/grade-9/worksheet_topic_2026-09-14_xyz.pdf')).toBeNull();
+  });
+
+  it('rejects type folders that do not match the file type', () => {
+    expect(parseCanonicalPath('staff-library/quizzes/algebra-1/grade-9/worksheet_topic_2026-09-14_a1b2c3d4.pdf')).toBeNull();
+    expect(parseCanonicalPath('staff-library/algebra-1/grade-9/worksheet_topic_2026-09-14_a1b2c3d4.pdf')).toBeNull();
   });
 });
 

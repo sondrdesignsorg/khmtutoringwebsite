@@ -5,12 +5,22 @@ import type { ResourceType } from './types';
  * Canonical naming for the staff resource library.
  *
  * Blob storage keys follow:
- *   staff-library/{subject}/{grade}/{type}_{topic}_{date}_{checksum8}.pdf
- * e.g. staff-library/algebra-1/grade-9/worksheet_linear-equations_2026-09-14_a1b2c3d4.pdf
+ *   staff-library/{typeFolder}/{subject}/{grade}/{type}_{topic}_{date}_{checksum8}.pdf
+ * e.g. staff-library/worksheets/algebra-1/grade-9/worksheet_linear-equations_2026-09-14_a1b2c3d4.pdf
+ *
+ * Worksheets, quizzes, and tests each get their own top-level folder so the
+ * blob store mirrors the library's type tabs.
  *
  * Titles are generated from metadata (never from raw filenames) so the
  * library stays consistent regardless of what a tutor named the file.
  */
+
+/** Top-level blob folder for each resource type. */
+export function typeFolder(type: ResourceType): string {
+  if (type === 'quiz') return 'quizzes';
+  if (type === 'test') return 'tests';
+  return 'worksheets';
+}
 
 export function slugify(value: string): string {
   return value
@@ -40,7 +50,7 @@ export interface CanonicalPathInput {
 export function canonicalResourcePath(input: CanonicalPathInput): string {
   const base = `${slugify(input.type)}_${slugify(input.topic)}_${input.added.slice(0, 10)}`;
   const suffix = input.checksum ? `_${input.checksum.slice(0, 8)}` : '';
-  return `staff-library/${slugify(input.subject)}/${gradeSlug(input.grade)}/${base}${suffix}.pdf`;
+  return `staff-library/${typeFolder(input.type)}/${slugify(input.subject)}/${gradeSlug(input.grade)}/${base}${suffix}.pdf`;
 }
 
 /** Display title derived from classified metadata, e.g. "Worksheet: Linear equations". */
@@ -58,16 +68,16 @@ export function titleFromFilename(name: string): string {
 /** Parses the canonical path back out of a storage key (for the organizer/audit tools). */
 export function parseCanonicalPath(pathname: string): CanonicalPathInput | null {
   const match = pathname.match(
-    /^staff-library\/([^/]+)\/([^/]+)\/([^/]+)_([^_/]+(?:_[^_/]+)*)_(\d{4}-\d{2}-\d{2})_[0-9a-f]{8}\.pdf$/i,
+    /^staff-library\/(worksheets|quizzes|tests)\/([^/]+)\/([^/]+)\/(worksheet|quiz|test)_([^_/]+(?:_[^_/]+)*)_(\d{4}-\d{2}-\d{2})_[0-9a-f]{8}\.pdf$/i,
   );
   if (!match) return null;
-  const type = match[3].toLowerCase();
-  if (type !== 'worksheet' && type !== 'quiz' && type !== 'test') return null;
+  const type = match[4].toLowerCase() as ResourceType;
+  if (typeFolder(type).toLowerCase() !== match[1].toLowerCase()) return null;
   return {
-    subject: match[1],
-    grade: match[2],
+    subject: match[2],
+    grade: match[3],
     type,
-    topic: match[4].replace(/-/g, ' '),
-    added: match[5],
+    topic: match[5].replace(/-/g, ' '),
+    added: match[6],
   };
 }

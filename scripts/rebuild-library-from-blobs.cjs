@@ -6,7 +6,8 @@
  * 1. Lists every blob in the store.
  * 2. Classifies subject/grade/type/difficulty from the filename.
  * 3. Maps each PDF to the canonical key
- *    staff-library/{subject}/{grade}/{type}_{topic}_{date}_{checksum8}.pdf
+ *    staff-library/{typeFolder}/{subject}/{grade}/{type}_{topic}_{date}_{checksum8}.pdf
+ *    (typeFolder is worksheets|quizzes|tests)
  * 4. In apply mode: server-side copies to the canonical key, inserts the
  *    resources row, then deletes the original blob.
  *
@@ -31,8 +32,9 @@ if (APPLY && !YES) fatal('Refusing to apply without --yes. Run dry-run first, th
 
 const VALID_TYPES = new Set(['worksheet', 'quiz', 'test']);
 const TYPE_LABEL = { worksheet: 'Worksheet', quiz: 'Quiz', test: 'Test' };
+const TYPE_FOLDER = { worksheet: 'worksheets', quiz: 'quizzes', test: 'tests' };
 const DEFAULT_AUTHOR = 'Kody Kim';
-const CANONICAL_RE = /^staff-library\/[^/]+\/[^/]+\/(worksheet|quiz|test)_[^/]+_\d{4}-\d{2}-\d{2}_[0-9a-f]{8}\.pdf$/i;
+const CANONICAL_RE = /^staff-library\/(worksheets|quizzes|tests)\/[^/]+\/[^/]+\/(worksheet|quiz|test)_[^/]+_\d{4}-\d{2}-\d{2}_[0-9a-f]{8}\.pdf$/i;
 const AI_CACHE_FILE = process.env.CLASSIFY_CACHE || '/tmp/opencode/library-classification.json';
 
 const GRADE_PATTERNS = [
@@ -143,7 +145,7 @@ function topicFromFilename(name) {
 }
 
 function canonicalPath(input) {
-  return `staff-library/${slugify(input.subject)}/${gradeSlug(input.grade)}/${slugify(input.type)}_${slugify(input.topic)}_${input.added}_${input.checksum8}.pdf`;
+  return `staff-library/${TYPE_FOLDER[input.type]}/${slugify(input.subject)}/${gradeSlug(input.grade)}/${slugify(input.type)}_${slugify(input.topic)}_${input.added}_${input.checksum8}.pdf`;
 }
 
 async function listAllBlobs(listFn, token) {
