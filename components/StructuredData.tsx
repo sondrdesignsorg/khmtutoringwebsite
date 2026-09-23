@@ -392,18 +392,6 @@ const educatorPersonSchemas = [
   {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Jacob Bergeron',
-    jobTitle: 'Math, Physics & Engineering Tutor',
-    worksFor: { '@id': `${baseUrl}/#organization` },
-    alumniOf: [
-      { '@type': 'CollegeOrUniversity', name: 'Texas A&M University' },
-      { '@type': 'CollegeOrUniversity', name: 'University of Hawaii at Manoa' },
-    ],
-    knowsAbout: ['Mathematics', 'Physics', 'Aerospace Engineering', 'Mechanical Engineering'],
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
     name: 'Sheany Chung',
     jobTitle: 'Biology & Chemistry Tutor',
     worksFor: { '@id': `${baseUrl}/#organization` },

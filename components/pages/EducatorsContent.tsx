@@ -211,25 +211,6 @@ const educators = [
     category: 'SAT/SSAT',
   },
   {
-    name: 'Jacob Bergeron',
-    subjects: ['Math', 'Physics', 'Engineering'],
-    tagline: 'UH Mānoa mechanical engineering grad student',
-    image: '/images/tutors/jacob-bergeron.jpg',
-    bio: 'Master’s student in Mechanical Engineering at the University of Hawai‘i at Mānoa, with a B.S. in Aerospace Engineering and a Math minor from Texas A&M. Teaching Assistant in machine dynamics and published research author.',
-    achievements: [
-      'B.S. Aerospace Engineering, Texas A&M University (Math minor)',
-      'Master’s Program in Mechanical Engineering, UH Mānoa (expected May 2027)',
-      'Perfect GRE Quantitative score (170/170)',
-      'Teaching Assistant for undergraduate dynamics of machine systems lab',
-      'Published author on lithium-ion battery electrolyte modeling'
-    ],
-    experience: 'Teaching Assistant since 2025',
-    certifications: 'Texas A&M University, University of Hawai‘i at Mānoa',
-    funFact: 'Working on a hybrid rocket experiment at the Hawaii Rocket Propulsion Lab',
-    grades: '9-12, College',
-    category: 'Math',
-  },
-  {
     name: 'Sheany Chung',
     subjects: ['Biology', 'Chemistry', 'Cell & Molecular Biology', 'Genetics'],
     tagline: 'Biology BS cum laude | UH Mānoa Student Marshall',
