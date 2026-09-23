@@ -125,7 +125,7 @@ async function sendInquiryEmails(params: Inquiry & { id: string }): Promise<{
       html: parentConfirmationHtml(params),
     }),
     sendEmail({
-      to: config.staffEmail,
+      to: config.staffRecipients,
       replyTo: params.email,
       subject: safeEmailSubject(`New Group SAT Inquiry: ${params.studentName}`),
       html: staffNotificationHtml(params),

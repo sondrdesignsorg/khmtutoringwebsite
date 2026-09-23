@@ -9,22 +9,28 @@ export interface EmailConfig {
   apiKey: string;
   from: string;
   staffEmail: string;
+  staffRecipients: string[];
 }
 
 export function getEmailConfig(): EmailConfig | null {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_ADDRESS;
-  const staffEmail =
+  const staffList = (
     process.env.KHM_STAFF_EMAIL ||
     process.env.DIAGNOSTIC_STAFF_EMAIL ||
-    'khmtutoring1@gmail.com';
+    'khmtutoring1@gmail.com'
+  )
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const staffEmail = staffList[0] || 'khmtutoring1@gmail.com';
 
   if (!apiKey || !from) return null;
-  return { apiKey, from, staffEmail };
+  return { apiKey, from, staffEmail, staffRecipients: staffList };
 }
 
 export async function sendEmail(params: {
-  to: string;
+  to: string | string[];
   subject: string;
   html: string;
   replyTo?: string;

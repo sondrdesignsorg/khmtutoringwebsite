@@ -29,7 +29,11 @@ async function main() {
   const to = argValue('--to') || process.env.EMAIL_TEST_TO;
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_ADDRESS;
-  const staffEmail = process.env.KHM_STAFF_EMAIL || process.env.DIAGNOSTIC_STAFF_EMAIL || 'khmtutoring1@gmail.com';
+  const staffList = (process.env.KHM_STAFF_EMAIL || process.env.DIAGNOSTIC_STAFF_EMAIL || 'khmtutoring1@gmail.com')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const staffEmail = staffList[0];
 
   const missing = [];
   if (!apiKey) missing.push('RESEND_API_KEY');
@@ -55,7 +59,7 @@ async function main() {
 
   const staff = await resend.emails.send({
     from,
-    to: staffEmail,
+    to: staffList,
     replyTo: to,
     subject: `KHM email verification - staff copy - ${stamp}`,
     html: `<p>This verifies the Kody/staff email path for KHM forms.</p><p>Test parent recipient: ${to}</p><p>Sent at ${stamp}.</p>`,
@@ -71,7 +75,7 @@ async function main() {
     staffError: staff.error?.message || null,
     from,
     parentTo: to,
-    staffTo: staffEmail,
+    staffTo: staffList,
   }, null, 2));
 
   if (!parentOk || !staffOk) process.exit(1);

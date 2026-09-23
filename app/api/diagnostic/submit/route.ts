@@ -286,7 +286,7 @@ async function sendResultsEmail(params: {
       html: parentEmailHtml(params),
     }),
     sendEmail({
-      to: config.staffEmail,
+      to: config.staffRecipients,
       replyTo: params.email,
       subject: `New Diagnostic Lead: ${params.studentName} scored ${params.score}% (${params.tier})`,
       html: staffEmailHtml(params),
