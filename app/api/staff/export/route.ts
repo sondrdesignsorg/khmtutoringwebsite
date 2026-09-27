@@ -3,6 +3,7 @@ import { get } from '@vercel/blob';
 import { PDFDocument } from 'pdf-lib';
 import { getStaffSession } from '@/lib/staff/auth';
 import { getResourcesByIds } from '@/lib/staff/resource-repo';
+import { sendEmail } from '@/lib/email/resend';
 import type { Resource } from '@/lib/staff/types';
 
 export const runtime = 'nodejs';
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
   const session = await getStaffSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { ids } = await req.json() as { ids: string[] };
+  const { ids, delivery } = await req.json() as { ids: string[]; delivery?: 'download' | 'email' };
   if (!Array.isArray(ids) || ids.length === 0) {
     return NextResponse.json({ error: 'No resource IDs provided' }, { status: 400 });
   }
@@ -52,6 +53,44 @@ export async function POST(req: Request) {
   const pdfOut = Buffer.from(await merged.save());
   const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const slug = `KHM-Packet-${today.replace(/,?\s+/g, '-')}.pdf`;
+
+  if (delivery === 'email') {
+    if (resources.length === 0) {
+      return NextResponse.json({ error: 'No readable files to email' }, { status: 400 });
+    }
+    if (pdfOut.length > 35 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: 'This packet is too large to email. Please download it instead.' },
+        { status: 413 },
+      );
+    }
+
+    const attachmentContent = pdfOut.toString('base64');
+    if (attachmentContent.length > 40 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: 'This packet is too large to email. Please download it instead.' },
+        { status: 413 },
+      );
+    }
+
+    const sent = await sendEmail({
+      to: session.email,
+      subject: `Your KHM Resource Packet (${resources.length} file${resources.length === 1 ? '' : 's'})`,
+      html: [
+        `<p>Hi ${session.name || 'there'},</p>`,
+        `<p>Your combined KHM Resource Library packet is attached.</p>`,
+        `<ul>${resources.map((r) => `<li>${r.title}</li>`).join('')}</ul>`,
+        `<p>— KHM Tutoring</p>`,
+      ].join(''),
+      attachments: [{ filename: slug, content: attachmentContent }],
+    });
+
+    if (!sent.ok) {
+      return NextResponse.json({ error: sent.error || 'Could not send the packet email' }, { status: 502 });
+    }
+
+    return NextResponse.json({ emailed: true, recipient: session.email, filename: slug, count: resources.length });
+  }
 
   return new Response(pdfOut, {
     status: 200,

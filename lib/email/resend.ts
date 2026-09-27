@@ -29,11 +29,18 @@ export function getEmailConfig(): EmailConfig | null {
   return { apiKey, from, staffEmail, staffRecipients: staffList };
 }
 
+export interface EmailAttachment {
+  filename: string;
+  /** Base64-encoded file content, as required by the Resend API. */
+  content: string;
+}
+
 export async function sendEmail(params: {
   to: string | string[];
   subject: string;
   html: string;
   replyTo?: string;
+  attachments?: EmailAttachment[];
 }): Promise<EmailSendResult> {
   const config = getEmailConfig();
   if (!config) {
@@ -51,6 +58,7 @@ export async function sendEmail(params: {
       subject: params.subject,
       html: params.html,
       replyTo: params.replyTo,
+      ...(params.attachments?.length ? { attachments: params.attachments } : {}),
     });
 
     if (result.error) {

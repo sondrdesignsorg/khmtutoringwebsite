@@ -9,6 +9,7 @@ import {
   safeEmailSubject,
   type GroupSatInquiryPayload,
 } from '@/lib/sat-group/inquiry-security';
+import { GROUP_SAT_START_LABEL } from '@/lib/sat-group/content';
 
 export const runtime = 'nodejs';
 
@@ -45,7 +46,7 @@ function parentConfirmationHtml(p: Inquiry & { id: string }): string {
             </td></tr>
           </table>
           <p style="margin:0;font-size:14px;line-height:1.6;color:#4b5563;">
-            The target start date is September 6, 2026. Cohorts are planned for 6-8 students and 20 total hours of instruction.
+            The target start date is ${GROUP_SAT_START_LABEL}. Cohorts are planned for 6-8 students and 20 total hours of instruction.
           </p>
         </td></tr>
         <tr><td style="background:#f8fafc;border-top:1px solid #e5e7eb;padding:18px 36px;text-align:center;">

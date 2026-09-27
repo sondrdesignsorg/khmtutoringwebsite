@@ -1,8 +1,10 @@
 'use client';
 
-import { ChevronDown, ChevronUp, FileDown, Loader2, X } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, Download, FileDown, Loader2, Mail, X } from 'lucide-react';
 import type { Resource } from '@/lib/staff/types';
 import { Modal, ModalCloseButton } from './Modal';
+import { cn } from '@/lib/utils';
 
 export function ExportModal({
   files,
@@ -11,14 +13,17 @@ export function ExportModal({
   onClose,
   onExport,
   loading = false,
+  recipientEmail,
 }: {
   files: Resource[];
   onReorder: (index: number, dir: -1 | 1) => void;
   onRemove: (id: string) => void;
   onClose: () => void;
-  onExport: () => void;
+  onExport: (delivery: 'download' | 'email') => void;
   loading?: boolean;
+  recipientEmail: string;
 }) {
+  const [delivery, setDelivery] = useState<'download' | 'email'>('download');
   const totalPages = files.reduce((s, f) => s + f.pages, 0) + 1; // + cover
   return (
     <Modal onClose={onClose} className="flex max-w-[560px] flex-col">
@@ -59,20 +64,66 @@ export function ExportModal({
         </div>
       </div>
 
+      <div className="border-t border-border px-6 py-4">
+        <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground">Deliver packet</p>
+        <div className="grid grid-cols-2 gap-2">
+          <DeliveryOption
+            active={delivery === 'download'}
+            onClick={() => setDelivery('download')}
+            icon={<Download className="size-4" />}
+            title="Download"
+            subtitle="Save to this device"
+          />
+          <DeliveryOption
+            active={delivery === 'email'}
+            onClick={() => setDelivery('email')}
+            icon={<Mail className="size-4" />}
+            title="Email to me"
+            subtitle={recipientEmail}
+          />
+        </div>
+      </div>
+
       <div className="flex justify-end gap-3 border-t border-border px-6 py-4">
         <button onClick={onClose} className="inline-flex h-9 items-center rounded-md px-4 text-sm font-semibold text-foreground transition-colors hover:bg-primary/10">
           Cancel
         </button>
         <button
-          onClick={onExport}
+          onClick={() => onExport(delivery)}
           disabled={loading}
           className="inline-flex h-9 items-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60 disabled:pointer-events-none"
         >
-          {loading ? <Loader2 className="size-4 animate-spin" /> : <FileDown className="size-4" />}
-          {loading ? 'Building PDF…' : 'Export Combined PDF'}
+          {loading ? <Loader2 className="size-4 animate-spin" /> : delivery === 'email' ? <Mail className="size-4" /> : <FileDown className="size-4" />}
+          {loading ? 'Building PDF…' : delivery === 'email' ? 'Email Combined PDF' : 'Export Combined PDF'}
         </button>
       </div>
     </Modal>
+  );
+}
+
+function DeliveryOption({
+  active, onClick, icon, title, subtitle,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'flex items-start gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors',
+        active ? 'border-primary bg-primary/[0.06]' : 'border-border bg-card hover:border-primary/40',
+      )}
+    >
+      <span className={cn('mt-0.5 shrink-0', active ? 'text-primary' : 'text-muted-foreground')}>{icon}</span>
+      <span className="min-w-0">
+        <span className="block text-sm font-semibold">{title}</span>
+        <span className="block truncate text-xs text-muted-foreground">{subtitle}</span>
+      </span>
+    </button>
   );
 }
 

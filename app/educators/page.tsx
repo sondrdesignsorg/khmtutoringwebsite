@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import { EducatorsContent } from '@/components/pages/EducatorsContent';
 import { StructuredData } from '@/components/StructuredData';
+import { listPublishedTutorsSafe } from '@/lib/staff/tutor-repo';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export const metadata: Metadata = {
   title: 'Meet Our Expert Tutors',
@@ -23,11 +27,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EducatorsPage() {
+export default async function EducatorsPage() {
+  const tutors = await listPublishedTutorsSafe();
+
   return (
     <>
-      <StructuredData type="educators" />
-      <EducatorsContent />
+      <StructuredData type="educators" tutors={tutors} />
+      <EducatorsContent educators={tutors} />
     </>
   );
 }

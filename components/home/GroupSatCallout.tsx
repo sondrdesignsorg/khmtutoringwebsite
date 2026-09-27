@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, MapPin, Users, Clock, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { GROUP_SAT_START_LABEL } from '@/lib/sat-group/content';
 
 const stats = [
   { icon: Users, label: '6–8 students per cohort' },
@@ -16,7 +17,7 @@ export function GroupSatCallout() {
           <div className="flex-1">
             <div className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 mb-4">
               <Zap className="h-3 w-3" />
-              Now Enrolling · Starts September 21, 2026
+              Now Enrolling · Starts {GROUP_SAT_START_LABEL}
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
               Group SAT Prep — Small Cohorts, Real Results

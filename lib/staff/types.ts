@@ -69,3 +69,27 @@ export interface ClassifiedFile extends ResourceSource {
 }
 
 export type StaffRole = 'tutor' | 'admin';
+
+/** A public educator profile shown on /educators. Managed by admins. */
+export interface Tutor {
+  id: string;
+  name: string;
+  subjects: string[];
+  tagline: string;
+  imageUrl: string;
+  /** Blob key when the image was uploaded to our store (used for cleanup). */
+  imageKey?: string;
+  bio: string;
+  achievements: string[];
+  experience: string;
+  certifications: string;
+  funFact: string;
+  grades: string;
+  category: string;
+  sortOrder: number;
+  published: boolean;
+}
+
+/** Draft used by the add/edit form before an id is assigned. */
+export type TutorDraft = Omit<Tutor, 'id' | 'sortOrder' | 'published'> &
+  Partial<Pick<Tutor, 'sortOrder' | 'published'>>;

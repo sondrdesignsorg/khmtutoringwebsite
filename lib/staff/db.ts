@@ -75,6 +75,36 @@ export function ensureStaffSchema(): Promise<void> {
         last_sign_in_at timestamptz NOT NULL DEFAULT now()
       )
     `;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS tutors (
+        id text PRIMARY KEY,
+        name text NOT NULL,
+        subjects text[] NOT NULL DEFAULT '{}',
+        tagline text NOT NULL DEFAULT '',
+        image_url text NOT NULL DEFAULT '',
+        image_key text,
+        bio text NOT NULL DEFAULT '',
+        achievements text[] NOT NULL DEFAULT '{}',
+        experience text NOT NULL DEFAULT '',
+        certifications text NOT NULL DEFAULT '',
+        fun_fact text NOT NULL DEFAULT '',
+        grades text NOT NULL DEFAULT '',
+        category text NOT NULL DEFAULT '',
+        sort_order integer NOT NULL DEFAULT 0,
+        published boolean NOT NULL DEFAULT true,
+        created_at timestamptz NOT NULL DEFAULT now(),
+        updated_at timestamptz NOT NULL DEFAULT now()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS tutors_published_sort_idx ON tutors (published, sort_order, name)`;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS seed_flags (
+        key text PRIMARY KEY,
+        seeded_at timestamptz NOT NULL DEFAULT now()
+      )
+    `;
   })();
   return schemaReady;
 }

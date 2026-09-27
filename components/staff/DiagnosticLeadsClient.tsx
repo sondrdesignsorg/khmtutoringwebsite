@@ -8,6 +8,7 @@ import { Toast } from './Toast';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import type { StaffSession } from '@/lib/staff/auth';
+import { matchesAllTerms } from '@/lib/search';
 
 export interface DiagnosticLead {
   id: string;
@@ -91,14 +92,7 @@ export function DiagnosticLeadsClient({
 
   const visible = leads.filter((l) => {
     if (statusFilter !== 'all' && l.clientStatus !== statusFilter) return false;
-    if (query) {
-      const q = query.toLowerCase();
-      if (
-        !l.studentName.toLowerCase().includes(q) &&
-        !l.parentName.toLowerCase().includes(q) &&
-        !l.email.toLowerCase().includes(q)
-      ) return false;
-    }
+    if (!matchesAllTerms([l.studentName, l.parentName, l.email], query)) return false;
     return true;
   });
 
@@ -138,6 +132,7 @@ export function DiagnosticLeadsClient({
         session={session}
         crumbs={[{ label: 'Staff', href: '/staff/library' }, { label: 'Diagnostic Leads' }]}
         showAdminLink
+        showTutorsLink
       />
 
       <div className="mx-auto max-w-[1280px] px-6 py-8 flex flex-col gap-6">

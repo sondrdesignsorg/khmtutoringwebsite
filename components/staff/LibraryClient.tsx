@@ -14,6 +14,7 @@ import { ExportModal } from './ExportModal';
 import { Toast } from './Toast';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { matchesAllTerms } from '@/lib/search';
 
 type SortKey = 'newest' | 'az' | 'pages';
 
@@ -49,10 +50,7 @@ export function LibraryClient({
         if (subjects.length && !subjects.includes(f.subject)) return false;
         if (grades.length && !grades.includes(f.grade)) return false;
         if (difficulties.length && !difficulties.includes(f.difficulty)) return false;
-        if (query) {
-          const q = query.toLowerCase();
-          if (!`${f.title} ${f.topic} ${f.subject} ${f.originalFilename ?? ''}`.toLowerCase().includes(q)) return false;
-        }
+        if (!matchesAllTerms([f.title, f.topic, f.subject, f.originalFilename], query)) return false;
         return true;
       })
       .sort((a, b) => {
@@ -87,15 +85,27 @@ export function LibraryClient({
       [n[i], n[j]] = [n[j], n[i]];
       return n;
     });
-  async function doExport() {
+  async function doExport(delivery: 'download' | 'email') {
     setExporting(true);
     try {
       const res = await fetch('/api/staff/export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: selectedIds }),
+        body: JSON.stringify({ ids: selectedIds, delivery }),
       });
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(body.error || (delivery === 'email' ? 'Email failed' : 'Export failed'));
+      }
+
+      if (delivery === 'email') {
+        const body = (await res.json()) as { recipient?: string };
+        setExportOpen(false);
+        setToast(`Packet emailed to ${body.recipient ?? session.email}`);
+        setTimeout(() => setToast(null), 4000);
+        return;
+      }
+
       const blob = await res.blob();
       const disposition = res.headers.get('Content-Disposition') ?? '';
       const match = disposition.match(/filename="([^"]+)"/);
@@ -110,8 +120,8 @@ export function LibraryClient({
       const pages = selectedFiles.reduce((s, f) => s + f.pages, 0) + 1;
       setToast(`Exported ${selectedFiles.length} file${selectedFiles.length === 1 ? '' : 's'} · ${pages} pages`);
       setTimeout(() => setToast(null), 4000);
-    } catch {
-      setToast('Export failed — please try again');
+    } catch (err) {
+      setToast(err instanceof Error ? err.message : (delivery === 'email' ? 'Email failed — please try again' : 'Export failed — please try again'));
       setTimeout(() => setToast(null), 4000);
     } finally {
       setExporting(false);
@@ -126,7 +136,7 @@ export function LibraryClient({
 
   return (
     <div className="min-h-[70vh] bg-background">
-      <PortalChrome session={session} crumbs={[{ label: 'Resource Library' }]} showAdminLink showStaffLink />
+      <PortalChrome session={session} crumbs={[{ label: 'Resource Library' }]} showAdminLink showStaffLink showTutorsLink />
 
       <div className="mx-auto max-w-[1280px] px-6 pb-32 pt-8">
         <div className="mb-6">
@@ -236,6 +246,7 @@ export function LibraryClient({
           onClose={() => setExportOpen(false)}
           onExport={doExport}
           loading={exporting}
+          recipientEmail={session.email}
         />
       )}
       {toast && <Toast message={toast} />}

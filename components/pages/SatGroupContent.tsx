@@ -18,10 +18,10 @@ import {
   Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { groupSatFaqs } from '@/lib/sat-group/content';
+import { groupSatFaqs, GROUP_SAT_START_LABEL } from '@/lib/sat-group/content';
 import { GROUP_SAT_GRADES } from '@/lib/sat-group/inquiry-security';
 
-const TARGET_START = 'September 21, 2026';
+const TARGET_START = GROUP_SAT_START_LABEL;
 const TOTAL_HOURS = 20;
 const GOOGLE_ADS_ID = 'AW-17881935420';
 
@@ -46,21 +46,21 @@ const schedules = [
     name: 'Sunday Strategy Cohort',
     days: 'Sundays',
     time: '10:00 AM - 12:00 PM HST',
-    enrolled: 3,
+    enrolled: 0,
     capacity: 8,
   },
   {
     name: 'Weekday After-School Cohort',
     days: 'Tuesday & Thursday',
     time: '4:30 PM - 5:30 PM HST',
-    enrolled: 4,
+    enrolled: 0,
     capacity: 8,
   },
   {
     name: 'Evening Practice Cohort',
     days: 'Monday & Wednesday',
     time: '6:30 PM - 7:30 PM HST',
-    enrolled: 2,
+    enrolled: 0,
     capacity: 8,
   },
 ];

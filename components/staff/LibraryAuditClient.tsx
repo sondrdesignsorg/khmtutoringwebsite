@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { AlertTriangle, CheckCircle, Search, Trash2 } from 'lucide-react';
 import { PortalChrome } from './PortalChrome';
 import type { StaffSession } from '@/lib/staff/auth';
+import { matchesAllTerms } from '@/lib/search';
 
 type AuditRow = {
   id: string;
@@ -39,12 +40,7 @@ export function LibraryAuditClient({
 
   const searchResults = useMemo(() => {
     if (!query.trim()) return [];
-    const q = query.toLowerCase();
-    return allResources.filter((r) =>
-      r.title.toLowerCase().includes(q) ||
-      (r.originalFilename ?? '').toLowerCase().includes(q) ||
-      (r.subject ?? '').toLowerCase().includes(q),
-    );
+    return allResources.filter((r) => matchesAllTerms([r.title, r.originalFilename, r.subject], query));
   }, [query, allResources]);
 
   const activeList = tab === 'flagged' ? flagged : searchResults;
@@ -100,6 +96,7 @@ export function LibraryAuditClient({
         session={session}
         crumbs={[{ label: 'Library', href: '/staff/library' }, { label: 'Audit' }]}
         showAdminLink
+        showTutorsLink
       />
 
       <div className="mx-auto max-w-4xl px-4 py-10">

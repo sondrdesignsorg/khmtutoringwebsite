@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { ChevronRight, Lock, LogOut, Settings, Users } from 'lucide-react';
+import { ChevronRight, Lock, LogOut, Settings, UserRound, Users } from 'lucide-react';
 import type { StaffSession } from '@/lib/staff/auth';
 import { cn } from '@/lib/utils';
 
@@ -12,12 +12,14 @@ export function PortalChrome({
   showAdminLink,
   showLeadsLink,
   showStaffLink,
+  showTutorsLink,
 }: {
   session: StaffSession;
   crumbs: { label: string; href?: string }[];
   showAdminLink?: boolean;
   showLeadsLink?: boolean;
   showStaffLink?: boolean;
+  showTutorsLink?: boolean;
 }) {
   const router = useRouter();
   const initial = session.name.trim().charAt(0).toUpperCase();
@@ -59,6 +61,14 @@ export function PortalChrome({
               className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/20"
             >
               Leads
+            </button>
+          )}
+          {showTutorsLink && session.role === 'admin' && (
+            <button
+              onClick={() => router.push('/staff/tutors')}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+            >
+              <UserRound className="size-3.5" />Tutors
             </button>
           )}
           {showStaffLink && session.role === 'admin' && (

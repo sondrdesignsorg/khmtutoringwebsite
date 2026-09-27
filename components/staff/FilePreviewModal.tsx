@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import {
-  BarChart3, BookOpen, Calendar, Check, Download, FileText, GraduationCap, Plus, Tag, User,
+  BarChart3, BookOpen, Calendar, Check, Download, FileText, GraduationCap, Loader2, Mail, Plus, Tag, User,
 } from 'lucide-react';
 import { subjectArea, fmtDate, TYPE_LABEL } from '@/lib/staff/resources';
 import type { Resource } from '@/lib/staff/types';
@@ -31,6 +32,23 @@ export function FilePreviewModal({
   const areaText = AREA_TEXT[subjectArea(file.subject)];
   const fileRoute = `/api/staff/files/${file.id}/download`;
   const hasRealFile = !!(file.storageKey || file.fileUrl);
+  const [emailing, setEmailing] = useState(false);
+  const [emailNote, setEmailNote] = useState<string | null>(null);
+
+  async function emailFile() {
+    setEmailing(true);
+    setEmailNote(null);
+    try {
+      const res = await fetch(`/api/staff/files/${file.id}/email`, { method: 'POST' });
+      const body = (await res.json().catch(() => ({}))) as { recipient?: string; error?: string };
+      if (!res.ok) throw new Error(body.error || 'Could not email the PDF');
+      setEmailNote(`Emailed to ${body.recipient ?? 'your inbox'}`);
+    } catch (err) {
+      setEmailNote(err instanceof Error ? err.message : 'Could not email the PDF');
+    } finally {
+      setEmailing(false);
+    }
+  }
 
   const meta: { icon: React.ReactNode; label: string; value: string }[] = [
     { icon: <BookOpen className="size-4" />, label: 'Subject', value: file.subject },
@@ -93,15 +111,29 @@ export function FilePreviewModal({
             {selected ? <Check className="size-4" /> : <Plus className="size-4" />}
             {selected ? 'Added to selection' : 'Add to selection'}
           </button>
-          <a
-            href={`${fileRoute}?download=1`}
-            className={cn(
-              'inline-flex h-9 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold transition-colors',
-              hasRealFile ? 'text-foreground hover:bg-primary/10' : 'pointer-events-none text-muted-foreground opacity-50',
-            )}
-          >
-            <Download className="size-4" />Download PDF
-          </a>
+          <div className="flex gap-2">
+            <a
+              href={`${fileRoute}?download=1`}
+              className={cn(
+                'inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-md border border-border px-4 text-sm font-semibold transition-colors',
+                hasRealFile ? 'text-foreground hover:bg-primary/10' : 'pointer-events-none text-muted-foreground opacity-50',
+              )}
+            >
+              <Download className="size-4" />Download
+            </a>
+            <button
+              onClick={emailFile}
+              disabled={!hasRealFile || emailing}
+              className={cn(
+                'inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-md border border-border px-4 text-sm font-semibold transition-colors',
+                hasRealFile ? 'text-foreground hover:bg-primary/10' : 'pointer-events-none text-muted-foreground opacity-50',
+              )}
+            >
+              {emailing ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}
+              {emailing ? 'Emailing…' : 'Email me'}
+            </button>
+          </div>
+          {emailNote && <p className="text-center text-xs text-muted-foreground">{emailNote}</p>}
         </div>
       </div>
     </Modal>

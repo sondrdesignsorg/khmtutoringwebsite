@@ -115,7 +115,7 @@ export function StaffManagementClient({
 
   return (
     <div className="min-h-[70vh] bg-background">
-      <PortalChrome session={session} crumbs={[{ label: 'Staff Management' }]} showLeadsLink showAdminLink />
+      <PortalChrome session={session} crumbs={[{ label: 'Staff Management' }]} showLeadsLink showAdminLink showTutorsLink />
 
       <div className="mx-auto max-w-[1280px] px-6 pb-20 pt-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">

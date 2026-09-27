@@ -17,6 +17,7 @@ import { Toast } from './Toast';
 import { Input } from '@/components/ui/input';
 import { AREA_CHIP, DIFFICULTY_CHIP } from './badges';
 import { cn } from '@/lib/utils';
+import { matchesAllTerms } from '@/lib/search';
 
 export function AdminClient({
   initialResources,
@@ -108,10 +109,7 @@ export function AdminClient({
 
   const visible = files.filter((f) => {
     if (typeFilter !== 'all' && f.type !== typeFilter) return false;
-    if (query) {
-      const q = query.toLowerCase();
-      if (!`${f.title} ${f.topic} ${f.subject} ${f.author} ${f.originalFilename ?? ''}`.toLowerCase().includes(q)) return false;
-    }
+    if (!matchesAllTerms([f.title, f.topic, f.subject, f.author, f.originalFilename], query)) return false;
     return true;
   });
 
@@ -124,7 +122,7 @@ export function AdminClient({
 
   return (
     <div className="min-h-[70vh] bg-background">
-      <PortalChrome session={session} crumbs={[{ label: 'Resource Library', href: '/staff/library' }, { label: 'Library Admin' }]} showLeadsLink showStaffLink />
+      <PortalChrome session={session} crumbs={[{ label: 'Resource Library', href: '/staff/library' }, { label: 'Library Admin' }]} showLeadsLink showStaffLink showTutorsLink />
 
       <div className="mx-auto max-w-[1280px] px-6 pb-20 pt-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">

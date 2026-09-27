@@ -1,3 +1,6 @@
+export const GROUP_SAT_START_LABEL = 'January 5, 2027';
+export const GROUP_SAT_START_ISO = '2027-01-05';
+
 export const groupSatFaqs = [
   {
     question: 'How many students are in a cohort?',

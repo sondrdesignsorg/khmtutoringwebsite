@@ -4,6 +4,8 @@ import { useState, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { Award, BookOpen, GraduationCap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import type { Tutor } from '@/lib/staff/types';
+import { DEFAULT_EDUCATORS } from '@/lib/educators/seed';
 import {
   Dialog,
   DialogContent,
@@ -14,225 +16,7 @@ import {
 
 const subjects = ['All', 'SAT/SSAT', 'Math', 'English', 'AP Subjects', 'Chemistry', 'Biology'];
 
-const educators = [
-  {
-    name: 'Kody Kim',
-    subjects: ['Essay Writing', 'Reading Comprehension', 'Math', 'SAT/ACT'],
-    tagline: 'Founder with years of tutoring experience',
-    image: '/images/tutors/kody-kim.jpg',
-    bio: 'Founder of KHM Tutoring with years of tutoring experience since 2016. Skilled educator focused on improving student scores, test-taking strategies, and understanding of material.',
-    achievements: [
-      'Financial Systems Analyst at HMSA',
-      'Attended Punahou School and University of California, Irvine',
-      'Strong track record of increasing student performance and comprehension',
-      'Specializes in essay writing, reading comprehension, mathematics, and SAT/ACT prep'
-    ],
-    experience: 'Since 2016',
-    certifications: 'Punahou School, University of California, Irvine',
-    funFact: 'Founder of KHM Tutoring',
-    grades: 'K-12',
-    category: 'SAT/SSAT',
-  },
-  {
-    name: 'Andrew Holzman',
-    subjects: ['College Applications', 'English', 'SAT', 'MCAT'],
-    tagline: 'Medical student and former corporate lawyer',
-    image: '/images/tutors/andrew-holzman.jpg',
-    bio: 'Medical student and former corporate lawyer with expertise in standardized testing and college admissions consulting.',
-    achievements: [
-      'Attended Phillips Exeter Academy and University of Chicago',
-      'Practiced law internationally (London, Dubai, Sydney, Australia)',
-      'Developed an SAT curriculum used by hundreds of students',
-      'MCAT score: 525/528 (top 0.5% nationwide)',
-      'Students have been accepted to Stanford, Yale, UC Berkeley, UC Irvine, and more'
-    ],
-    experience: 'Years of experience',
-    certifications: 'Phillips Exeter Academy, University of Chicago',
-    funFact: 'MCAT score in top 0.5% nationwide',
-    grades: '9-12, College',
-    category: 'SAT/SSAT',
-  },
-  {
-    name: 'Noah Agena',
-    subjects: ['Math', 'Physics'],
-    tagline: 'Aspiring mechanical engineer',
-    image: '/images/tutors/noah-agena.jpg',
-    bio: 'Aspiring mechanical engineer and experienced calculus and physics tutor with strong STEM background from Iolani School.',
-    achievements: [
-      'Pursuing a mechanical engineering degree',
-      'Integrates academic expertise with passion and encouragement',
-      'Strong emphasis on teamwork, discipline, perseverance, and mindset'
-    ],
-    experience: 'Experienced tutor',
-    certifications: 'Iolani School',
-    funFact: 'Aspiring mechanical engineer',
-    grades: '9-12',
-    category: 'Math',
-  },
-  {
-    name: 'Peter Greenhill',
-    subjects: ['English', 'College Essay Writing', 'SAT'],
-    tagline: 'Princeton University graduate',
-    image: '/images/tutors/peter-greenhill.jpg',
-    bio: 'Princeton University graduate in Philosophy with decades of teaching experience at Iolani School and international academic programs.',
-    achievements: [
-      'Taught English, Philosophy, and SAT at Iolani from 1986–2021',
-      'Director of the Iolani Peace Institute for 17 years',
-      'Program Dean and Dean of Faculty at Cambridge University summer program'
-    ],
-    experience: '1986-2021 at Iolani',
-    certifications: 'Princeton University, Philosophy',
-    funFact: 'Director of Iolani Peace Institute for 17 years',
-    grades: '9-12, College',
-    category: 'English',
-  },
-  {
-    name: 'Blythe Yangson',
-    subjects: ['Math', 'SAT/ACT'],
-    tagline: 'Experienced science and math tutor',
-    image: '/images/tutors/blythe-yangson.jpg',
-    bio: 'Experienced science and math tutor dedicated to helping students succeed through engaging and approachable teaching.',
-    achievements: [
-      'Graduate of Damien Memorial School and current teacher at Damien',
-      'Teaches Calculus and Pre-Calculus',
-      'Focus on problem-solving, real-world connection, and curiosity-driven learning'
-    ],
-    experience: 'Current teacher',
-    certifications: 'Damien Memorial School',
-    funFact: 'Current teacher at Damien Memorial School',
-    grades: '9-12',
-    category: 'Math',
-  },
-  {
-    name: 'Keenan Kim',
-    subjects: ['Math', 'Calculus'],
-    tagline: 'Math tutor specializing in learning differences',
-    image: '/images/tutors/keenan-kim.jpg',
-    bio: 'Graduate of HBA Highschool currently studying Architectural Engineering at Penn State. Specialized math tutor teaching up to calculus via Zoom.',
-    achievements: [
-      'Graduated from HBA Highschool',
-      'Currently studying Architectural Engineering at Penn State',
-      'Specializes in math tutoring up to calculus level',
-      'Experience working with students with dyscalculia and dysgraphia'
-    ],
-    experience: 'Math tutor',
-    certifications: 'HBA Highschool, Penn State (Architectural Engineering)',
-    funFact: 'Currently studying Architectural Engineering at Penn State',
-    grades: '9-12',
-    category: 'Math',
-  },
-  {
-    name: 'Colton Inamine',
-    subjects: ['Math'],
-    tagline: 'Hard worker dedicated to quality teaching',
-    image: '/images/tutors/colton-inamine.jpg',
-    bio: 'Graduate of Iolani School currently studying Electrical Computer Engineering at UH Manoa. Very hard worker, dedicated to quality teaching.',
-    achievements: [
-      'Graduated from Iolani School',
-      'Currently studying Electrical Computer Engineering at UH Manoa',
-      'Dedicated to quality teaching and understanding of mathematical topics'
-    ],
-    experience: 'Math tutor',
-    certifications: 'Iolani School, UH Manoa (Electrical Computer Engineering)',
-    funFact: 'Enjoys volleyball and traveling',
-    grades: '9-12',
-    category: 'Math',
-  },
-  {
-    name: 'Alec Wong',
-    subjects: ['Math', 'English'],
-    tagline: 'Punahou Junior with future med school goals',
-    image: '/images/tutors/alec-wong.jpg',
-    bio: 'Punahou Junior, artist, with future med school goals. Good with kids and patient, specializing in Math and English tutoring.',
-    achievements: [
-      'Punahou Junior',
-      'Artist',
-      'Future med school goals',
-      'Good with kids and patient'
-    ],
-    experience: 'Tutor',
-    certifications: 'Punahou School',
-    funFact: 'Artist with future med school goals',
-    grades: '9-12',
-    category: 'Math',
-  },
-  {
-    name: 'Aizen Chung',
-    subjects: ['Math', 'Physics'],
-    tagline: 'Iolani Graduate and Provost Achievement Scholar',
-    image: '/images/tutors/aizen-chung.jpg',
-    bio: 'Iolani Graduate, currently a UHM Electrical Computer Engineering student. Founder of Web Design Agency Sondr Designs.',
-    achievements: [
-      'Iolani Graduate',
-      'Current UHM Electrical Computer Engineering student',
-      'Founder of Web Design Agency Sondr Designs',
-      'Co-founder of startup - Blend Cafe app',
-      'Current Provost Achievement Scholar at UHM'
-    ],
-    experience: 'Tutor',
-    certifications: 'Iolani School, UHM (Electrical Computer Engineering)',
-    funFact: 'Loves coffee, the gym, and learning',
-    grades: '9-12',
-    category: 'Math',
-  },
-  {
-    name: 'Shwe Win',
-    subjects: ['Science', 'Chemistry', 'Biology', 'College Counseling', 'Essay Writing'],
-    tagline: 'Harvard Magna Cum Laude | Fulbright Scholar | Neuroscience & Global Health',
-    image: '/images/tutors/shwe-win.jpg',
-    bio: 'Harvard graduate with a 3.97 GPA and Highest Honors in Neuroscience. Founder of Kūlia College Pathways.',
-    achievements: [
-      'Harvard University — B.A. Neuroscience, Magna Cum Laude with Highest Honors (GPA: 3.957)',
-      'Fulbright Scholar, U.S. Department of State (2025)',
-      'Founded Kūlia College Pathways, serving 140+ students and 100+ volunteer mentors'
-    ],
-    experience: 'Since 2023',
-    certifications: 'Harvard University, Fulbright Scholar',
-    funFact: 'Founder of a college access nonprofit recognized by Hawaii Governor Josh Green',
-    grades: 'K-12, College Prep',
-    category: 'College Counseling',
-  },
-  {
-    name: 'Omar Saidy',
-    subjects: ['Math', 'Test Prep', 'Social Studies', 'PE'],
-    tagline: 'Veteran teacher of 20 years',
-    image: '/images/tutors/omar-saidy-headshot-v4.png',
-    bio: 'Veteran K-12 educator with 20 years of experience, well-versed in Mathematics, Test Preparation, Social Studies, and Physical Education. Currently teaching Middle School Mathematics.',
-    achievements: [
-      '20+ years of K-12 teaching experience',
-      'Experienced with blended learning (Zoom, Canvas), face-to-face instruction, individual tutoring, and group tutoring',
-      'Has taught and tutored across many age levels, difficulty tiers, and diverse learners',
-      'Patient, adaptable teaching style with step-by-step instruction and proven methodology'
-    ],
-    experience: '20+ years',
-    certifications: 'Veteran K-12 educator',
-    funFact: 'Coaches his daughters in Judo, Wrestling, Jiu Jitsu, and Surfing',
-    grades: 'K-12',
-    category: 'SAT/SSAT',
-  },
-  {
-    name: 'Sheany Chung',
-    subjects: ['Biology', 'Chemistry', 'Cell & Molecular Biology', 'Genetics'],
-    tagline: 'Biology BS cum laude | UH Mānoa Student Marshall',
-    image: '/images/tutors/sheany-chung.jpg?v=20260617',
-    bio: 'Biology BS cum laude graduate and Student Marshall for UH Mānoa\'s Fall 2025 convocation. Teaching intern for college-level Cell & Molecular Biology and Genetics, with hands-on tutoring experience at Kapiolani Medical Center for Women & Children.',
-    achievements: [
-      'Biology BS, cum laude — University of Hawai‘i at Mānoa',
-      'Student Marshall, UH Mānoa Fall 2025 Convocation',
-      'Teaching Intern — College-level Cell & Molecular Biology and Genetics',
-      '1st Place, College of Tropical Agriculture and Human Resources (CTAHR) Showcase & Research Symposium',
-      'College of Natural Sciences Student Ambassador & Social Media Chair',
-      'DOE Tutor at Kapiolani Medical Center for Women & Children',
-    ],
-    experience: 'Teaching Intern & DOE Tutor',
-    certifications: 'University of Hawai‘i at Mānoa — B.S. Biology (cum laude)',
-    funFact: 'Student Marshall for UH Mānoa\'s Fall 2025 convocation',
-    grades: '9-12, College',
-    category: 'Biology',
-  },
-];
-
-export function EducatorsContent() {
+export function EducatorsContent({ educators = DEFAULT_EDUCATORS }: { educators?: Tutor[] }) {
   const [selectedEducator, setSelectedEducator] = useState<number | null>(null);
   const [activeFilter, setActiveFilter] = useState('All');
 
@@ -252,7 +36,7 @@ export function EducatorsContent() {
     if (activeFilter === 'All') {
       return educators;
     }
-    
+
     const filterMap: Record<string, string[]> = {
       'Math': ['Math', 'Mathematics', 'Calculus', 'Physics', 'Pre-Calculus'],
       'English': ['English', 'Essay Writing', 'Reading Comprehension', 'College Essay Writing', 'Writing'],
@@ -261,17 +45,17 @@ export function EducatorsContent() {
       'Chemistry': ['Chemistry'],
       'Biology': ['Biology', 'Cell & Molecular Biology', 'Genetics']
     };
-    
+
     const keywords = filterMap[activeFilter] || [];
-    
-    return educators.filter(edu => 
-      edu.subjects.some(subject => 
-        keywords.some(keyword => 
+
+    return educators.filter(edu =>
+      edu.subjects.some(subject =>
+        keywords.some(keyword =>
           subject.toLowerCase().includes(keyword.toLowerCase())
         )
       )
     );
-  }, [activeFilter]);
+  }, [activeFilter, educators]);
 
   return (
     <main className="pt-20">
@@ -324,10 +108,10 @@ export function EducatorsContent() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredEducators.map((educator, index) => {
-              const originalIndex = educators.findIndex(e => e.name === educator.name);
+              const originalIndex = educators.findIndex(e => e.id === educator.id);
               return (
                 <div
-                  key={educator.name}
+                  key={educator.id}
                   className="relative min-h-[280px] flex flex-col group rounded-3xl overflow-hidden border-2 border-border shadow-lg bg-card md:hover:shadow-xl md:hover:border-primary md:transition-all md:duration-300 md:hover:-translate-y-1 cursor-pointer text-left"
                 >
                   <div
@@ -339,7 +123,7 @@ export function EducatorsContent() {
                   >
                     <div className="relative aspect-square min-h-28 overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 flex-shrink-0 flex items-center justify-center">
                       <Image
-                        src={educator.image}
+                        src={educator.imageUrl || '/images/tutors/kody-kim.jpg'}
                         alt={`${educator.name} - Expert tutor in Hawaii`}
                         fill
                         className="object-cover object-top"
@@ -399,12 +183,12 @@ export function EducatorsContent() {
                 <DialogTitle>{educator.name}</DialogTitle>
                 <DialogDescription>Full bio and details for {educator.name}</DialogDescription>
               </DialogHeader>
-              
+
               <div className="space-y-0">
                 <div className="relative w-full rounded-t-xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20">
                   <div className="flex items-center justify-center w-full aspect-[3/4] min-h-[400px] max-h-[500px] relative">
                     <Image
-                      src={educator.image}
+                      src={educator.imageUrl || '/images/tutors/kody-kim.jpg'}
                       alt={`${educator.name} - Expert tutor in Hawaii`}
                       fill
                       className="object-cover object-top"
@@ -442,7 +226,7 @@ export function EducatorsContent() {
                       </div>
                       <p className="text-muted-foreground">{educator.experience}</p>
                     </div>
-                    
+
                     <div className="bg-card rounded-lg p-4 border border-border">
                       <div className="flex items-center gap-2 mb-2">
                         <BookOpen className="w-5 h-5 text-primary" />

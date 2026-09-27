@@ -1,7 +1,10 @@
-import { groupSatFaqs } from '@/lib/sat-group/content';
+import { groupSatFaqs, GROUP_SAT_START_ISO } from '@/lib/sat-group/content';
+import type { Tutor } from '@/lib/staff/types';
 
 interface StructuredDataProps {
   type: 'organization' | 'home' | 'about' | 'educators' | 'contact' | 'diagnostic' | 'group-sat-prep';
+  /** Live tutor profiles for the educators page; falls back to the static roster. */
+  tutors?: Tutor[];
 }
 
 const baseUrl = 'https://www.khmtutoring.com';
@@ -403,6 +406,18 @@ const educatorPersonSchemas = [
   },
 ];
 
+function buildEducatorSchemas(tutors: Tutor[]) {
+  return tutors.map((tutor) => ({
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: tutor.name,
+    jobTitle: tutor.tagline || tutor.category,
+    worksFor: { '@id': `${baseUrl}/#organization` },
+    ...(tutor.subjects.length ? { knowsAbout: tutor.subjects } : {}),
+    ...(tutor.achievements.length ? { award: tutor.achievements.slice(0, 4) } : {}),
+  }));
+}
+
 const diagnosticPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
@@ -480,7 +495,7 @@ const groupSatSchema = {
       '@type': 'CourseInstance',
       name: 'Sunday Strategy Cohort',
       courseMode: 'in-person',
-      startDate: '2026-09-21',
+      startDate: GROUP_SAT_START_ISO,
       courseWorkload: 'PT20H',
       location: groupSatLocation,
     },
@@ -488,7 +503,7 @@ const groupSatSchema = {
       '@type': 'CourseInstance',
       name: 'Weekday After-School Cohort',
       courseMode: 'in-person',
-      startDate: '2026-09-21',
+      startDate: GROUP_SAT_START_ISO,
       courseWorkload: 'PT20H',
       location: groupSatLocation,
     },
@@ -496,7 +511,7 @@ const groupSatSchema = {
       '@type': 'CourseInstance',
       name: 'Evening Practice Cohort',
       courseMode: 'in-person',
-      startDate: '2026-09-21',
+      startDate: GROUP_SAT_START_ISO,
       courseWorkload: 'PT20H',
       location: groupSatLocation,
     },
@@ -542,15 +557,17 @@ function getBreadcrumbSchema(pageName: string, pageUrl: string) {
   };
 }
 
-export function StructuredData({ type }: StructuredDataProps) {
+export function StructuredData({ type, tutors }: StructuredDataProps) {
   const getSchemas = () => {
     switch (type) {
       case 'home':
         return [organizationSchema, websiteSchema, serviceSchema, faqSchema, ...reviewSchemas];
       case 'about':
         return [organizationSchema, getBreadcrumbSchema('About', `${baseUrl}/about`)];
-      case 'educators':
-        return [organizationSchema, ...educatorPersonSchemas, getBreadcrumbSchema('Educators', `${baseUrl}/educators`)];
+      case 'educators': {
+        const educatorSchemas = tutors ? buildEducatorSchemas(tutors) : educatorPersonSchemas;
+        return [organizationSchema, ...educatorSchemas, getBreadcrumbSchema('Educators', `${baseUrl}/educators`)];
+      }
       case 'contact':
         return [organizationSchema, contactPageSchema, faqSchema, getBreadcrumbSchema('Contact', `${baseUrl}/contact`)];
       case 'diagnostic':
