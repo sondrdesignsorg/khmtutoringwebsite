@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import {
-  ArrowLeft, BookOpen, ClipboardCheck, ClipboardList, FileText, FolderUp, Pencil, Plus, Search,
-  Sparkles, Trash2, UploadCloud,
+  ArrowLeft, BookOpen, ClipboardCheck, ClipboardList, ExternalLink, FileText, FolderUp, Pencil, Plus,
+  Search, Sparkles, Trash2, UploadCloud,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { Resource, ResourceDraft, ResourceType } from '@/lib/staff/types';
@@ -18,6 +18,8 @@ import { Input } from '@/components/ui/input';
 import { AREA_CHIP, DIFFICULTY_CHIP } from './badges';
 import { cn } from '@/lib/utils';
 import { matchesAllTerms } from '@/lib/search';
+
+const TUTOR_TRACK_URL = 'https://khm-tutor-track--cgmt7247.replit.app/';
 
 export function AdminClient({
   initialResources,
@@ -130,12 +132,22 @@ export function AdminClient({
             <h1 className="mb-1.5 font-heading text-4xl font-bold">Library Admin</h1>
             <p className="text-base text-muted-foreground">Upload, auto-sort, and manage staff PDFs. Visible to admins only.</p>
           </div>
-          <button
-            onClick={() => router.push('/staff/library')}
-            className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:bg-primary/10"
-          >
-            <ArrowLeft className="size-4" />Back to Library
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href={TUTOR_TRACK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-9 items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-5 text-sm font-semibold text-primary transition-colors hover:bg-primary/15"
+            >
+              <ExternalLink className="size-4" />Open Tutor Track
+            </a>
+            <button
+              onClick={() => router.push('/staff/library')}
+              className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:bg-primary/10"
+            >
+              <ArrowLeft className="size-4" />Back to Library
+            </button>
+          </div>
         </div>
 
         <button
