@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, Lock, LogOut, Settings, UserRound, Users } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Lock, LogOut, Settings, UserRound, Users } from 'lucide-react';
 import type { StaffSession } from '@/lib/staff/auth';
 import { cn } from '@/lib/utils';
 
@@ -50,6 +51,12 @@ export function PortalChrome({
         </div>
 
         <div className="flex items-center gap-2.5">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+          >
+            <ArrowLeft className="size-3.5" />Main Site
+          </Link>
           {session.role === 'admin' && (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-2.5 py-[3px] text-[11px] font-bold text-[hsl(215_45%_20%)]">
               <Settings className="size-3" />ADMIN

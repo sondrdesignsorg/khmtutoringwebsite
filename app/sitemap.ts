@@ -17,6 +17,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/about/leadership`,
+      lastModified: new Date('2026-10-02'),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
       url: `${baseUrl}/educators`,
       lastModified: new Date('2026-08-28'),
       changeFrequency: 'monthly',
