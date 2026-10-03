@@ -13,19 +13,19 @@ type Leader = {
 const leaders: Leader[] = [
   {
     name: 'Kody Kim',
-    role: 'Founder',
+    role: 'Founder/CEO',
     imageUrl: '/images/tutors/kody-kim.jpg',
     bio: 'Kody founded KHM Tutoring in 2016 with a vision to create a more personal, quality-focused tutoring experience in Hawaii. He leads the company\u2019s mission to match every student with the right tutor.',
   },
   {
-    name: 'Matt',
-    role: 'Leadership Team',
-    bio: 'Matt is a member of the KHM Tutoring leadership team, helping guide the company\u2019s growth and commitment to Hawaii families.',
+    name: 'Matthew Lew',
+    role: 'CFO',
+    bio: 'Matt brings over two decades of financial advisory leadership at Deloitte, advising Fortune 500 and public-sector clients on restructuring and performance improvement. As CFO, he oversees KHM Tutoring\u2019s finances, budgeting, and operations.',
   },
   {
-    name: 'Connor',
-    role: 'Leadership Team',
-    bio: 'Connor is a member of the KHM Tutoring leadership team, helping guide the company\u2019s growth and commitment to Hawaii families.',
+    name: 'Connor Takemoto',
+    role: 'Project Manager/Intern',
+    bio: 'Connor coordinates projects and special initiatives across KHM Tutoring, helping the team stay organized and responsive as it serves students throughout Hawaii. As a member of the leadership team, he supports new programs and keeps families\u2019 needs at the center of every decision.',
   },
 ];
 
