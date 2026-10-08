@@ -53,4 +53,16 @@
   7. Verify at `/staff/login`: Continue with Google should land on the
      6-digit PIN gate. If Google blocks the app, the account isn't a Test
      user yet (step 4) or the redirect URI doesn't match exactly.
+
+  ## Staff PINs
+
+  - **Individual PINs (recommended):** an admin invites a staff email from
+    `/staff/management`, which issues a unique 6-digit PIN and emails it. The
+    PIN is stored hashed (scrypt) with lockout after repeated failures.
+  - **Universal PIN:** `013100` by default, overridable with the
+    `UNIVERSAL_STAFF_PIN` env var. It is honored **only for emails already on
+    the staff allowlist** (add the email first, then the person signs in with
+    Google and enters the universal PIN). An unknown Google account cannot
+    self-admit. Every universal-PIN activation is written to
+    `staff_pin_activations` and logged to the server output.
   

@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Download, FileDown, Loader2, Mail, X } from 'lucide-react';
-import type { Resource } from '@/lib/staff/types';
+import { ChevronDown, ChevronUp, Download, FileDown, Loader2, Mail, Send, X } from 'lucide-react';
+import type { Resource, Student } from '@/lib/staff/types';
 import { Modal, ModalCloseButton } from './Modal';
+import { RecipientPicker, type Recipient } from './RecipientPicker';
 import { cn } from '@/lib/utils';
 
 export function ExportModal({
   files,
+  students,
   onReorder,
   onRemove,
   onClose,
@@ -16,15 +18,18 @@ export function ExportModal({
   recipientEmail,
 }: {
   files: Resource[];
+  students: Student[];
   onReorder: (index: number, dir: -1 | 1) => void;
   onRemove: (id: string) => void;
   onClose: () => void;
-  onExport: (delivery: 'download' | 'email') => void;
+  onExport: (delivery: 'download' | 'email', recipient?: Recipient) => void;
   loading?: boolean;
   recipientEmail: string;
 }) {
-  const [delivery, setDelivery] = useState<'download' | 'email'>('download');
+  const [delivery, setDelivery] = useState<'download' | 'email' | 'student'>('download');
+  const [recipient, setRecipient] = useState<Recipient | null>(null);
   const totalPages = files.reduce((s, f) => s + f.pages, 0) + 1; // + cover
+  const studentMode = delivery === 'student';
   return (
     <Modal onClose={onClose} className="flex max-w-[560px] flex-col">
       <div className="flex items-center justify-between border-b border-border px-6 py-[18px]">
@@ -66,22 +71,34 @@ export function ExportModal({
 
       <div className="border-t border-border px-6 py-4">
         <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground">Deliver packet</p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           <DeliveryOption
             active={delivery === 'download'}
-            onClick={() => setDelivery('download')}
+            onClick={() => { setDelivery('download'); setRecipient(null); }}
             icon={<Download className="size-4" />}
             title="Download"
             subtitle="Save to this device"
           />
           <DeliveryOption
             active={delivery === 'email'}
-            onClick={() => setDelivery('email')}
+            onClick={() => { setDelivery('email'); setRecipient(null); }}
             icon={<Mail className="size-4" />}
             title="Email to me"
             subtitle={recipientEmail}
           />
+          <DeliveryOption
+            active={delivery === 'student'}
+            onClick={() => { setDelivery('student'); setRecipient(null); }}
+            icon={<Send className="size-4" />}
+            title="Send to student"
+            subtitle="Pick from roster"
+          />
         </div>
+        {studentMode && (
+          <div className="mt-3 rounded-lg border border-border bg-secondary/20 p-3">
+            <RecipientPicker students={students} onChange={setRecipient} />
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end gap-3 border-t border-border px-6 py-4">
@@ -89,12 +106,18 @@ export function ExportModal({
           Cancel
         </button>
         <button
-          onClick={() => onExport(delivery)}
-          disabled={loading}
+          onClick={() => onExport(studentMode ? 'email' : delivery, studentMode ? recipient ?? undefined : undefined)}
+          disabled={loading || (studentMode && !recipient)}
           className="inline-flex h-9 items-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60 disabled:pointer-events-none"
         >
-          {loading ? <Loader2 className="size-4 animate-spin" /> : delivery === 'email' ? <Mail className="size-4" /> : <FileDown className="size-4" />}
-          {loading ? 'Building PDF…' : delivery === 'email' ? 'Email Combined PDF' : 'Export Combined PDF'}
+          {loading ? <Loader2 className="size-4 animate-spin" /> : studentMode ? <Send className="size-4" /> : delivery === 'email' ? <Mail className="size-4" /> : <FileDown className="size-4" />}
+          {loading
+            ? 'Building PDF…'
+            : studentMode
+              ? 'Send to Student'
+              : delivery === 'email'
+                ? 'Email Combined PDF'
+                : 'Export Combined PDF'}
         </button>
       </div>
     </Modal>

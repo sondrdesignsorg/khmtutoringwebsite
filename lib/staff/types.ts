@@ -35,6 +35,8 @@ export interface Resource extends ResourceSource {
   mimeType?: string;
   fileSize?: number;
   classificationConfidence?: Confidence;
+  /** Folder this resource belongs to (used to group tests into course folders). */
+  folderId?: string;
 }
 
 /** A draft used by the add/edit forms before an id/date are assigned. */
@@ -93,3 +95,27 @@ export interface Tutor {
 /** Draft used by the add/edit form before an id is assigned. */
 export type TutorDraft = Omit<Tutor, 'id' | 'sortOrder' | 'published'> &
   Partial<Pick<Tutor, 'sortOrder' | 'published'>>;
+
+/** A student who can receive worksheets by email from the staff library. */
+export interface Student {
+  id: string;
+  name: string;
+  email: string;
+  grade: string;
+  parentName: string;
+  phone: string;
+  notes: string;
+}
+
+/** Draft used by the add/edit form before an id is assigned. */
+export type StudentDraft = Omit<Student, 'id'>;
+
+/** An editable folder used to group tests (and other resources) by course. */
+export interface LibraryFolder {
+  id: string;
+  name: string;
+  sortOrder: number;
+}
+
+export type LibraryFolderDraft = Omit<LibraryFolder, 'id' | 'sortOrder'> &
+  Partial<Pick<LibraryFolder, 'sortOrder'>>;

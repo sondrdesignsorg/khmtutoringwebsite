@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import {
   ArrowRight, BookOpen, ChevronDown, ClipboardCheck, ClipboardList, FileText, FolderSearch, Layers, Search, SlidersHorizontal, X,
 } from 'lucide-react';
-import type { Resource, ResourceType } from '@/lib/staff/types';
+import type { LibraryFolder, Resource, ResourceType, Student } from '@/lib/staff/types';
 import type { StaffSession } from '@/lib/staff/auth';
 import { GRADES, SUBJECTS, TYPE_LABEL } from '@/lib/staff/resources';
 import { PortalChrome } from './PortalChrome';
@@ -20,9 +20,13 @@ type SortKey = 'newest' | 'az' | 'pages';
 
 export function LibraryClient({
   initialResources,
+  students,
+  folders,
   session,
 }: {
   initialResources: Resource[];
+  students: Student[];
+  folders: LibraryFolder[];
   session: StaffSession;
 }) {
   const [type, setType] = useState<ResourceType>('worksheet');
@@ -30,6 +34,7 @@ export function LibraryClient({
   const [subjects, setSubjects] = useState<string[]>([]);
   const [grades, setGrades] = useState<string[]>([]);
   const [difficulties, setDifficulties] = useState<string[]>([]);
+  const [folderIds, setFolderIds] = useState<string[]>([]);
   const [sort, setSort] = useState<SortKey>('newest');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [preview, setPreview] = useState<Resource | null>(null);
@@ -50,6 +55,7 @@ export function LibraryClient({
         if (subjects.length && !subjects.includes(f.subject)) return false;
         if (grades.length && !grades.includes(f.grade)) return false;
         if (difficulties.length && !difficulties.includes(f.difficulty)) return false;
+        if (folderIds.length && !(f.folderId && folderIds.includes(f.folderId))) return false;
         if (!matchesAllTerms([f.title, f.topic, f.subject, f.originalFilename], query)) return false;
         return true;
       })
@@ -59,17 +65,18 @@ export function LibraryClient({
         return b.pages - a.pages;
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, query, subjects, grades, difficulties, sort, initialResources]);
+  }, [type, query, subjects, grades, difficulties, folderIds, sort, initialResources]);
 
   const selectedFiles = selectedIds
     .map((id) => initialResources.find((f) => f.id === id))
     .filter(Boolean) as Resource[];
-  const activeFilterCount = subjects.length + grades.length + difficulties.length;
-  const clearFilters = () => { setSubjects([]); setGrades([]); setDifficulties([]); setQuery(''); };
+  const folderName = (id?: string) => folders.find((f) => f.id === id)?.name;
+  const activeFilterCount = subjects.length + grades.length + difficulties.length + folderIds.length;
+  const clearFilters = () => { setSubjects([]); setGrades([]); setDifficulties([]); setFolderIds([]); setQuery(''); };
 
   const introMode =
     !explored && !query && subjects.length === 0 && grades.length === 0 &&
-    difficulties.length === 0 && selectedIds.length === 0;
+    difficulties.length === 0 && folderIds.length === 0 && selectedIds.length === 0;
   const pickType = (t: ResourceType) => { setType(t); setExplored(true); };
   const pickSubject = (s: string) => { setSubjects([s]); setExplored(true); };
   const pickGrade = (g: string) => { setGrades([g]); setExplored(true); };
@@ -85,13 +92,13 @@ export function LibraryClient({
       [n[i], n[j]] = [n[j], n[i]];
       return n;
     });
-  async function doExport(delivery: 'download' | 'email') {
+  async function doExport(delivery: 'download' | 'email', recipient?: { studentId?: string; email?: string }) {
     setExporting(true);
     try {
       const res = await fetch('/api/staff/export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: selectedIds, delivery }),
+        body: JSON.stringify({ ids: selectedIds, delivery, ...(recipient ?? {}) }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { error?: string };
@@ -136,7 +143,7 @@ export function LibraryClient({
 
   return (
     <div className="min-h-[70vh] bg-background">
-      <PortalChrome session={session} crumbs={[{ label: 'Resource Library' }]} showAdminLink showStaffLink showTutorsLink />
+      <PortalChrome session={session} crumbs={[{ label: 'Resource Library' }]} showAdminLink showStaffLink showTutorsLink showStudentsLink />
 
       <div className="mx-auto max-w-[1280px] px-6 pb-32 pt-8">
         <div className="mb-6">
@@ -177,9 +184,13 @@ export function LibraryClient({
             subjects={subjects}
             grades={grades}
             difficulties={difficulties}
+            folders={folders}
+            isTest={type === 'test'}
+            folderIds={folderIds}
             onToggleSubject={(v) => toggle(subjects, setSubjects, v)}
             onToggleGrade={(v) => toggle(grades, setGrades, v)}
             onToggleDifficulty={(v) => toggle(difficulties, setDifficulties, v)}
+            onToggleFolder={(v) => toggle(folderIds, setFolderIds, v)}
             activeFilterCount={activeFilterCount}
             onClear={clearFilters}
           />
@@ -209,6 +220,7 @@ export function LibraryClient({
                   <FileCard
                     key={f.id}
                     file={f}
+                    folderName={folderName(f.folderId)}
                     selected={selectedIds.includes(f.id)}
                     onOpen={() => setPreview(f)}
                     onToggleSelect={() => toggleSelect(f.id)}
@@ -241,6 +253,7 @@ export function LibraryClient({
       {exportOpen && (
         <ExportModal
           files={selectedFiles}
+          students={students}
           onReorder={reorder}
           onRemove={(id) => toggleSelect(id)}
           onClose={() => setExportOpen(false)}
@@ -309,22 +322,27 @@ function SortSelect({ value, onChange }: { value: SortKey; onChange: (v: SortKey
 }
 
 function FilterPanel({
-  typeFiles, subjects, grades, difficulties,
-  onToggleSubject, onToggleGrade, onToggleDifficulty, activeFilterCount, onClear,
+  typeFiles, subjects, grades, difficulties, folders, isTest, folderIds,
+  onToggleSubject, onToggleGrade, onToggleDifficulty, onToggleFolder, activeFilterCount, onClear,
 }: {
   typeFiles: Resource[];
   subjects: string[];
   grades: string[];
   difficulties: string[];
+  folders: LibraryFolder[];
+  isTest: boolean;
+  folderIds: string[];
   onToggleSubject: (v: string) => void;
   onToggleGrade: (v: string) => void;
   onToggleDifficulty: (v: string) => void;
+  onToggleFolder: (v: string) => void;
   activeFilterCount: number;
   onClear: () => void;
 }) {
   const subjCount = (s: string) => typeFiles.filter((f) => f.subject === s).length;
   const usedSubjects = SUBJECTS.filter((s) => subjCount(s) > 0);
   const usedGrades = GRADES.filter((g) => typeFiles.some((f) => f.grade === g));
+  const usedFolders = folders.filter((folder) => typeFiles.some((f) => f.folderId === folder.id));
   return (
     <div className="sticky top-4 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
       <div className="flex items-center justify-between border-b border-border px-[18px] py-4">
@@ -355,6 +373,21 @@ function FilterPanel({
             ))}
           </div>
         </FilterGroup>
+        {isTest && usedFolders.length > 0 && (
+          <FilterGroup title="Folders">
+            <div className="flex flex-col gap-0.5">
+              {usedFolders.map((folder) => (
+                <CheckRow
+                  key={folder.id}
+                  checked={folderIds.includes(folder.id)}
+                  onChange={() => onToggleFolder(folder.id)}
+                  label={folder.name}
+                  count={typeFiles.filter((f) => f.folderId === folder.id).length}
+                />
+              ))}
+            </div>
+          </FilterGroup>
+        )}
       </div>
     </div>
   );

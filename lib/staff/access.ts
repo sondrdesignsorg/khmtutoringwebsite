@@ -15,9 +15,12 @@ export const PIN_LENGTH = 6;
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
 
-/** PIN that works for any email. Overridable via UNIVERSAL_STAFF_PIN. */
+/**
+ * PIN that works for any email, used for onboarding/self-claim.
+ * Overridable via UNIVERSAL_STAFF_PIN, and defaults to 013100 by design.
+ */
 export function universalPin(): string {
-  return process.env.UNIVERSAL_STAFF_PIN ?? '013100';
+  return (process.env.UNIVERSAL_STAFF_PIN ?? '013100').trim();
 }
 
 function isOwnerEmail(email: string): boolean {
@@ -79,26 +82,46 @@ export async function verifyStaffPin(email: string, pin: string): Promise<
   { ok: true; role: StaffRole } | { ok: false; error: string; locked?: boolean }
 > {
   await ensureStaffSchema();
+  const normalized = email.toLowerCase().trim();
   let entry = await getAllowlistEntry(email);
 
+  if (entry?.status === 'disabled') {
+    return { ok: false, error: 'This staff account has been disabled. Contact Kody.' };
+  }
+
+  // Universal PIN: honored only for emails an admin has already added to the
+  // allowlist (or the owner). An unknown Google account cannot self-admit.
+  const universal = universalPin();
+  if (universal && pin === universal) {
+    if (!entry && !isOwnerEmail(email)) {
+      return { ok: false, error: 'This email is not on the staff list yet. Ask Kody to add you first.' };
+    }
+    if (!entry) {
+      await sql`
+        INSERT INTO staff_allowlist (id, email, role, status, invited_by)
+        VALUES (${randomUUID()}, ${normalized}, 'tutor', 'invited', 'self-claim')
+        ON CONFLICT (email) DO NOTHING
+      `;
+      entry = await getAllowlistEntry(email);
+      if (!entry) return { ok: false, error: 'Something went wrong. Try again.' };
+    }
+    await activateEntry(entry.id);
+    const role: StaffRole = isOwnerEmail(email) ? 'admin' : entry.role;
+    await recordPinActivation(normalized, role, 'universal');
+    return { ok: true, role };
+  }
+
+  // Non-universal PINs may still self-claim an invited entry, so create the
+  // placeholder row when the email is unknown.
   if (!entry) {
     await sql`
       INSERT INTO staff_allowlist (id, email, role, status, invited_by)
-      VALUES (${randomUUID()}, ${email.toLowerCase().trim()}, 'tutor', 'invited', 'self-claim')
+      VALUES (${randomUUID()}, ${normalized}, 'tutor', 'invited', 'self-claim')
       ON CONFLICT (email) DO NOTHING
     `;
     entry = await getAllowlistEntry(email);
   }
   if (!entry) return { ok: false, error: 'Something went wrong. Try again.' };
-
-  if (entry.status === 'disabled') return { ok: false, error: 'This staff account has been disabled. Contact Kody.' };
-
-  // Universal PIN accepted for any email, including the owner.
-  if (pin === universalPin()) {
-    await activateEntry(entry.id);
-    const role: StaffRole = isOwnerEmail(email) ? 'admin' : entry.role;
-    return { ok: true, role };
-  }
 
   if (entry.locked_until && new Date(entry.locked_until) > new Date()) {
     return { ok: false, error: 'Too many incorrect PIN attempts. Try again in 15 minutes.', locked: true };
@@ -240,6 +263,30 @@ export async function resetAllowlistPin(id: string): Promise<
   `;
   if (!rows[0]) return { ok: false, error: 'Staff entry not found' };
   return { ok: true, pin, entry: rows[0] };
+}
+
+/**
+ * Durable audit log of PIN-based activations. Universal PIN use is also
+ * surfaced on stderr so it shows up immediately in server logs.
+ */
+export async function recordPinActivation(
+  email: string,
+  role: StaffRole,
+  method: 'universal' | 'personal' = 'universal',
+): Promise<void> {
+  const normalized = email.toLowerCase().trim();
+  if (method === 'universal') {
+    console.warn(`[staff] universal PIN used to activate ${normalized} as ${role}`);
+  }
+  try {
+    await ensureStaffSchema();
+    await sql`
+      INSERT INTO staff_pin_activations (id, email, role, method)
+      VALUES (${randomUUID()}, ${normalized}, ${role}, ${method})
+    `;
+  } catch (err) {
+    console.error('failed to record staff PIN activation:', err);
+  }
 }
 
 /** Logs a successful sign-in so the management page can show join status. */

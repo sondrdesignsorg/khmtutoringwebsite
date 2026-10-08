@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Check, ClipboardCheck, ClipboardList, FileText, Plus } from 'lucide-react';
 import { GRADES, SUBJECTS } from '@/lib/staff/resources';
-import type { Difficulty, Resource, ResourceDraft, ResourceType } from '@/lib/staff/types';
+import type { Difficulty, LibraryFolder, Resource, ResourceDraft, ResourceType } from '@/lib/staff/types';
 import { Modal, ModalCloseButton } from './Modal';
 import { StaffSelect } from './StaffSelect';
 import { Input } from '@/components/ui/input';
@@ -17,11 +17,13 @@ type FormValue = ResourceDraft | Resource;
 
 export function AddEditResourceModal({
   initial,
+  folders,
   isNew,
   onSave,
   onClose,
 }: {
   initial: FormValue;
+  folders: LibraryFolder[];
   isNew: boolean;
   onSave: (value: FormValue) => void;
   onClose: () => void;
@@ -80,6 +82,16 @@ export function AddEditResourceModal({
           <Input value={draft.topic} onChange={(e) => set({ topic: e.target.value })} placeholder="e.g. Linear equations" />
         </Field>
 
+        {draft.type === 'test' && (
+          <Field label="Folder" hint="Group tests by course">
+            <StaffSelect
+              value={draft.folderId ?? ''}
+              onChange={(v) => set({ folderId: v || undefined })}
+              options={[{ value: '', label: 'No folder' }, ...folders.map((f) => ({ value: f.id, label: f.name }))]}
+            />
+          </Field>
+        )}
+
         <div className="grid grid-cols-2 gap-3">
           <Field label="Difficulty">
             <StaffSelect
@@ -116,12 +128,13 @@ export function AddEditResourceModal({
   );
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({ label, hint, required, children }: { label: string; hint?: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-medium text-foreground">
+      <label className="mb-1.5 flex items-baseline gap-2 text-sm font-medium text-foreground">
         {label}
         {required && <span className="ml-0.5 text-destructive">*</span>}
+        {hint && <span className="text-xs font-normal text-muted-foreground">{hint}</span>}
       </label>
       {children}
     </div>

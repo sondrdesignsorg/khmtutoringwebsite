@@ -37,9 +37,12 @@ export function ensureStaffSchema(): Promise<void> {
         source_path text,
         source_checksum text,
         migrated_at timestamptz,
+        folder_id text,
         created_at timestamptz NOT NULL DEFAULT now()
       )
     `;
+    // Existing deployments predate the folder feature; add the column in place.
+    await sql`ALTER TABLE resources ADD COLUMN IF NOT EXISTS folder_id text`;
     await sql`CREATE INDEX IF NOT EXISTS resources_type_idx ON resources (type)`;
     await sql`CREATE INDEX IF NOT EXISTS resources_subject_idx ON resources (subject)`;
     await sql`CREATE INDEX IF NOT EXISTS resources_grade_idx ON resources (grade)`;
@@ -48,6 +51,78 @@ export function ensureStaffSchema(): Promise<void> {
     await sql`CREATE INDEX IF NOT EXISTS resources_storage_key_idx ON resources (storage_key) WHERE storage_key IS NOT NULL`;
     await sql`CREATE INDEX IF NOT EXISTS resources_source_idx ON resources (source_provider, source_project_ref, source_id) WHERE source_id IS NOT NULL`;
     await sql`CREATE INDEX IF NOT EXISTS resources_source_checksum_idx ON resources (source_checksum) WHERE source_checksum IS NOT NULL`;
+    await sql`CREATE INDEX IF NOT EXISTS resources_folder_idx ON resources (folder_id) WHERE folder_id IS NOT NULL`;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS library_folders (
+        id text PRIMARY KEY,
+        name text NOT NULL UNIQUE,
+        sort_order integer NOT NULL DEFAULT 0,
+        created_at timestamptz NOT NULL DEFAULT now()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS library_folders_sort_idx ON library_folders (sort_order, name)`;
+
+    // Keep folder references valid. Best-effort: a failure here must not poison
+    // the memoized schema promise and take down the whole staff portal.
+    try {
+      await sql`
+        UPDATE resources SET folder_id = NULL
+        WHERE folder_id IS NOT NULL AND folder_id NOT IN (SELECT id FROM library_folders)
+      `;
+      await sql`
+        DO $$
+        BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'resources_folder_id_fkey') THEN
+            ALTER TABLE resources
+              ADD CONSTRAINT resources_folder_id_fkey
+              FOREIGN KEY (folder_id) REFERENCES library_folders(id) ON DELETE SET NULL;
+          END IF;
+        END $$;
+      `;
+    } catch (err) {
+      console.error('resources.folder_id foreign key migration skipped:', err);
+    }
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS students (
+        id text PRIMARY KEY,
+        name text NOT NULL,
+        email text NOT NULL DEFAULT '',
+        grade text NOT NULL DEFAULT '',
+        parent_name text NOT NULL DEFAULT '',
+        phone text NOT NULL DEFAULT '',
+        notes text NOT NULL DEFAULT '',
+        created_at timestamptz NOT NULL DEFAULT now(),
+        updated_at timestamptz NOT NULL DEFAULT now()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS students_name_idx ON students (name)`;
+    await sql`CREATE INDEX IF NOT EXISTS students_email_idx ON students (email)`;
+    try {
+      await sql`
+        CREATE UNIQUE INDEX IF NOT EXISTS students_email_unique_idx
+        ON students (lower(email)) WHERE email <> ''
+      `;
+    } catch (err) {
+      console.error('students email unique index migration skipped:', err);
+    }
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS email_sends (
+        id text PRIMARY KEY,
+        staff_email text NOT NULL,
+        recipient text NOT NULL,
+        student_id text,
+        resource_ids text[] NOT NULL DEFAULT '{}',
+        subject text NOT NULL DEFAULT '',
+        status text NOT NULL CHECK (status IN ('sent', 'failed')),
+        error text,
+        created_at timestamptz NOT NULL DEFAULT now()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS email_sends_staff_idx ON email_sends (staff_email, created_at DESC)`;
+    await sql`CREATE INDEX IF NOT EXISTS email_sends_created_idx ON email_sends (created_at DESC)`;
 
     await sql`
       CREATE TABLE IF NOT EXISTS staff_allowlist (
@@ -66,6 +141,17 @@ export function ensureStaffSchema(): Promise<void> {
     `;
     await sql`CREATE INDEX IF NOT EXISTS staff_allowlist_email_idx ON staff_allowlist (email)`;
     await sql`CREATE INDEX IF NOT EXISTS staff_allowlist_status_idx ON staff_allowlist (status)`;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS staff_pin_activations (
+        id text PRIMARY KEY,
+        email text NOT NULL,
+        role text NOT NULL,
+        method text NOT NULL DEFAULT 'universal',
+        created_at timestamptz NOT NULL DEFAULT now()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS staff_pin_activations_email_idx ON staff_pin_activations (email, created_at DESC)`;
 
     await sql`
       CREATE TABLE IF NOT EXISTS staff_sessions (

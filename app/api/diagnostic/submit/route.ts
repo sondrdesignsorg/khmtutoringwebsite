@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createDiagnosticLead, markDiagnosticLeadEmailed } from '@/lib/diagnostic/leads';
 import { getEmailConfig, sendEmail } from '@/lib/email/resend';
+import { escapeHtml, safeEmailSubject } from '@/lib/html';
+import { checkRateLimit, clientIp, tooManyRequests } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
@@ -32,8 +34,8 @@ const SubmitSchema = z.object({
   length: z.number().int().min(1).max(100),
   score: z.number().int().min(0).max(100),
   tier: z.string().min(1).max(60),
-  topicBreakdown: z.array(TopicResultSchema).min(1),
-  answers: z.array(AnswerLogSchema).optional(),
+  topicBreakdown: z.array(TopicResultSchema).min(1).max(50),
+  answers: z.array(AnswerLogSchema).max(200).optional(),
 });
 
 const AGE_LABEL: Record<string, string> = {
@@ -63,7 +65,7 @@ function topicRowsHtml(topics: TopicResult[]): string {
     .map(
       (t) => `
       <tr>
-        <td style="padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#374151;">${t.topic}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#374151;">${escapeHtml(t.topic)}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#374151;text-align:center;">${t.correct}/${t.total}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;text-align:center;">
           <span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;background:${t.strong ? '#dcfce7' : '#fef3c7'};color:${t.strong ? '#15803d' : '#92400e'};">
@@ -103,9 +105,9 @@ function parentEmailHtml(p: {
 
         <!-- Greeting -->
         <tr><td style="padding:36px 40px 20px;">
-          <p style="margin:0 0 12px;font-size:17px;color:#111827;">Hi ${p.parentName},</p>
+          <p style="margin:0 0 12px;font-size:17px;color:#111827;">Hi ${escapeHtml(p.parentName)},</p>
           <p style="margin:0;font-size:15px;color:#4b5563;line-height:1.6;">
-            ${p.studentName} just completed the <strong>${AGE_LABEL[p.ageGroup] ?? p.ageGroup} ${SUBJECT_LABEL[p.subject] ?? p.subject}</strong> diagnostic (${p.length} questions). Here's a full breakdown of the results.
+            ${escapeHtml(p.studentName)} just completed the <strong>${AGE_LABEL[p.ageGroup] ?? p.ageGroup} ${SUBJECT_LABEL[p.subject] ?? p.subject}</strong> diagnostic (${p.length} questions). Here's a full breakdown of the results.
           </p>
         </td></tr>
 
@@ -118,7 +120,7 @@ function parentEmailHtml(p: {
                 <p style="margin:0;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">Score</p>
               </td>
               <td style="padding:24px;text-align:center;">
-                <p style="margin:0 0 4px;font-size:22px;font-weight:700;color:${color};">${p.tier}</p>
+                <p style="margin:0 0 4px;font-size:22px;font-weight:700;color:${color};">${escapeHtml(p.tier)}</p>
                 <p style="margin:0;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">Performance Level</p>
               </td>
             </tr>
@@ -141,7 +143,7 @@ function parentEmailHtml(p: {
         <!-- CTA -->
         <tr><td style="padding:0 40px 36px;text-align:center;">
           <p style="margin:0 0 20px;font-size:15px;color:#4b5563;line-height:1.6;">
-            Our tutors can build on ${p.studentName}'s strengths and close the gaps identified above. Book a free consultation to get started.
+            Our tutors can build on ${escapeHtml(p.studentName)}'s strengths and close the gaps identified above. Book a free consultation to get started.
           </p>
           <a href="https://www.khmtutoring.com/contact" style="display:inline-block;background:#2a476f;color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;padding:14px 32px;border-radius:999px;">
             Book Free Consultation →
@@ -196,19 +198,19 @@ function staffEmailHtml(p: {
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td style="padding:6px 0;font-size:13px;color:#6b7280;width:120px;">Parent</td>
-              <td style="padding:6px 0;font-size:14px;color:#111827;font-weight:500;">${p.parentName}</td>
+              <td style="padding:6px 0;font-size:14px;color:#111827;font-weight:500;">${escapeHtml(p.parentName)}</td>
             </tr>
             <tr>
               <td style="padding:6px 0;font-size:13px;color:#6b7280;">Student</td>
-              <td style="padding:6px 0;font-size:14px;color:#111827;font-weight:500;">${p.studentName}${p.studentGrade ? ` · ${p.studentGrade}` : ''}</td>
+              <td style="padding:6px 0;font-size:14px;color:#111827;font-weight:500;">${escapeHtml(p.studentName)}${p.studentGrade ? ` · ${escapeHtml(p.studentGrade)}` : ''}</td>
             </tr>
             <tr>
               <td style="padding:6px 0;font-size:13px;color:#6b7280;">Email</td>
-              <td style="padding:6px 0;font-size:14px;"><a href="mailto:${p.email}" style="color:#2a476f;">${p.email}</a></td>
+              <td style="padding:6px 0;font-size:14px;"><a href="mailto:${escapeHtml(p.email)}" style="color:#2a476f;">${escapeHtml(p.email)}</a></td>
             </tr>
             <tr>
               <td style="padding:6px 0;font-size:13px;color:#6b7280;">Phone</td>
-              <td style="padding:6px 0;font-size:14px;color:#111827;">${p.phone ?? 'Not provided'}</td>
+              <td style="padding:6px 0;font-size:14px;color:#111827;">${p.phone ? escapeHtml(p.phone) : 'Not provided'}</td>
             </tr>
           </table>
         </td></tr>
@@ -226,7 +228,7 @@ function staffEmailHtml(p: {
                 <p style="margin:0;font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;">Score · ${p.length}q ${AGE_LABEL[p.ageGroup] ?? p.ageGroup} ${SUBJECT_LABEL[p.subject] ?? p.subject}</p>
               </td>
               <td style="padding:16px 20px;">
-                <p style="margin:0 0 2px;font-size:18px;font-weight:700;color:${color};">${p.tier}</p>
+                <p style="margin:0 0 2px;font-size:18px;font-weight:700;color:${color};">${escapeHtml(p.tier)}</p>
                 <p style="margin:0;font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;">Performance Level</p>
               </td>
             </tr>
@@ -282,13 +284,13 @@ async function sendResultsEmail(params: {
     sendEmail({
       to: params.email,
       replyTo: config.staffEmail,
-      subject: `${params.studentName}'s KHM Diagnostic Results - ${params.tier}`,
+      subject: safeEmailSubject(`${params.studentName}'s KHM Diagnostic Results - ${params.tier}`),
       html: parentEmailHtml(params),
     }),
     sendEmail({
       to: config.staffRecipients,
       replyTo: params.email,
-      subject: `New Diagnostic Lead: ${params.studentName} scored ${params.score}% (${params.tier})`,
+      subject: safeEmailSubject(`New Diagnostic Lead: ${params.studentName} scored ${params.score}% (${params.tier})`),
       html: staffEmailHtml(params),
     }),
   ]);
@@ -314,6 +316,10 @@ async function sendResultsEmail(params: {
 }
 
 export async function POST(req: Request) {
+  const limit = await checkRateLimit(`diagnostic-submit:${clientIp(req)}`, 5, 600);
+  const limited = tooManyRequests(limit);
+  if (limited) return NextResponse.json(limited.body, limited.init);
+
   let payload: unknown;
   try {
     payload = await req.json();

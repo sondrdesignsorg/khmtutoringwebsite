@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import {
-  BarChart3, BookOpen, Calendar, Check, Download, FileText, GraduationCap, Loader2, Mail, Plus, Tag, User,
+  BarChart3, BookOpen, Calendar, Check, Download, FileText, GraduationCap, Loader2, Mail, Plus, Send, Tag, User,
 } from 'lucide-react';
 import { subjectArea, fmtDate, TYPE_LABEL } from '@/lib/staff/resources';
 import type { Resource } from '@/lib/staff/types';
 import { Modal, ModalCloseButton } from './Modal';
 import { DocumentPage } from './DocumentPage';
+import { SendToStudentModal } from './SendToStudentModal';
 import { typePill } from './badges';
 import { cn } from '@/lib/utils';
 
@@ -34,6 +35,7 @@ export function FilePreviewModal({
   const hasRealFile = !!(file.storageKey || file.fileUrl);
   const [emailing, setEmailing] = useState(false);
   const [emailNote, setEmailNote] = useState<string | null>(null);
+  const [sendOpen, setSendOpen] = useState(false);
 
   async function emailFile() {
     setEmailing(true);
@@ -50,6 +52,17 @@ export function FilePreviewModal({
     }
   }
 
+  async function sendToStudent(recipient: { studentId?: string; email?: string }) {
+    const res = await fetch(`/api/staff/files/${file.id}/email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(recipient),
+    });
+    const body = (await res.json().catch(() => ({}))) as { recipient?: string; error?: string };
+    if (!res.ok) throw new Error(body.error || 'Could not send the PDF');
+    return { recipient: body.recipient ?? '' };
+  }
+
   const meta: { icon: React.ReactNode; label: string; value: string }[] = [
     { icon: <BookOpen className="size-4" />, label: 'Subject', value: file.subject },
     { icon: <GraduationCap className="size-4" />, label: 'Grade', value: file.grade },
@@ -61,6 +74,7 @@ export function FilePreviewModal({
   ];
 
   return (
+    <>
     <Modal onClose={onClose} className="grid max-w-[1040px] grid-cols-[1fr_320px]">
       <div className="overflow-auto bg-secondary/30 p-7">
         {hasRealFile ? (
@@ -133,9 +147,29 @@ export function FilePreviewModal({
               {emailing ? 'Emailing…' : 'Email me'}
             </button>
           </div>
+          <button
+            onClick={() => setSendOpen(true)}
+            disabled={!hasRealFile}
+            className={cn(
+              'inline-flex h-9 items-center justify-center gap-2 rounded-md border border-primary/40 bg-primary/[0.06] px-4 text-sm font-semibold text-primary transition-colors',
+              hasRealFile ? 'hover:bg-primary/10' : 'pointer-events-none opacity-50',
+            )}
+          >
+            <Send className="size-4" />Send to student
+          </button>
           {emailNote && <p className="text-center text-xs text-muted-foreground">{emailNote}</p>}
         </div>
       </div>
     </Modal>
+
+    {sendOpen && (
+      <SendToStudentModal
+        heading="Send to student"
+        subheading={file.title}
+        onClose={() => setSendOpen(false)}
+        onSend={sendToStudent}
+      />
+    )}
+    </>
   );
 }

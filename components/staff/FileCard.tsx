@@ -9,11 +9,13 @@ import { cn } from '@/lib/utils';
 
 export function FileCard({
   file,
+  folderName,
   selected,
   onOpen,
   onToggleSelect,
 }: {
   file: Resource;
+  folderName?: string;
   selected: boolean;
   onOpen: () => void;
   onToggleSelect: () => void;
@@ -112,9 +114,16 @@ export function FileCard({
 
       {/* Body */}
       <div className="px-4 py-3.5">
-        <span className={cn('mb-2 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold', typePill(file.type))}>
-          {TYPE_LABEL[file.type]}
-        </span>
+        <div className="mb-2 flex items-center gap-1.5">
+          <span className={cn('inline-block rounded-full px-2 py-0.5 text-[10px] font-bold', typePill(file.type))}>
+            {TYPE_LABEL[file.type]}
+          </span>
+          {folderName && (
+            <span className="inline-block max-w-[150px] truncate rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+              {folderName}
+            </span>
+          )}
+        </div>
         <h3 className="mb-1 font-heading text-base font-semibold leading-tight">{file.title}</h3>
         <p className="mb-3 text-[12.5px] text-muted-foreground">{file.subject} · {file.grade}</p>
         <div className="flex items-center justify-between border-t border-border/60 pt-2.5">

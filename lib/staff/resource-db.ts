@@ -18,6 +18,7 @@ export type DbResourceRow = {
   mime_type?: string | null;
   file_size?: number | null;
   classification_confidence?: Confidence | null;
+  folder_id?: string | null;
   source_provider?: string | null;
   source_project_ref?: string | null;
   source_table?: string | null;
@@ -48,6 +49,7 @@ export function toResource(row: DbResourceRow): Resource {
     ...(row.mime_type ? { mimeType: row.mime_type } : {}),
     ...(typeof row.file_size === 'number' ? { fileSize: row.file_size } : {}),
     ...(row.classification_confidence ? { classificationConfidence: row.classification_confidence } : {}),
+    ...(row.folder_id ? { folderId: row.folder_id } : {}),
     ...(row.source_provider ? { sourceProvider: row.source_provider } : {}),
     ...(row.source_project_ref ? { sourceProjectRef: row.source_project_ref } : {}),
     ...(row.source_table ? { sourceTable: row.source_table } : {}),
@@ -77,6 +79,7 @@ export function toResourceInsert(draft: ResourceDraft & { added?: string }) {
     mime_type: draft.mimeType,
     file_size: draft.fileSize,
     classification_confidence: draft.classificationConfidence,
+    folder_id: draft.folderId,
     source_provider: draft.sourceProvider,
     source_project_ref: draft.sourceProjectRef,
     source_table: draft.sourceTable,
@@ -106,6 +109,7 @@ export function toResourcePatch(patch: Partial<Resource>) {
     mime_type: patch.mimeType,
     file_size: patch.fileSize,
     classification_confidence: patch.classificationConfidence,
+    folder_id: patch.folderId,
     source_provider: patch.sourceProvider,
     source_project_ref: patch.sourceProjectRef,
     source_table: patch.sourceTable,

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { markDiagnosticLeadBooked } from '@/lib/diagnostic/leads';
+import { checkRateLimit, clientIp, tooManyRequests } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
@@ -9,6 +10,10 @@ const BookedSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const limit = await checkRateLimit(`diagnostic-booked:${clientIp(req)}`, 30, 600);
+  const limited = tooManyRequests(limit);
+  if (limited) return NextResponse.json(limited.body, limited.init);
+
   let payload: unknown;
   try {
     payload = await req.json();

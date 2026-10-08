@@ -2,17 +2,18 @@
 
 import { useState } from 'react';
 import {
-  ArrowLeft, BookOpen, ClipboardCheck, ClipboardList, ExternalLink, FileText, FolderUp, Pencil, Plus,
+  ArrowLeft, BookOpen, ClipboardCheck, ClipboardList, ExternalLink, FileText, FolderCog, FolderUp, Pencil, Plus,
   Search, Sparkles, Trash2, UploadCloud,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import type { Resource, ResourceDraft, ResourceType } from '@/lib/staff/types';
+import type { LibraryFolder, Resource, ResourceDraft, ResourceType } from '@/lib/staff/types';
 import type { StaffSession } from '@/lib/staff/auth';
 import { subjectArea, fmtDate, TYPE_LABEL } from '@/lib/staff/resources';
 import { PortalChrome } from './PortalChrome';
 import { AddEditResourceModal, BLANK_DRAFT } from './AddEditResourceModal';
 import { ConfirmDelete } from './ConfirmDelete';
 import { BulkUploadModal } from './BulkUploadModal';
+import { FolderManagerModal } from './FolderManagerModal';
 import { Toast } from './Toast';
 import { Input } from '@/components/ui/input';
 import { AREA_CHIP, DIFFICULTY_CHIP } from './badges';
@@ -23,19 +24,23 @@ const TUTOR_TRACK_URL = 'https://khm-tutor-track--cgmt7247.replit.app/';
 
 export function AdminClient({
   initialResources,
+  folders: initialFolders,
   session,
 }: {
   initialResources: Resource[];
+  folders: LibraryFolder[];
   session: StaffSession;
 }) {
   const router = useRouter();
   const [files, setFiles] = useState<Resource[]>(initialResources);
+  const [folders, setFolders] = useState<LibraryFolder[]>(initialFolders);
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | ResourceType>('all');
   const [editing, setEditing] = useState<Resource | null>(null);
   const [adding, setAdding] = useState(false);
   const [confirming, setConfirming] = useState<Resource | null>(null);
   const [bulkOpen, setBulkOpen] = useState(false);
+  const [foldersOpen, setFoldersOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -124,7 +129,7 @@ export function AdminClient({
 
   return (
     <div className="min-h-[70vh] bg-background">
-      <PortalChrome session={session} crumbs={[{ label: 'Resource Library', href: '/staff/library' }, { label: 'Library Admin' }]} showLeadsLink showStaffLink showTutorsLink />
+      <PortalChrome session={session} crumbs={[{ label: 'Resource Library', href: '/staff/library' }, { label: 'Library Admin' }]} showLeadsLink showStaffLink showTutorsLink showStudentsLink />
 
       <div className="mx-auto max-w-[1280px] px-6 pb-20 pt-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -141,6 +146,12 @@ export function AdminClient({
             >
               <ExternalLink className="size-4" />Open Tutor Track
             </a>
+            <button
+              onClick={() => setFoldersOpen(true)}
+              className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:bg-primary/10"
+            >
+              <FolderCog className="size-4" />Folders
+            </button>
             <button
               onClick={() => router.push('/staff/library')}
               className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:bg-primary/10"
@@ -223,7 +234,13 @@ export function AdminClient({
               </thead>
               <tbody>
                 {visible.map((f) => (
-                  <AdminRow key={f.id} file={f} onEdit={() => setEditing(f)} onDelete={() => setConfirming(f)} />
+                  <AdminRow
+                    key={f.id}
+                    file={f}
+                    folderName={folders.find((x) => x.id === f.folderId)?.name}
+                    onEdit={() => setEditing(f)}
+                    onDelete={() => setConfirming(f)}
+                  />
                 ))}
               </tbody>
             </table>
@@ -232,16 +249,23 @@ export function AdminClient({
         </div>
       </div>
 
-      {editing && <AddEditResourceModal initial={editing} isNew={false} onSave={(v) => void saveEdit(v as Resource)} onClose={() => setEditing(null)} />}
-      {adding && <AddEditResourceModal initial={BLANK_DRAFT} isNew onSave={(v) => void addFile(v as ResourceDraft)} onClose={() => setAdding(false)} />}
+      {editing && <AddEditResourceModal initial={editing} folders={folders} isNew={false} onSave={(v) => void saveEdit(v as Resource)} onClose={() => setEditing(null)} />}
+      {adding && <AddEditResourceModal initial={BLANK_DRAFT} folders={folders} isNew onSave={(v) => void addFile(v as ResourceDraft)} onClose={() => setAdding(false)} />}
       {confirming && <ConfirmDelete file={confirming} onCancel={() => setConfirming(null)} onConfirm={() => void deleteFile(confirming)} />}
       {bulkOpen && <BulkUploadModal onClose={() => setBulkOpen(false)} onImport={(drafts) => void bulkImport(drafts)} />}
+      {foldersOpen && (
+        <FolderManagerModal
+          initialFolders={folders}
+          onClose={() => setFoldersOpen(false)}
+          onChanged={(next) => { setFolders(next); router.refresh(); }}
+        />
+      )}
       {toast && <Toast message={toast} />}
     </div>
   );
 }
 
-function AdminRow({ file, onEdit, onDelete }: { file: Resource; onEdit: () => void; onDelete: () => void }) {
+function AdminRow({ file, folderName, onEdit, onDelete }: { file: Resource; folderName?: string; onEdit: () => void; onDelete: () => void }) {
   const isTest = file.type === 'test';
   const isQuiz = file.type === 'quiz';
   const Icon = isTest ? ClipboardCheck : isQuiz ? ClipboardList : FileText;
@@ -256,6 +280,7 @@ function AdminRow({ file, onEdit, onDelete }: { file: Resource; onEdit: () => vo
             <div className="max-w-[240px] truncate font-semibold">{file.title}</div>
             <div className="text-xs text-muted-foreground">
               <span className={cn('font-semibold', isTest ? 'text-[hsl(0_70%_45%)]' : isQuiz ? 'text-[hsl(268_60%_45%)]' : 'text-primary')}>{TYPE_LABEL[file.type]}</span> - {file.subject}
+              {folderName && <span className="text-muted-foreground"> · {folderName}</span>}
             </div>
           </div>
         </div>

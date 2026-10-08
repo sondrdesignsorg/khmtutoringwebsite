@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getStaffSession } from '@/lib/staff/auth';
 import { listResources } from '@/lib/staff/resource-repo';
+import { listFolders } from '@/lib/staff/folder-repo';
 import { AdminClient } from '@/components/staff/AdminClient';
 
 export const runtime = 'nodejs';
@@ -11,7 +12,7 @@ export default async function AdminPage() {
   if (!session) redirect('/staff/login?from=/staff/admin');
   if (session.role !== 'admin') redirect('/staff/library');
 
-  const resources = await listResources();
+  const [resources, folders] = await Promise.all([listResources(), listFolders()]);
 
-  return <AdminClient initialResources={resources} session={session} />;
+  return <AdminClient initialResources={resources} folders={folders} session={session} />;
 }

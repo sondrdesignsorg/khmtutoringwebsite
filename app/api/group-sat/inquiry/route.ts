@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createGroupSatInquiry, markGroupSatInquiryEmails } from '@/lib/sat-group/inquiries';
 import { getEmailConfig, sendEmail } from '@/lib/email/resend';
+import { checkRateLimit, clientIp, tooManyRequests } from '@/lib/rate-limit';
 import {
   escapeHtml,
   GroupSatInquirySchema,
@@ -147,6 +148,10 @@ async function sendInquiryEmails(params: Inquiry & { id: string }): Promise<{
 }
 
 export async function POST(req: Request) {
+  const limit = await checkRateLimit(`group-sat-inquiry:${clientIp(req)}`, 5, 600);
+  const limited = tooManyRequests(limit);
+  if (limited) return NextResponse.json(limited.body, limited.init);
+
   let payload: unknown;
   try {
     payload = await req.json();

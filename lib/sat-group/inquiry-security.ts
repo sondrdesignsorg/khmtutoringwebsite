@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { escapeHtml, safeEmailSubject } from '@/lib/html';
+
+export { escapeHtml, safeEmailSubject };
 
 export const GROUP_SAT_COHORTS = [
   'Sunday Strategy Cohort',
@@ -77,19 +80,4 @@ export function hasGeneratedTextSpam(
   return fields.filter(looksLikeGeneratedText).length >= 2;
 }
 
-export function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (character) => {
-    const entities: Record<string, string> = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;',
-    };
-    return entities[character];
-  });
-}
 
-export function safeEmailSubject(value: string): string {
-  return value.replace(/[\r\n]+/g, ' ').trim();
-}

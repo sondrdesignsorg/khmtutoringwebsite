@@ -18,7 +18,10 @@ export async function GET(request: NextRequest) {
   let from = '/staff/library';
   try {
     const parsed = JSON.parse(stateCookie ?? '{}') as { state?: string; from?: string };
-    if (parsed.state && parsed.state === state && parsed.from) from = parsed.from;
+    // Defense-in-depth against open redirects: only same-site staff paths.
+    if (parsed.state && parsed.state === state && parsed.from?.startsWith('/staff')) {
+      from = parsed.from;
+    }
   } catch {
     // ignore malformed state cookie
   }

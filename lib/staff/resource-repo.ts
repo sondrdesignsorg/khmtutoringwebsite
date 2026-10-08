@@ -42,7 +42,7 @@ export async function createResource(draft: ResourceDraft): Promise<Resource> {
     INSERT INTO resources (
       id, type, title, subject, grade, topic, pages, difficulty, added, author,
       file_url, storage_provider, storage_key, original_filename, mime_type,
-      file_size, classification_confidence, source_provider, source_project_ref,
+      file_size, classification_confidence, folder_id, source_provider, source_project_ref,
       source_table, source_id, source_bucket, source_path, source_checksum, migrated_at
     ) VALUES (
       ${id}, ${insert.type ?? null}, ${insert.title ?? null}, ${insert.subject ?? null},
@@ -50,7 +50,7 @@ export async function createResource(draft: ResourceDraft): Promise<Resource> {
       ${insert.difficulty ?? null}, ${insert.added ?? null}, ${insert.author ?? null},
       ${insert.file_url ?? null}, ${insert.storage_provider ?? null}, ${insert.storage_key ?? null},
       ${insert.original_filename ?? null}, ${insert.mime_type ?? null}, ${insert.file_size ?? null},
-      ${insert.classification_confidence ?? null}, ${insert.source_provider ?? null},
+      ${insert.classification_confidence ?? null}, ${insert.folder_id ?? null}, ${insert.source_provider ?? null},
       ${insert.source_project_ref ?? null}, ${insert.source_table ?? null},
       ${insert.source_id ?? null}, ${insert.source_bucket ?? null}, ${insert.source_path ?? null},
       ${insert.source_checksum ?? null}, ${insert.migrated_at ?? null}
@@ -102,6 +102,7 @@ export async function updateResource(id: string, patch: Partial<Resource>): Prom
       storage_key = ${merged.storage_key ?? null}, original_filename = ${merged.original_filename ?? null},
       mime_type = ${merged.mime_type ?? null}, file_size = ${merged.file_size ?? null},
       classification_confidence = ${merged.classification_confidence ?? null},
+      folder_id = ${merged.folder_id ?? null},
       source_provider = ${merged.source_provider ?? null},
       source_project_ref = ${merged.source_project_ref ?? null},
       source_table = ${merged.source_table ?? null}, source_id = ${merged.source_id ?? null},

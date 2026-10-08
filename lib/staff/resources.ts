@@ -2,6 +2,18 @@ import type { Resource, ResourceType } from './types';
 
 export const GRADES = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th', 'College'];
 
+/** Folders used to group tests by course. Editable by admins after seeding. */
+export const DEFAULT_TEST_FOLDERS = [
+  'Alg2 2015',
+  'Alg2 2024',
+  'Alg 2 2025',
+  'Alg 2',
+  'Algebra 2024',
+  'APCH',
+  'Geometry',
+  'Pre-Calc 2024',
+];
+
 export const SUBJECTS = [
   'Pre-Algebra', 'Algebra 1', 'Algebra 2', 'Geometry', 'Pre-Calculus',
   'SAT Math', 'SAT Reading & Writing', 'SSAT', 'English', 'Biology', 'Chemistry', 'Physics',
