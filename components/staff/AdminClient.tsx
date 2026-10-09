@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import {
-  ArrowLeft, BookOpen, ClipboardCheck, ClipboardList, ExternalLink, FileText, FolderCog, FolderUp, Pencil, Plus,
-  Search, Sparkles, Trash2, UploadCloud,
+  ArrowLeft, BookOpen, ClipboardCheck, ClipboardList, ExternalLink, FileText, FolderCog, FolderInput,
+  FolderUp, Pencil, Plus, Search, Sparkles, Trash2, UploadCloud, X,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { LibraryFolder, Resource, ResourceDraft, ResourceType } from '@/lib/staff/types';
@@ -41,10 +41,14 @@ export function AdminClient({
   const [confirming, setConfirming] = useState<Resource | null>(null);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [foldersOpen, setFoldersOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [toast, setToast] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const flash = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 3200); };
+
+  const toggleSelect = (id: string) =>
+    setSelectedIds((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
   async function addFile(draft: ResourceDraft) {
     setSaving(true);
@@ -119,6 +123,36 @@ export function AdminClient({
     if (!matchesAllTerms([f.title, f.topic, f.subject, f.author, f.originalFilename], query)) return false;
     return true;
   });
+
+  const visibleIds = visible.map((f) => f.id);
+  const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.includes(id));
+
+  function toggleAllVisible() {
+    setSelectedIds((s) =>
+      allVisibleSelected
+        ? s.filter((id) => !visibleIds.includes(id))
+        : [...new Set([...s, ...visibleIds])],
+    );
+  }
+
+  async function moveSelected(folderId: string | null) {
+    if (!selectedIds.length) return;
+    setSaving(true);
+    try {
+      const body = await jsonFetch<{ moved: number }>('/api/staff/resources/folder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedIds, folderId }),
+      });
+      setFiles((s) => s.map((f) => (selectedIds.includes(f.id) ? { ...f, folderId: folderId ?? undefined } : f)));
+      flash(`Moved ${body.moved} item${body.moved === 1 ? '' : 's'}${folderId ? ` to ${folders.find((x) => x.id === folderId)?.name ?? 'folder'}` : ' out of folders'}`);
+      setSelectedIds([]);
+    } catch (err) {
+      flash(err instanceof Error ? err.message : 'Unable to move items');
+    } finally {
+      setSaving(false);
+    }
+  }
 
   const stats = [
     { Icon: FileText, label: 'Worksheets', value: files.filter((f) => f.type === 'worksheet').length },
@@ -220,10 +254,46 @@ export function AdminClient({
             </button>
           </div>
 
+          {selectedIds.length > 0 && (
+            <div className="flex flex-wrap items-center gap-3 border-b border-border bg-primary/[0.05] px-5 py-3">
+              <span className="text-sm font-bold">{selectedIds.length} selected</span>
+              <div className="flex items-center gap-2">
+                <FolderInput className="size-4 text-primary" />
+                <select
+                  value=""
+                  disabled={saving}
+                  onChange={(e) => { const v = e.target.value; if (v) void moveSelected(v === '__none__' ? null : v); }}
+                  className="h-9 cursor-pointer rounded-md border border-input bg-card pl-3 pr-8 text-sm font-medium text-foreground outline-none disabled:opacity-50"
+                >
+                  <option value="">Move to folder…</option>
+                  {folders.map((folder) => (
+                    <option key={folder.id} value={folder.id}>{folder.name}</option>
+                  ))}
+                  <option value="__none__">Remove from folder</option>
+                </select>
+              </div>
+              <button
+                onClick={() => setSelectedIds([])}
+                className="inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-primary/10"
+              >
+                <X className="size-4" />Clear
+              </button>
+            </div>
+          )}
+
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-[13.5px]">
               <thead>
                 <tr className="text-left text-[11px] uppercase tracking-[0.05em] text-muted-foreground">
+                  <th className="w-10 border-b border-border px-4 py-3">
+                    <input
+                      type="checkbox"
+                      aria-label="Select all visible"
+                      checked={allVisibleSelected}
+                      onChange={toggleAllVisible}
+                      className="size-4 cursor-pointer accent-[hsl(215_45%_30%)]"
+                    />
+                  </th>
                   <th className="border-b border-border px-4 py-3 font-semibold">Resource</th>
                   <th className="border-b border-border px-4 py-3 font-semibold">Grade</th>
                   <th className="border-b border-border px-4 py-3 font-semibold">Difficulty</th>
@@ -238,6 +308,8 @@ export function AdminClient({
                     key={f.id}
                     file={f}
                     folderName={folders.find((x) => x.id === f.folderId)?.name}
+                    selected={selectedIds.includes(f.id)}
+                    onToggleSelect={() => toggleSelect(f.id)}
                     onEdit={() => setEditing(f)}
                     onDelete={() => setConfirming(f)}
                   />
@@ -265,12 +337,30 @@ export function AdminClient({
   );
 }
 
-function AdminRow({ file, folderName, onEdit, onDelete }: { file: Resource; folderName?: string; onEdit: () => void; onDelete: () => void }) {
+function AdminRow({
+  file, folderName, selected, onToggleSelect, onEdit, onDelete,
+}: {
+  file: Resource;
+  folderName?: string;
+  selected: boolean;
+  onToggleSelect: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   const isTest = file.type === 'test';
   const isQuiz = file.type === 'quiz';
   const Icon = isTest ? ClipboardCheck : isQuiz ? ClipboardList : FileText;
   return (
-    <tr>
+    <tr className={cn(selected && 'bg-primary/[0.04]')}>
+      <td className="border-b border-border/50 px-4 py-3 align-middle">
+        <input
+          type="checkbox"
+          aria-label={`Select ${file.title}`}
+          checked={selected}
+          onChange={onToggleSelect}
+          className="size-4 cursor-pointer accent-[hsl(215_45%_30%)]"
+        />
+      </td>
       <td className="border-b border-border/50 px-4 py-3 align-middle">
         <div className="flex items-center gap-3">
           <span className={cn('flex size-[34px] shrink-0 items-center justify-center rounded-lg', AREA_CHIP[subjectArea(file.subject)])}>

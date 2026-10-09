@@ -114,6 +114,16 @@ export async function updateResource(id: string, patch: Partial<Resource>): Prom
   return toResource(rows[0]);
 }
 
+/** Bulk-assign (or clear, when folderId is null) the folder on many resources. */
+export async function assignResourcesFolder(ids: string[], folderId: string | null): Promise<number> {
+  if (!ids.length) return 0;
+  await ensureStaffSchema();
+  const { rowCount } = await sql`
+    UPDATE resources SET folder_id = ${folderId} WHERE id = ANY(${ids as unknown as string})
+  `;
+  return rowCount ?? 0;
+}
+
 export interface DeletedResourceFile {
   id: string;
   storageProvider: string | null;

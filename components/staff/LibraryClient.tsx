@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import {
-  ArrowRight, BookOpen, ChevronDown, ClipboardCheck, ClipboardList, FileText, FolderSearch, Layers, Search, SlidersHorizontal, X,
+  ArrowRight, BookOpen, ChevronDown, ClipboardCheck, ClipboardList, FileText, Folder, FolderSearch, Layers, Search, SlidersHorizontal, X,
 } from 'lucide-react';
 import type { LibraryFolder, Resource, ResourceType, Student } from '@/lib/staff/types';
 import type { StaffSession } from '@/lib/staff/auth';
@@ -71,6 +71,30 @@ export function LibraryClient({
     .map((id) => initialResources.find((f) => f.id === id))
     .filter(Boolean) as Resource[];
   const folderName = (id?: string) => folders.find((f) => f.id === id)?.name;
+
+  // Tests are grouped under their folder headings (with an Unfiled section).
+  const isTestsTab = type === 'test';
+  const folderGroups = isTestsTab
+    ? folders
+        .map((folder) => ({ folder, files: results.filter((f) => f.folderId === folder.id) }))
+        .filter((group) => group.files.length > 0)
+    : [];
+  const unfiled = isTestsTab
+    ? results.filter((f) => !f.folderId || !folders.some((x) => x.id === f.folderId))
+    : [];
+  const showGrouped = isTestsTab && (folderGroups.length > 0 || unfiled.length > 0);
+
+  const renderCard = (f: Resource) => (
+    <FileCard
+      key={f.id}
+      file={f}
+      folderName={folderName(f.folderId)}
+      selected={selectedIds.includes(f.id)}
+      onOpen={() => setPreview(f)}
+      onToggleSelect={() => toggleSelect(f.id)}
+    />
+  );
+
   const activeFilterCount = subjects.length + grades.length + difficulties.length + folderIds.length;
   const clearFilters = () => { setSubjects([]); setGrades([]); setDifficulties([]); setFolderIds([]); setQuery(''); };
 
@@ -214,19 +238,23 @@ export function LibraryClient({
                 <FolderSearch className="mx-auto size-10 text-border" />
                 <p className="mt-3">No files match your filters.</p>
               </div>
-            ) : (
-              <div className="grid grid-cols-3 gap-4">
-                {results.map((f) => (
-                  <FileCard
-                    key={f.id}
-                    file={f}
-                    folderName={folderName(f.folderId)}
-                    selected={selectedIds.includes(f.id)}
-                    onOpen={() => setPreview(f)}
-                    onToggleSelect={() => toggleSelect(f.id)}
-                  />
+            ) : showGrouped ? (
+              <div className="flex flex-col gap-9">
+                {folderGroups.map(({ folder, files }) => (
+                  <section key={folder.id}>
+                    <FolderHeading name={folder.name} count={files.length} />
+                    <div className="grid grid-cols-3 gap-4">{files.map(renderCard)}</div>
+                  </section>
                 ))}
+                {unfiled.length > 0 && (
+                  <section>
+                    <FolderHeading name="Unfiled" count={unfiled.length} muted />
+                    <div className="grid grid-cols-3 gap-4">{unfiled.map(renderCard)}</div>
+                  </section>
+                )}
               </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-4">{results.map(renderCard)}</div>
             )}
           </div>
           </div>
@@ -340,9 +368,9 @@ function FilterPanel({
   onClear: () => void;
 }) {
   const subjCount = (s: string) => typeFiles.filter((f) => f.subject === s).length;
+  const folderCount = (id: string) => typeFiles.filter((f) => f.folderId === id).length;
   const usedSubjects = SUBJECTS.filter((s) => subjCount(s) > 0);
   const usedGrades = GRADES.filter((g) => typeFiles.some((f) => f.grade === g));
-  const usedFolders = folders.filter((folder) => typeFiles.some((f) => f.folderId === folder.id));
   return (
     <div className="sticky top-4 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
       <div className="flex items-center justify-between border-b border-border px-[18px] py-4">
@@ -373,16 +401,16 @@ function FilterPanel({
             ))}
           </div>
         </FilterGroup>
-        {isTest && usedFolders.length > 0 && (
+        {isTest && folders.length > 0 && (
           <FilterGroup title="Folders">
             <div className="flex flex-col gap-0.5">
-              {usedFolders.map((folder) => (
+              {folders.map((folder) => (
                 <CheckRow
                   key={folder.id}
                   checked={folderIds.includes(folder.id)}
                   onChange={() => onToggleFolder(folder.id)}
                   label={folder.name}
-                  count={typeFiles.filter((f) => f.folderId === folder.id).length}
+                  count={folderCount(folder.id)}
                 />
               ))}
             </div>
@@ -440,6 +468,16 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
     >
       {children}
     </button>
+  );
+}
+
+function FolderHeading({ name, count, muted }: { name: string; count: number; muted?: boolean }) {
+  return (
+    <div className="mb-3 flex items-center gap-2.5 border-b border-border pb-2">
+      <Folder className={cn('size-4', muted ? 'text-muted-foreground' : 'text-primary')} />
+      <h2 className="font-heading text-lg font-bold">{name}</h2>
+      <span className="rounded-full bg-secondary px-2 py-px text-[11px] font-semibold text-muted-foreground">{count}</span>
+    </div>
   );
 }
 
