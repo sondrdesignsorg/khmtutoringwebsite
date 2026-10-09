@@ -50,12 +50,12 @@ export function Navigation() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 sm:space-x-4" onClick={closeMobileMenu}>
-            <Image 
+            <Image
               src="/images/khm-tutoring-logo.png"
-              alt="KHM Tutoring Logo - Expert Tutors in Hawaii and Honolulu" 
-              width={48}
-              height={48}
-              className="w-11 h-11 sm:w-12 sm:h-12 object-contain"
+              alt="KHM Tutoring Logo - Expert Tutors in Hawaii and Honolulu"
+              width={1656}
+              height={1156}
+              className="h-9 w-auto sm:h-11 object-contain"
               priority
             />
             <div className="flex flex-col">

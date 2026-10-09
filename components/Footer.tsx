@@ -35,11 +35,11 @@ export function Footer() {
           {/* Center - Logo */}
           <div className="flex justify-center order-first md:order-none">
             <Image
-              src="/images/khm-tutoring-logo.png"
+              src="/images/khm-tutoring-lockup-white.png"
               alt="KHM Tutoring - Expert Tutors in Hawaii and Honolulu"
-              width={144}
-              height={144}
-              className="w-32 md:w-36 h-auto object-contain"
+              width={2322}
+              height={1598}
+              className="w-44 md:w-52 h-auto object-contain"
             />
           </div>
 
