@@ -12,7 +12,8 @@ export default async function AdminPage() {
   if (!session) redirect('/staff/login?from=/staff/admin');
   if (session.role !== 'admin') redirect('/staff/library');
 
-  const [resources, folders] = await Promise.all([listResources(), listFolders()]);
+  const folders = await listFolders();
+  const resources = await listResources();
 
   return <AdminClient initialResources={resources} folders={folders} session={session} />;
 }

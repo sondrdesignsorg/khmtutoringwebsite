@@ -77,7 +77,9 @@ export function LibraryClient({
   const folderGroups = isTestsTab
     ? folders
         .map((folder) => ({ folder, files: results.filter((f) => f.folderId === folder.id) }))
-        .filter((group) => group.files.length > 0)
+        // Show every folder when unfiltered so the full structure is visible;
+        // while filtering, only show folders that actually have matches.
+        .filter((group) => group.files.length > 0 || folderIds.length === 0)
     : [];
   const unfiled = isTestsTab
     ? results.filter((f) => !f.folderId || !folders.some((x) => x.id === f.folderId))
@@ -243,7 +245,13 @@ export function LibraryClient({
                 {folderGroups.map(({ folder, files }) => (
                   <section key={folder.id}>
                     <FolderHeading name={folder.name} count={files.length} />
-                    <div className="grid grid-cols-3 gap-4">{files.map(renderCard)}</div>
+                    {files.length > 0 ? (
+                      <div className="grid grid-cols-3 gap-4">{files.map(renderCard)}</div>
+                    ) : (
+                      <p className="rounded-lg border border-dashed border-border px-4 py-5 text-sm text-muted-foreground">
+                        No tests filed here yet. Use Library Admin to move tests into this folder.
+                      </p>
+                    )}
                   </section>
                 ))}
                 {unfiled.length > 0 && (

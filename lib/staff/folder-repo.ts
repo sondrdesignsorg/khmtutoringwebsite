@@ -30,9 +30,56 @@ function seedDefaultFolders(): Promise<void> {
   return seeded;
 }
 
+let backfilled: Promise<void> | null = null;
+
+/**
+ * One-time backfill that files the unambiguous tests into their folder
+ * (APCH, Geometry, Pre-Calc). Algebra 2 tests are left unfiled because the
+ * year/section can't be inferred from the filename.
+ */
+function backfillUnambiguousFolders(): Promise<void> {
+  backfilled ??= (async () => {
+    const { rows: flag } = await sql<{ key: string }>`
+      INSERT INTO seed_flags (key) VALUES ('test_folder_backfill_v1')
+      ON CONFLICT (key) DO NOTHING RETURNING key
+    `;
+    if (!flag[0]) return;
+
+    const { rows: folders } = await sql<{ id: string; name: string }>`
+      SELECT id, name FROM library_folders
+    `;
+    const idByName = new Map(folders.map((f) => [f.name, f.id]));
+
+    const { rows: tests } = await sql<{
+      id: string;
+      title: string;
+      subject: string;
+      original_filename: string | null;
+    }>`
+      SELECT id, title, subject, original_filename
+      FROM resources WHERE type = 'test' AND folder_id IS NULL
+    `;
+
+    for (const test of tests) {
+      const haystack = `${test.title} ${test.original_filename ?? ''}`.toLowerCase();
+      let folderName: string | null = null;
+      if (/apch|ap chem/.test(haystack)) folderName = 'APCH';
+      else if (test.subject === 'Geometry' || /geometry/.test(haystack)) folderName = 'Geometry';
+      else if (test.subject === 'Pre-Calculus' || /pre-?calc/.test(haystack)) folderName = 'Pre-Calc 2024';
+
+      const folderId = folderName ? idByName.get(folderName) : undefined;
+      if (folderId) {
+        await sql`UPDATE resources SET folder_id = ${folderId} WHERE id = ${test.id}`;
+      }
+    }
+  })();
+  return backfilled;
+}
+
 export async function listFolders(): Promise<LibraryFolder[]> {
   await ensureStaffSchema();
   await seedDefaultFolders();
+  await backfillUnambiguousFolders();
   const { rows } = await sql<{ id: string; name: string; sort_order: number }>`
     SELECT id, name, sort_order FROM library_folders ORDER BY sort_order ASC, name ASC
   `;

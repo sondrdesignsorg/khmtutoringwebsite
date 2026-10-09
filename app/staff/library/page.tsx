@@ -12,11 +12,10 @@ export default async function LibraryPage() {
   const session = await getStaffSession();
   if (!session) redirect('/staff/login?from=/staff/library');
 
-  const [resources, students, folders] = await Promise.all([
-    listResources(),
-    listStudents(),
-    listFolders(),
-  ]);
+  // Resolve folders first so the one-time test-filing backfill is applied
+  // before resources are read.
+  const folders = await listFolders();
+  const [resources, students] = await Promise.all([listResources(), listStudents()]);
 
   return <LibraryClient initialResources={resources} students={students} folders={folders} session={session} />;
 }
