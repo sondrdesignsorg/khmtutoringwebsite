@@ -18,6 +18,8 @@ import { matchesAllTerms } from '@/lib/search';
 
 type SortKey = 'newest' | 'az' | 'pages';
 
+const UNFILED_KEY = '__unfiled__';
+
 export function LibraryClient({
   initialResources,
   students,
@@ -37,6 +39,7 @@ export function LibraryClient({
   const [folderIds, setFolderIds] = useState<string[]>([]);
   const [sort, setSort] = useState<SortKey>('newest');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [expandedFolders, setExpandedFolders] = useState<string[]>([]);
   const [preview, setPreview] = useState<Resource | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -47,6 +50,8 @@ export function LibraryClient({
     setArr(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
   const toggleSelect = (id: string) =>
     setSelectedIds((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+  const toggleFolder = (id: string) =>
+    setExpandedFolders((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
   const typeFiltered = initialResources.filter((f) => f.type === type);
   const results = useMemo(() => {
@@ -242,22 +247,33 @@ export function LibraryClient({
               </div>
             ) : showGrouped ? (
               <div className="flex flex-col gap-9">
-                {folderGroups.map(({ folder, files }) => (
-                  <section key={folder.id}>
-                    <FolderHeading name={folder.name} count={files.length} />
-                    {files.length > 0 ? (
-                      <div className="grid grid-cols-3 gap-4">{files.map(renderCard)}</div>
-                    ) : (
-                      <p className="rounded-lg border border-dashed border-border px-4 py-5 text-sm text-muted-foreground">
-                        No tests filed here yet. Use Library Admin to move tests into this folder.
-                      </p>
-                    )}
-                  </section>
-                ))}
+                {folderGroups.map(({ folder, files }) => {
+                  const open = expandedFolders.includes(folder.id);
+                  return (
+                    <section key={folder.id}>
+                      <FolderHeading name={folder.name} count={files.length} open={open} onToggle={() => toggleFolder(folder.id)} />
+                      {open && (files.length > 0 ? (
+                        <div className="grid grid-cols-3 gap-4">{files.map(renderCard)}</div>
+                      ) : (
+                        <p className="rounded-lg border border-dashed border-border px-4 py-5 text-sm text-muted-foreground">
+                          No tests filed here yet. Use Library Admin to move tests into this folder.
+                        </p>
+                      ))}
+                    </section>
+                  );
+                })}
                 {unfiled.length > 0 && (
                   <section>
-                    <FolderHeading name="Unfiled" count={unfiled.length} muted />
-                    <div className="grid grid-cols-3 gap-4">{unfiled.map(renderCard)}</div>
+                    <FolderHeading
+                      name="Unfiled"
+                      count={unfiled.length}
+                      muted
+                      open={expandedFolders.includes(UNFILED_KEY)}
+                      onToggle={() => toggleFolder(UNFILED_KEY)}
+                    />
+                    {expandedFolders.includes(UNFILED_KEY) && (
+                      <div className="grid grid-cols-3 gap-4">{unfiled.map(renderCard)}</div>
+                    )}
                   </section>
                 )}
               </div>
@@ -479,13 +495,27 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
   );
 }
 
-function FolderHeading({ name, count, muted }: { name: string; count: number; muted?: boolean }) {
+function FolderHeading({
+  name, count, muted, open, onToggle,
+}: {
+  name: string;
+  count: number;
+  muted?: boolean;
+  open: boolean;
+  onToggle: () => void;
+}) {
   return (
-    <div className="mb-3 flex items-center gap-2.5 border-b border-border pb-2">
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      className="mb-3 flex w-full items-center gap-2.5 border-b border-border pb-2 text-left"
+    >
+      <ChevronDown className={cn('size-4 shrink-0 text-muted-foreground transition-transform', !open && '-rotate-90')} />
       <Folder className={cn('size-4', muted ? 'text-muted-foreground' : 'text-primary')} />
       <h2 className="font-heading text-lg font-bold">{name}</h2>
       <span className="rounded-full bg-secondary px-2 py-px text-[11px] font-semibold text-muted-foreground">{count}</span>
-    </div>
+    </button>
   );
 }
 
