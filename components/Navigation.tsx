@@ -63,7 +63,7 @@ export function Navigation() {
                 KHM Tutoring
               </span>
               <span className="text-[11px] sm:text-xs text-muted-foreground italic hidden sm:inline">
-                Take it higher
+                Hawai&apos;i&apos;s youth. Hawai&apos;i&apos;s future. <strong className="font-semibold not-italic">Take it higher</strong>.
               </span>
             </div>
           </Link>

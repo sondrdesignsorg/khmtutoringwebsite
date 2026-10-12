@@ -13,7 +13,7 @@ type Leader = {
 const leaders: Leader[] = [
   {
     name: 'Kody Kim',
-    role: 'Founder/CEO',
+    role: 'Ambulatory Operational Performance',
     imageUrl: '/images/tutors/kody-kim.jpg',
     bio: 'Kody founded KHM Tutoring in 2016 with a vision to create a more personal, quality-focused tutoring experience in Hawaii. He leads the company\u2019s mission to match every student with the right tutor.',
   },

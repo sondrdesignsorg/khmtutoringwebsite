@@ -128,7 +128,7 @@ export function DocumentPage({ file }: { file: Resource }) {
           <Image src="/images/khm-tutoring-logo.png" alt="" width={30} height={30} className="object-contain" />
           <div>
             <div className="text-[15px] font-bold leading-none">KHM Tutoring</div>
-            <div className="text-[10px] italic text-[#5c6a85]">Take it higher</div>
+            <div className="text-[10px] italic text-[#5c6a85]">Hawai&apos;i&apos;s youth. Hawai&apos;i&apos;s future. <strong className="font-bold not-italic">Take it higher</strong>.</div>
           </div>
         </div>
         <div className="text-right text-[11px] leading-[1.7] text-[#5c6a85]">

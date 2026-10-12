@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import type { StaffRole } from './types';
 import { SESSION_COOKIE, verifySessionToken } from './session';
-import { getAllowlistEntry } from './access';
+import { getAllowlistEntry, isOwnerEmail, ownerEmails } from './access';
 
 export interface StaffSession {
   role: StaffRole;
@@ -9,13 +9,13 @@ export interface StaffSession {
   email: string;
 }
 
-/** The business owner's email — always treated as admin so access can never be locked out. */
+/**
+ * The primary owner email — used for dev sign-in and display fallbacks.
+ * Every address in the owner list is treated as admin (see `isOwnerEmail`),
+ * so access can never be locked out.
+ */
 export function ownerEmail(): string {
-  return (
-    process.env.KHM_STAFF_EMAIL ||
-    process.env.DIAGNOSTIC_STAFF_EMAIL ||
-    'khmtutoring1@gmail.com'
-  ).toLowerCase().trim();
+  return ownerEmails()[0] ?? 'khmtutoring1@gmail.com';
 }
 
 export async function getStaffSession(): Promise<StaffSession | null> {
@@ -27,7 +27,7 @@ export async function getStaffSession(): Promise<StaffSession | null> {
   if (!claims) return null;
 
   const email = claims.sub.toLowerCase().trim();
-  const isOwner = email === ownerEmail();
+  const isOwner = isOwnerEmail(email);
 
   // Live check so role changes / disables take effect immediately.
   let role: StaffRole | null = null;

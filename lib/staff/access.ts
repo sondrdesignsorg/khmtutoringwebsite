@@ -23,11 +23,20 @@ export function universalPin(): string {
   return (process.env.UNIVERSAL_STAFF_PIN ?? '013100').trim();
 }
 
-function isOwnerEmail(email: string): boolean {
-  const owners = (process.env.KHM_STAFF_EMAIL ?? 'khmtutoring1@gmail.com')
+/** All owner/admin emails, from the comma-separated staff env vars. */
+export function ownerEmails(): string[] {
+  const raw = process.env.KHM_STAFF_EMAIL ||
+    process.env.DIAGNOSTIC_STAFF_EMAIL ||
+    'khmtutoring1@gmail.com';
+  return raw
     .split(',')
-    .map((e) => e.toLowerCase().trim());
-  return owners.includes(email.toLowerCase().trim());
+    .map((e) => e.toLowerCase().trim())
+    .filter(Boolean);
+}
+
+/** True when the email is configured as an owner (always full admin). */
+export function isOwnerEmail(email: string): boolean {
+  return ownerEmails().includes(email.toLowerCase().trim());
 }
 
 export interface AllowlistEntry {

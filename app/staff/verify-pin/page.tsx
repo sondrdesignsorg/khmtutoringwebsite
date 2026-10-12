@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { getAllowlistEntry } from '@/lib/staff/access';
-import { ownerEmail } from '@/lib/staff/auth';
+import { getAllowlistEntry, isOwnerEmail } from '@/lib/staff/access';
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/staff/session';
 import { VerifyPinForm } from '@/components/staff/VerifyPinForm';
 import { SignOutNotice } from '@/components/staff/SignOutNotice';
@@ -13,7 +12,7 @@ export default async function VerifyPinPage() {
   const claims = token ? await verifySessionToken(token) : null;
   if (!claims) redirect('/staff/login?from=/staff/verify-pin');
 
-  if (claims.sub.toLowerCase().trim() === ownerEmail()) redirect('/staff/library');
+  if (isOwnerEmail(claims.sub)) redirect('/staff/library');
   if (claims.role && claims.pinVerified) redirect('/staff/library');
 
   const entry = await getAllowlistEntry(claims.sub);

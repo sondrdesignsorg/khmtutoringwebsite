@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { decodeJwt } from 'jose';
-import { getAllowlistEntry, recordStaffSignIn } from '@/lib/staff/access';
-import { ownerEmail } from '@/lib/staff/auth';
+import { getAllowlistEntry, isOwnerEmail, recordStaffSignIn } from '@/lib/staff/access';
 import { OAUTH_STATE_COOKIE, SESSION_COOKIE, signSessionToken } from '@/lib/staff/session';
 import type { StaffRole } from '@/lib/staff/types';
 
@@ -63,7 +62,7 @@ export async function GET(request: NextRequest) {
     return clearState(NextResponse.redirect(`${origin}/staff/login?error=invalid_link`));
   }
 
-  const isOwner = email === ownerEmail();
+  const isOwner = isOwnerEmail(email);
   const entry = isOwner ? null : await getAllowlistEntry(email);
   if (!isOwner && entry?.status === 'disabled') {
     return clearState(NextResponse.redirect(`${origin}/staff/login?error=not_staff`));
