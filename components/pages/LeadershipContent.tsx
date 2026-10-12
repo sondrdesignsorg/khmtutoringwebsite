@@ -6,118 +6,133 @@ import { ArrowRight } from 'lucide-react';
 type Leader = {
   name: string;
   role: string;
-  imageUrl?: string;
-  bio: string;
+  imageUrl: string;
+  imageClassName: string;
+  bio: string[];
 };
 
 const leaders: Leader[] = [
   {
     name: 'Kody Kim',
-    role: 'Ambulatory Operational Performance',
-    imageUrl: '/images/tutors/kody-kim.jpg',
-    bio: 'Kody founded KHM Tutoring in 2016 with a vision to create a more personal, quality-focused tutoring experience in Hawaii. He leads the company\u2019s mission to match every student with the right tutor.',
+    role: 'CEO, Founder & Majority Shareholder',
+    imageUrl: '/images/leadership/kody-kim.png',
+    imageClassName: 'object-contain object-bottom p-5 sm:p-8',
+    bio: [
+      'Kody is the CEO, Founder & Majority Shareholder of KHM Tutoring. He has over 10 years of tutoring experience and is an educator focused on improving student scores, test-taking strategies, and understanding of material.',
+      'Born in Hawaiʻi, Kody attended Punahou High School. He then attended the University of California, Irvine (UCI), where he obtained a degree in Public Health.',
+      'After returning to Hawaiʻi, Kody began his career at HMSA as a Financial Systems Analyst and recently began a new role as an Ambulatory Operational Performance Analyst for ambulatory services.',
+    ],
   },
   {
-    name: 'Matthew Lew',
-    role: 'CFO',
-    bio: 'Matt brings over two decades of financial advisory leadership at Deloitte, advising Fortune 500 and public-sector clients on restructuring and performance improvement. As CFO, he oversees KHM Tutoring\u2019s finances, budgeting, and operations.',
+    name: 'Matt Lew',
+    role: 'CFO & Minority Shareholder',
+    imageUrl: '/images/leadership/matt-lew.jpg',
+    imageClassName: 'object-cover object-center',
+    bio: [
+      'Matt is the Chief Financial Officer & Minority Shareholder of KHM Tutoring. He has over 20 years of experience as a restructuring consultant for Deloitte, where he was a Managing Director focused on the Healthcare and Consumer Business sectors. Matt attended UCLA, where he graduated with a BA in Business Economics. He has been a CPA licensed in California since 2007.',
+      'Originally from Scottsdale, Arizona, Matt relocated to Hawaiʻi in March 2025 and spent the next 18 months as the CFO of a youth mental health clinic. During his tenure, the clinic’s net revenue grew more than 50% year over year, enabling key strategic growth initiatives that supported its mission.',
+      'He has been with KHM since September 2026 and is focused on diversifying revenue, rolling out new products, and enhancing KHM’s organizational infrastructure to support its current and future growth.',
+    ],
   },
   {
     name: 'Connor Takemoto',
-    role: 'Project Manager/Intern',
-    bio: 'Connor coordinates projects and special initiatives across KHM Tutoring, helping the team stay organized and responsive as it serves students throughout Hawaii. As a member of the leadership team, he supports new programs and keeps families\u2019 needs at the center of every decision.',
+    role: 'Business Operations & Finance Analyst',
+    imageUrl: '/images/leadership/connor-takemoto.png',
+    imageClassName: 'object-contain object-bottom',
+    bio: [
+      'Connor has been with KHM for over a year and has benefited greatly from Kody’s mentorship. Connor is focused on business operations and financial analysis at KHM Tutoring. He is currently a junior at the University of Hawaiʻi. Through his experience helping build KHM, he has gained valuable insight into scaling a business through financial discipline, marketing strategy, and product ideation. He has also learned the importance of supporting sustainable growth through internal process development.',
+      'More importantly, Connor’s time at KHM has strengthened his passion for helping students succeed by designing and delivering programs that build academic confidence and support personal growth. He is grateful to be part of a team dedicated to making a positive impact on the next generation of students in Hawaiʻi.',
+    ],
   },
 ];
 
-function initials(name: string) {
-  return name
-    .split(' ')
-    .map((part) => part.charAt(0))
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-}
-
 export function LeadershipContent() {
   return (
-    <main className="pt-24 md:pt-28 bg-white">
-      {/* Hero Section */}
-      <section className="py-8 md:py-10 bg-white relative overflow-hidden">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-block px-6 py-2 bg-primary/10 rounded-full mb-6 border border-primary/20">
-              <span className="text-primary font-semibold">Our Team</span>
-            </div>
-            <h1 className="mb-3 md:mb-4 text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-900">
-              Our{' '}
-              <span className="text-primary font-bold">Leadership</span>
+    <main className="bg-white pt-24 md:pt-28">
+      <section className="relative overflow-hidden bg-white py-10 md:py-14">
+        <div className="container relative z-10 mx-auto px-4">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mb-5 text-sm font-bold uppercase tracking-[0.2em] text-primary">
+              Our Team
+            </p>
+            <h1 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl lg:text-6xl">
+              Meet Our <span className="text-primary">Leadership</span>
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg font-medium">
-              The people guiding KHM Tutoring&apos;s mission to empower Hawaii students.
+            <p className="mx-auto max-w-2xl text-base font-medium text-gray-600 md:text-lg">
+              The people guiding KHM Tutoring&apos;s mission to empower students across Hawaiʻi.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Leadership Grid */}
-      <section className="py-10 md:py-16 bg-white">
+      <section className="bg-gradient-to-b from-white via-primary/[0.025] to-white py-10 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="grid gap-8 max-w-5xl mx-auto sm:grid-cols-2 lg:grid-cols-3">
-            {leaders.map((leader) => (
-              <div
+          <div className="mx-auto max-w-6xl space-y-10 md:space-y-14">
+            {leaders.map((leader, index) => (
+              <article
                 key={leader.name}
-                className="group flex flex-col overflow-hidden rounded-3xl border border-primary/20 bg-white shadow-sm md:hover:border-primary md:hover:shadow-lg"
+                className={`grid overflow-hidden rounded-[2rem] border border-primary/15 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.08)] ${
+                  index % 2 === 1
+                    ? 'lg:grid-cols-[minmax(0,1.4fr)_minmax(300px,0.85fr)]'
+                    : 'lg:grid-cols-[minmax(300px,0.85fr)_minmax(0,1.4fr)]'
+                }`}
               >
-                <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20">
-                  {leader.imageUrl ? (
-                    <Image
-                      src={leader.imageUrl}
-                      alt={`${leader.name} - KHM Tutoring leadership`}
-                      fill
-                      className="object-cover object-top"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <span className="text-5xl font-bold text-primary/70">
-                        {initials(leader.name)}
-                      </span>
-                    </div>
-                  )}
+                <div
+                  className={`relative min-h-[360px] overflow-hidden bg-gradient-to-br from-primary/10 via-secondary/10 to-primary/20 sm:min-h-[440px] lg:min-h-full ${
+                    index % 2 === 1 ? 'lg:order-2' : ''
+                  }`}
+                >
+                  <Image
+                    src={leader.imageUrl}
+                    alt={`${leader.name}, ${leader.role} at KHM Tutoring`}
+                    fill
+                    className={leader.imageClassName}
+                    sizes="(max-width: 1024px) 100vw, 38vw"
+                    priority={index === 0}
+                  />
                 </div>
-                <div className="flex flex-1 flex-col p-6">
-                  <h2 className="text-2xl font-heading font-bold text-gray-900">
+
+                <div
+                  className={`flex flex-col justify-center p-7 sm:p-10 lg:p-12 ${
+                    index % 2 === 1 ? 'lg:order-1' : ''
+                  }`}
+                >
+                  <p className="mb-3 text-sm font-bold uppercase tracking-[0.14em] text-primary">
+                    {leader.role}
+                  </p>
+                  <h2 className="mb-6 text-3xl font-bold text-gray-900 sm:text-4xl">
                     {leader.name}
                   </h2>
-                  <p className="mb-4 text-sm font-semibold text-primary">{leader.role}</p>
-                  <p className="text-gray-700 leading-relaxed">{leader.bio}</p>
+                  <div className="space-y-4 text-base leading-7 text-gray-700 sm:text-lg sm:leading-8">
+                    {leader.bio.map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-12 md:py-16 bg-white">
+      <section className="bg-white py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="rounded-3xl border border-primary/20 bg-white p-12 md:p-16 shadow-sm">
-              <h2 className="mb-4 text-3xl md:text-4xl font-heading font-bold text-gray-900">
-                Want to{' '}
-                <span className="text-primary font-bold">join our team?</span>
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="rounded-3xl border border-primary/20 bg-white p-10 shadow-sm md:p-16">
+              <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
+                Want to <span className="text-primary">join our team?</span>
               </h2>
               <p className="mx-auto mb-10 max-w-2xl text-lg text-gray-600">
-                We&apos;re always looking for passionate educators to help Hawaii students succeed.
+                We&apos;re always looking for passionate educators to help Hawaiʻi students succeed.
               </p>
               <Button
                 asChild
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold px-12 py-7 rounded-xl shadow-xl"
+                className="rounded-xl bg-primary px-12 py-7 text-lg font-semibold text-primary-foreground shadow-xl hover:bg-primary/90"
               >
                 <Link href="/contact">
                   Get in Touch
-                  <ArrowRight className="ml-3 w-5 h-5" />
+                  <ArrowRight className="ml-3 h-5 w-5" />
                 </Link>
               </Button>
             </div>
