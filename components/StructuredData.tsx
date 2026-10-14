@@ -27,7 +27,7 @@ const organizationSchema = {
   },
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '1025 Waimanu St',
+    streetAddress: '1019 Waimanu St, Unit 101',
     addressLocality: 'Honolulu',
     addressRegion: 'HI',
     postalCode: '96814',
@@ -471,7 +471,7 @@ const groupSatLocation = {
   name: 'KHM Tutoring',
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '1025 Waimanu St',
+    streetAddress: '1019 Waimanu St, Unit 101',
     addressLocality: 'Honolulu',
     addressRegion: 'HI',
     postalCode: '96814',

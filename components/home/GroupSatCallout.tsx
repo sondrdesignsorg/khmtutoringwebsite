@@ -6,7 +6,7 @@ import { GROUP_SAT_START_LABEL } from '@/lib/sat-group/content';
 const stats = [
   { icon: Users, label: '6–8 students per cohort' },
   { icon: Clock, label: '20 hours of live instruction' },
-  { icon: MapPin, label: '1025 Waimanu St, Honolulu' },
+  { icon: MapPin, label: '1019 Waimanu St, Honolulu' },
 ];
 
 export function GroupSatCallout() {

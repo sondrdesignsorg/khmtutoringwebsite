@@ -62,6 +62,11 @@ export function Footer() {
             </div>
             <div>
               <p className="text-white/80 text-xs md:text-sm">
+                Group Tutoring: 1019 Waimanu St., Unit 101, Honolulu, HI 96814
+              </p>
+            </div>
+            <div>
+              <p className="text-white/80 text-xs md:text-sm">
                 Open Daily: 8 AM – 10 PM
               </p>
             </div>
