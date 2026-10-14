@@ -16,7 +16,7 @@ const leaders: Leader[] = [
     name: 'Kody Kim',
     role: 'CEO, Founder & Majority Shareholder',
     imageUrl: '/images/leadership/kody-kim.png',
-    imageClassName: 'object-contain object-bottom p-5 sm:p-8',
+    imageClassName: 'object-contain object-bottom p-3 sm:p-4',
     bio: [
       'Kody is the CEO, Founder & Majority Shareholder of KHM Tutoring. He has over 10 years of tutoring experience and is an educator focused on improving student scores, test-taking strategies, and understanding of material.',
       'Born in Hawaiʻi, Kody attended Punahou High School. He then attended the University of California, Irvine (UCI), where he obtained a degree in Public Health.',
@@ -38,7 +38,7 @@ const leaders: Leader[] = [
     name: 'Connor Takemoto',
     role: 'Business Operations & Finance Analyst',
     imageUrl: '/images/leadership/connor-takemoto.png',
-    imageClassName: 'object-contain object-bottom',
+    imageClassName: 'object-contain object-bottom scale-[1.35]',
     bio: [
       'Connor has been with KHM for over a year and has benefited greatly from Kody’s mentorship. Connor is focused on business operations and financial analysis at KHM Tutoring. He is currently a junior at the University of Hawaiʻi. Through his experience helping build KHM, he has gained valuable insight into scaling a business through financial discipline, marketing strategy, and product ideation. He has also learned the importance of supporting sustainable growth through internal process development.',
       'More importantly, Connor’s time at KHM has strengthened his passion for helping students succeed by designing and delivering programs that build academic confidence and support personal growth. He is grateful to be part of a team dedicated to making a positive impact on the next generation of students in Hawaiʻi.',
@@ -67,29 +67,31 @@ export function LeadershipContent() {
 
       <section className="bg-gradient-to-b from-white via-primary/[0.025] to-white py-10 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-6xl space-y-10 md:space-y-14">
+          <div className="mx-auto max-w-5xl space-y-10 md:space-y-14">
             {leaders.map((leader, index) => (
               <article
                 key={leader.name}
                 className={`grid overflow-hidden rounded-[2rem] border border-primary/15 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.08)] ${
                   index % 2 === 1
-                    ? 'lg:grid-cols-[minmax(0,1.4fr)_minmax(300px,0.85fr)]'
-                    : 'lg:grid-cols-[minmax(300px,0.85fr)_minmax(0,1.4fr)]'
+                    ? 'lg:grid-cols-[minmax(0,1.6fr)_minmax(260px,0.72fr)]'
+                    : 'lg:grid-cols-[minmax(260px,0.72fr)_minmax(0,1.6fr)]'
                 }`}
               >
                 <div
-                  className={`relative min-h-[360px] overflow-hidden bg-gradient-to-br from-primary/10 via-secondary/10 to-primary/20 sm:min-h-[440px] lg:min-h-full ${
+                  className={`flex items-start justify-center bg-gradient-to-br from-primary/[0.07] via-secondary/[0.07] to-primary/[0.12] p-6 sm:p-8 lg:py-12 ${
                     index % 2 === 1 ? 'lg:order-2' : ''
                   }`}
                 >
-                  <Image
-                    src={leader.imageUrl}
-                    alt={`${leader.name}, ${leader.role} at KHM Tutoring`}
-                    fill
-                    className={leader.imageClassName}
-                    sizes="(max-width: 1024px) 100vw, 38vw"
-                    priority={index === 0}
-                  />
+                  <div className="relative aspect-[4/5] w-full max-w-[260px] overflow-hidden rounded-[1.5rem] border border-white/80 bg-white/70 shadow-[0_14px_35px_rgba(15,23,42,0.12)] sm:max-w-[290px]">
+                    <Image
+                      src={leader.imageUrl}
+                      alt={`${leader.name}, ${leader.role} at KHM Tutoring`}
+                      fill
+                      className={leader.imageClassName}
+                      sizes="(max-width: 640px) 260px, 290px"
+                      priority={index === 0}
+                    />
+                  </div>
                 </div>
 
                 <div
