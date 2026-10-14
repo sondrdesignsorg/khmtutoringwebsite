@@ -16,7 +16,7 @@ const leaders: Leader[] = [
     name: 'Kody Kim',
     role: 'CEO, Founder & Majority Shareholder',
     imageUrl: '/images/leadership/kody-kim.png',
-    imageClassName: 'object-contain object-bottom p-3 sm:p-4',
+    imageClassName: 'object-contain object-bottom',
     bio: [
       'Kody is the CEO, Founder & Majority Shareholder of KHM Tutoring. He has over 10 years of tutoring experience and is an educator focused on improving student scores, test-taking strategies, and understanding of material.',
       'Born in Hawaiʻi, Kody attended Punahou High School. He then attended the University of California, Irvine (UCI), where he obtained a degree in Public Health.',
@@ -38,7 +38,7 @@ const leaders: Leader[] = [
     name: 'Connor Takemoto',
     role: 'Business Operations & Finance Analyst',
     imageUrl: '/images/leadership/connor-takemoto.png',
-    imageClassName: 'origin-bottom object-contain object-bottom scale-[1.7]',
+    imageClassName: 'origin-bottom object-contain object-bottom scale-[1.7] translate-y-14',
     bio: [
       'Connor has been with KHM for over a year and has benefited greatly from Kody’s mentorship. Connor is focused on business operations and financial analysis at KHM Tutoring. He is currently a junior at the University of Hawaiʻi. Through his experience helping build KHM, he has gained valuable insight into scaling a business through financial discipline, marketing strategy, and product ideation. He has also learned the importance of supporting sustainable growth through internal process development.',
       'More importantly, Connor’s time at KHM has strengthened his passion for helping students succeed by designing and delivering programs that build academic confidence and support personal growth. He is grateful to be part of a team dedicated to making a positive impact on the next generation of students in Hawaiʻi.',
