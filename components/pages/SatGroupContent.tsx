@@ -20,6 +20,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { groupSatFaqs, GROUP_SAT_START_LABEL } from '@/lib/sat-group/content';
 import { GROUP_SAT_GRADES } from '@/lib/sat-group/inquiry-security';
+import { BUSINESS } from '@/lib/business/config';
 
 const TARGET_START = GROUP_SAT_START_LABEL;
 const TOTAL_HOURS = 20;
@@ -112,7 +113,7 @@ const flow = [
   {
     step: '03',
     title: 'Start the 20-hour session',
-    desc: `Target start date: ${TARGET_START} at 1019 Waimanu St, Honolulu. Final cohort details are coordinated by email.`,
+    desc: `Target start date: ${TARGET_START} at ${BUSINESS.address.streetShort} in Honolulu. Final cohort details are coordinated by email.`,
   },
 ];
 
@@ -223,7 +224,7 @@ export function SatGroupContent() {
           </p>
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-muted-foreground">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            In person only · 1019 Waimanu St, Unit 101, Honolulu, HI 96814
+            In person only · {BUSINESS.address.full}
           </div>
           <div className="mb-10 flex flex-wrap justify-center gap-6">
             {[
@@ -308,7 +309,7 @@ export function SatGroupContent() {
             </p>
             <p className="mt-3 text-sm font-medium text-muted-foreground">
               Sessions held in person at{' '}
-              <span className="font-semibold text-foreground">1019 Waimanu St, Unit 101, Honolulu, HI 96814</span>
+              <span className="font-semibold text-foreground">{BUSINESS.address.full}</span>
             </p>
           </div>
           <div className="grid gap-5 md:grid-cols-3">

@@ -15,6 +15,7 @@ import {
 import { Mail, Clock, CheckCircle2, AlertCircle, Phone, ChevronRight, Brain } from 'lucide-react';
 import Link from 'next/link';
 import emailjs from '@emailjs/browser';
+import { trackEvent } from '@/lib/analytics';
 import {
   Dialog,
   DialogContent,
@@ -113,6 +114,7 @@ export function ContactContent() {
       setSubmittedName(formData.name);
       setSubmitStatus('success');
       setShowSuccessDialog(true);
+      trackEvent('consultation_submit', { subject: formData.subject });
       setFormData({
         name: '',
         email: '',
@@ -216,7 +218,8 @@ export function ContactContent() {
               <div className="flex-1 text-center sm:text-left">
                 <p className="font-semibold text-foreground">Not sure where your child stands?</p>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  Take our free 10-minute academic diagnostic first — it pinpoints exactly which topics need attention so we can hit the ground running.
+                  Take our free diagnostic first — a 15–70 minute assessment that pinpoints exactly which topics need
+                  attention so we can hit the ground running.
                 </p>
               </div>
               <Link
@@ -272,8 +275,8 @@ export function ContactContent() {
                     <Clock className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                   </div>
                   <div className="text-center">
-                    <h3 className="mb-0.5 text-sm md:text-base font-semibold">Office Hours</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground">8 AM – 10 PM, 7 days a week</p>
+                    <h3 className="mb-0.5 text-sm md:text-base font-semibold">Scheduling</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground">Daily after 3 PM, by appointment</p>
                   </div>
                 </div>
               </div>
@@ -448,7 +451,7 @@ export function ContactContent() {
                   <ChevronRight className="w-4 h-4 text-muted-foreground group-open:rotate-90 transition-transform" />
                 </summary>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                  KHM Tutoring provides in-home and online tutoring across Hawaii. We serve families in Honolulu, Kailua, Kapolei, Pearl City, Mililani, and throughout Oahu. Online sessions via Zoom are available statewide.
+                  KHM Tutoring provides in-person and online tutoring across Hawaii. In person, we serve the Honolulu corridor from Pearl City to Hawaiʻi Kai — we can travel as far as ʻEwa and West Oʻahu, though it is outside our ideal area. Online sessions via Zoom are available statewide.
                 </p>
               </details>
               <details className="bg-card rounded-xl border border-border p-5 group">
@@ -457,7 +460,7 @@ export function ContactContent() {
                   <ChevronRight className="w-4 h-4 text-muted-foreground group-open:rotate-90 transition-transform" />
                 </summary>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                  Yes! We offer both in-home tutoring throughout Honolulu and Oahu, as well as online tutoring via Zoom for students across all of Hawaii. Sessions are available 7 days a week from 8 AM to 10 PM.
+                  Yes! We offer both in-home and in-store tutoring throughout Honolulu, as well as online tutoring via Zoom for students across all of Hawaii. Sessions are scheduled by appointment, seven days a week.
                 </p>
               </details>
               <details className="bg-card rounded-xl border border-border p-5 group">

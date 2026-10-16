@@ -1,54 +1,63 @@
 import { groupSatFaqs, GROUP_SAT_START_ISO } from '@/lib/sat-group/content';
+import { BUSINESS } from '@/lib/business/config';
 import type { Tutor } from '@/lib/staff/types';
 
-interface StructuredDataProps {
-  type: 'organization' | 'home' | 'about' | 'educators' | 'contact' | 'diagnostic' | 'group-sat-prep';
-  /** Live tutor profiles for the educators page; falls back to the static roster. */
-  tutors?: Tutor[];
+interface ServiceSchemaInput {
+  name: string;
+  description: string;
+  path: string;
+  serviceType?: string;
+  faqs?: readonly { question: string; answer: string }[];
 }
 
-const baseUrl = 'https://www.khmtutoring.com';
+interface StructuredDataProps {
+  type:
+    | 'organization'
+    | 'home'
+    | 'about'
+    | 'educators'
+    | 'contact'
+    | 'diagnostic'
+    | 'group-sat-prep'
+    | 'service';
+  /** Live tutor profiles for the educators page; falls back to the static roster. */
+  tutors?: Tutor[];
+  /** Details for a service landing page. Required when type is 'service'. */
+  service?: ServiceSchemaInput;
+}
+
+const baseUrl = BUSINESS.url;
+
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  BUSINESS.address.full,
+)}`;
 
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': ['LocalBusiness', 'EducationalOrganization'],
   '@id': `${baseUrl}/#organization`,
-  name: 'KHM Tutoring',
-  description: 'Expert K-12 tutoring services in Hawaii. Math, English, SAT, SSAT, and AP prep. Serving Honolulu, Oahu, and all of Hawaii.',
+  name: BUSINESS.name,
+  description:
+    'Expert K-12 tutoring services in Honolulu, Hawaii. Math, English, SAT, SSAT, and AP prep. In-person in Honolulu, online across all of Hawaii.',
   url: baseUrl,
   logo: `${baseUrl}/images/khm-tutoring-logo.png`,
   image: `${baseUrl}/images/khm-tutoring-hero.jpeg`,
-  telephone: '+18083817856',
-  email: 'khmtutoring1@gmail.com',
-  foundingDate: '2016',
+  telephone: BUSINESS.phone.e164,
+  email: BUSINESS.email,
+  foundingDate: BUSINESS.foundingYear,
   founder: {
     '@type': 'Person',
-    name: 'Kody Kim',
+    name: BUSINESS.founder,
   },
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '1019 Waimanu St, Unit 101',
-    addressLocality: 'Honolulu',
-    addressRegion: 'HI',
-    postalCode: '96814',
-    addressCountry: 'US',
+    streetAddress: BUSINESS.address.street,
+    addressLocality: BUSINESS.address.city,
+    addressRegion: BUSINESS.address.region,
+    postalCode: BUSINESS.address.postalCode,
+    addressCountry: BUSINESS.address.country,
   },
-  openingHoursSpecification: [
-    {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-      ],
-      opens: '08:00',
-      closes: '22:00',
-    },
-  ],
+  hasMap: mapsUrl,
   areaServed: [
     {
       '@type': 'City',
@@ -57,32 +66,17 @@ const organizationSchema = {
     },
     {
       '@type': 'AdministrativeArea',
-      name: 'Oahu',
-    },
-    {
-      '@type': 'AdministrativeArea',
       name: 'Hawaii',
     },
   ],
-  sameAs: [
-    'https://www.yelp.com/biz/khm-tutoring-urban-honolulu',
-    'https://www.linkedin.com/company/khm-tutoring/',
-  ],
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '5.0',
-    bestRating: '5',
-    worstRating: '1',
-    ratingCount: '11',
-    reviewCount: '11',
-  },
+  sameAs: BUSINESS.sameAs,
 };
 
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': `${baseUrl}/#website`,
-  name: 'KHM Tutoring',
+  name: BUSINESS.name,
   url: baseUrl,
   publisher: {
     '@id': `${baseUrl}/#organization`,
@@ -100,7 +94,6 @@ const serviceSchema = {
   serviceType: 'Educational Tutoring',
   areaServed: [
     { '@type': 'City', name: 'Honolulu' },
-    { '@type': 'AdministrativeArea', name: 'Oahu' },
     { '@type': 'AdministrativeArea', name: 'Hawaii' },
   ],
   hasOfferCatalog: {
@@ -134,7 +127,7 @@ const faqSchema = {
       name: 'Do you offer online tutoring in Hawaii?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes! KHM Tutoring offers both in-home tutoring throughout Honolulu and Oahu, as well as online tutoring via Zoom for students across all of Hawaii. Sessions are available 7 days a week from 8 AM to 10 PM.',
+        text: 'Yes. KHM Tutoring offers in-person tutoring in Honolulu, from Pearl City to Hawaiʻi Kai, as well as online tutoring via Zoom for students across all of Hawaii. Sessions are scheduled by appointment.',
       },
     },
     {
@@ -142,7 +135,7 @@ const faqSchema = {
       name: 'How do I get started with KHM Tutoring?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Getting started is easy — schedule a free consultation through our contact page or call us at (808) 381-7856. We will discuss your child\'s needs, match them with the ideal tutor, and create a personalized learning plan.',
+        text: `Getting started is easy — schedule a free consultation through our contact page or call us at ${BUSINESS.phone.display}. We will discuss your child's needs, match them with the ideal tutor, and create a personalized learning plan.`,
       },
     },
     {
@@ -164,108 +157,44 @@ const faqSchema = {
   ],
 };
 
-const reviewSchemas = [
-  {
+function buildFaqSchema(faqs: readonly { question: string; answer: string }[]) {
+  return {
     '@context': 'https://schema.org',
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Jennifer N.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2026-02-16',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'Our son got accepted early action to Massachusetts Institute of Technology! Again, thank you Kody and Peter for making his dream come true!',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Nanette K.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2025-12-09',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'My daughter is highly motivated with getting good grades, but was struggling with her pre-calculus class. KHM tutoring came to the rescue! Her tutor, Blythe, is very patient, warm, helpful and great at explaining the work.',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Stacie S.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2025-12-05',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'Kody and Keenan got a response very quickly, were very professional and patient with my son, and got results after the first session. We would recommend and will keep using this awesome service.',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Junko K.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2025-12-03',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'Kody and David are both awesome! The sessions are engaging and tailored to exactly what my son need help with. He is gaining more confidence in Algebra. Highly recommended for anyone who wants quality tutoring.',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Dhianie G.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2025-12-03',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'Grateful for KHM\'s tutoring support! My daughter had a hard time adjusting to math in her first year at a new school and fell behind on key skills. She is now earning better grades and showing more confidence in math.',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Georgia G.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2025-02-22',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'My son needed help with Precalculus and Kody and Noah have been a lifesaver. He\'s feeling more confident in his class. Noah comes twice a week, and comes to our house which is really helpful.',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Tyler D.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2024-09-29',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'Kody is an excellent resource to help my son with his college preparations. Very prompt responses.',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Antonio R.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2023-07-07',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'I recently enrolled my child in KHM Tutoring, and I must say that our experience has been nothing short of exceptional. Kody went above and beyond to ensure their success in their high school coursework.',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Seung Mee ..' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2023-06-21',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'This is an amazing business who truly cares about their customers. They have awesome tutors and are very responsive and accommodating. Kody got it and set up services right away via Zoom.',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Jeffrey V.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2023-06-20',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'Tutored my brother in SAT, and did a great job on his math and reading section. Increased his score by several hundred points. Responsive, has the know-how, and is overall a great tutor!',
-  },
-  {
-    '@type': 'Review',
-    itemReviewed: { '@id': `${baseUrl}/#organization` },
-    author: { '@type': 'Person', name: 'Makoa H.' },
-    publisher: { '@type': 'Organization', name: 'Yelp' },
-    datePublished: '2023-06-13',
-    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    reviewBody: 'Keeps my brother on track for school work and studying for his SAT. Kody has been a great help!',
-  },
-];
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: answer,
+      },
+    })),
+  };
+}
+
+function buildServiceSchema(service: ServiceSchemaInput) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${baseUrl}${service.path}#service`,
+    name: service.name,
+    description: service.description,
+    serviceType: service.serviceType ?? 'Tutoring',
+    provider: { '@id': `${baseUrl}/#organization` },
+    areaServed: [
+      { '@type': 'City', name: 'Honolulu' },
+      { '@type': 'AdministrativeArea', name: 'Hawaii' },
+    ],
+    offers: {
+      '@type': 'Offer',
+      category: 'Educational service',
+      areaServed: [
+        { '@type': 'City', name: 'Honolulu' },
+        { '@type': 'AdministrativeArea', name: 'Hawaii' },
+      ],
+    },
+  };
+}
 
 const educatorPersonSchemas = [
   {
@@ -402,7 +331,7 @@ const educatorPersonSchemas = [
       { '@type': 'CollegeOrUniversity', name: 'University of Hawaii at Manoa' },
     ],
     knowsAbout: ['Biology', 'Chemistry', 'Cell & Molecular Biology', 'Genetics'],
-    award: ['Cum Laude', 'UH Mānoa Student Marshall (Fall 2025)', '1st Place CTAHR Showcase & Research Symposium'],
+    award: ['Cum Laude', 'UH Mānoa Student Marshal (Fall 2025)', '1st Place CTAHR Showcase & Research Symposium'],
   },
 ];
 
@@ -441,7 +370,7 @@ const diagnosticServiceSchema = {
   name: 'Free Academic Diagnostic Test',
   provider: { '@id': `${baseUrl}/#organization` },
   serviceType: 'Educational Assessment',
-  description: 'A free diagnostic test for K-12 students in Hawaii that identifies academic strengths and gaps by topic across Math and English.',
+  description: 'A free diagnostic test for K-12 students in Hawaii that identifies academic strengths and gaps by topic across Math and English. Takes 15 to 70 minutes depending on grade level.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -451,7 +380,6 @@ const diagnosticServiceSchema = {
   },
   areaServed: [
     { '@type': 'City', name: 'Honolulu' },
-    { '@type': 'AdministrativeArea', name: 'Oahu' },
     { '@type': 'AdministrativeArea', name: 'Hawaii' },
   ],
 };
@@ -468,14 +396,14 @@ const contactPageSchema = {
 
 const groupSatLocation = {
   '@type': 'Place',
-  name: 'KHM Tutoring',
+  name: BUSINESS.location.partnerVenue,
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '1019 Waimanu St, Unit 101',
-    addressLocality: 'Honolulu',
-    addressRegion: 'HI',
-    postalCode: '96814',
-    addressCountry: 'US',
+    streetAddress: BUSINESS.address.street,
+    addressLocality: BUSINESS.address.city,
+    addressRegion: BUSINESS.address.region,
+    postalCode: BUSINESS.address.postalCode,
+    addressCountry: BUSINESS.address.country,
   },
 };
 
@@ -484,7 +412,8 @@ const groupSatSchema = {
   '@type': 'Course',
   '@id': `${baseUrl}/group-sat-prep#course`,
   name: 'Small-Cohort SAT Prep',
-  description: 'Small-cohort SAT preparation for high school students in Honolulu, Hawaii. Groups of 6–8 students matched by level and readiness. 20 hours of live instruction focused on SAT strategy, timing, and test-day confidence.',
+  description:
+    'Small-cohort SAT preparation for high school students in Honolulu, Hawaii. Groups of 6–8 students matched by level and readiness. 20 hours of live instruction focused on SAT strategy, timing, and test-day confidence.',
   provider: {
     '@id': `${baseUrl}/#organization`,
   },
@@ -557,11 +486,11 @@ function getBreadcrumbSchema(pageName: string, pageUrl: string) {
   };
 }
 
-export function StructuredData({ type, tutors }: StructuredDataProps) {
+export function StructuredData({ type, tutors, service }: StructuredDataProps) {
   const getSchemas = () => {
     switch (type) {
       case 'home':
-        return [organizationSchema, websiteSchema, serviceSchema, faqSchema, ...reviewSchemas];
+        return [organizationSchema, websiteSchema, serviceSchema];
       case 'about':
         return [organizationSchema, getBreadcrumbSchema('About', `${baseUrl}/about`)];
       case 'educators': {
@@ -574,6 +503,15 @@ export function StructuredData({ type, tutors }: StructuredDataProps) {
         return [organizationSchema, diagnosticPageSchema, diagnosticServiceSchema, getBreadcrumbSchema('Free Diagnostic Test', `${baseUrl}/diagnostic-test`)];
       case 'group-sat-prep':
         return [organizationSchema, groupSatSchema, groupSatFaqSchema, getBreadcrumbSchema('Group SAT Prep', `${baseUrl}/group-sat-prep`)];
+      case 'service': {
+        if (!service) return [organizationSchema];
+        return [
+          organizationSchema,
+          buildServiceSchema(service),
+          ...(service.faqs?.length ? [buildFaqSchema(service.faqs)] : []),
+          getBreadcrumbSchema(service.name, `${baseUrl}${service.path}`),
+        ];
+      }
       case 'organization':
       default:
         return [organizationSchema];

@@ -28,11 +28,6 @@ const nextConfig: NextConfig = {
         destination: '/group-sat-prep',
         permanent: true,
       },
-      {
-        source: '/sat-prep-honolulu',
-        destination: '/group-sat-prep',
-        permanent: true,
-      },
     ];
   },
   async headers() {

@@ -10,8 +10,16 @@ KHM Tutoring is a premium K-12 tutoring service in Honolulu, Hawaii, founded in 
 
 - [Home](https://www.khmtutoring.com/): Main page with services overview, testimonials, and consultation booking
 - [About](https://www.khmtutoring.com/about): Company story, mission, team approach, and founder background
+- [Our Location](https://www.khmtutoring.com/about/location): Physical tutoring space at Surfer’s Coffee, inside WorkNow Hawaiʻi — 1019 Waimanu St., Unit 101, Honolulu (Kakaʻako). Parking available; sessions daily after 3 PM by appointment.
 - [Educators](https://www.khmtutoring.com/educators): Full team of 10+ tutors with bios, credentials, and subject specialties
-- [Contact](https://www.khmtutoring.com/contact): Contact form, email, phone, and hours for booking consultations
+- [Contact](https://www.khmtutoring.com/contact): Contact form, email, phone, and scheduling for booking consultations
+- [SAT Prep in Honolulu](https://www.khmtutoring.com/sat-prep-honolulu): One-on-one Digital SAT prep with top-percentile tutors
+- [Math Tutoring in Honolulu](https://www.khmtutoring.com/math-tutoring-honolulu): K-12 math tutoring from arithmetic through AP Calculus
+- [SSAT Prep in Hawaii](https://www.khmtutoring.com/ssat-prep-hawaii): SSAT test prep for Hawaii private-school admissions
+- [AP Tutoring in Honolulu](https://www.khmtutoring.com/ap-tutoring-honolulu): AP Calculus, Statistics, Physics, Biology, Chemistry, English, and more
+- [College Essay Help in Honolulu](https://www.khmtutoring.com/college-essay-help-honolulu): Personal statements, supplementals, and admissions essay coaching
+- [Online Tutoring in Hawaii](https://www.khmtutoring.com/online-tutoring-hawaii): Live one-on-one tutoring via Zoom for families statewide
+- [Private School Entrance Prep in Hawaii](https://www.khmtutoring.com/private-school-entrance-prep-hawaii): SSAT/ISEE prep, essays, and interviews for Hawaii independent schools
 - [Group SAT Prep](https://www.khmtutoring.com/group-sat-prep): Small-cohort SAT preparation program — 6-8 students matched by level and readiness, 20 hours of live instruction focused on SAT strategy, timing, and test-day confidence. Sessions start January 5, 2027.
 - [Free Diagnostic Test](https://www.khmtutoring.com/diagnostic-test): Free 15-70 minute academic assessment for K-12 students in Hawaii — identifies strengths and gaps by topic in Math or English, with a personalized report emailed to parents and a free consultation offer
 - [Privacy Policy](https://www.khmtutoring.com/privacy): Data collection and usage policies
@@ -34,7 +42,8 @@ KHM Tutoring offers a small-cohort SAT prep program at https://www.khmtutoring.c
 - College Counseling & Essay Writing (applications, admissions consulting)
 - Group SAT Prep (small cohorts of 6-8 students, 20 hours, strategy-focused)
 - Online Tutoring (via Zoom for all of Hawaii)
-- In-Home Tutoring (Honolulu & Oahu)
+- In-Store Tutoring (Kakaʻako space with Surfers Coffee Hawaiʻi – Kakaʻako)
+- In-Person Tutoring (Honolulu corridor, Pearl City to Hawaiʻi Kai; ʻEwa reachable but outside the ideal area)
 
 ## Key Facts
 
@@ -42,9 +51,9 @@ KHM Tutoring offers a small-cohort SAT prep program at https://www.khmtutoring.c
 - Students helped: 300+
 - Parent rating: 5.0 / 5.0
 - Team size: 10+ expert tutors
-- Service area: Honolulu, Oahu, and all of Hawaii
-- Delivery: In-home, library, or online via Zoom
-- Hours: Daily 8 AM - 10 PM
+- Service area: In person in Honolulu (Pearl City to Hawaiʻi Kai); online across all of Hawaii
+- Delivery: In-store in Kakaʻako, in-home/meet-up in Honolulu, or online via Zoom statewide
+- Hours: Daily after 3 PM (by appointment)
 - Free initial consultation available
 - Not a franchise -- locally owned and operated
 - Specialized in Hawaii private school prep (Punahou, Iolani)

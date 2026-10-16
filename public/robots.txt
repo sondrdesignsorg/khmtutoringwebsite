@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 # Sitemap
 Sitemap: https://www.khmtutoring.com/sitemap.xml
@@ -7,24 +9,38 @@ Sitemap: https://www.khmtutoring.com/sitemap.xml
 # AI Crawlers - Allow for visibility in AI search
 User-agent: GPTBot
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 # AI Crawlers - Block training-only crawlers
 User-agent: CCBot
@@ -39,17 +55,27 @@ Disallow: /
 # Search Engines
 User-agent: Googlebot
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 User-agent: Bingbot
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 Crawl-delay: 1
 
 User-agent: Slurp
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 User-agent: DuckDuckBot
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 
 User-agent: YandexBot
 Allow: /
+Disallow: /staff/
+Disallow: /api/
 Crawl-delay: 1

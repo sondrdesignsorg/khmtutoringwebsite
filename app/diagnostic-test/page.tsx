@@ -51,7 +51,7 @@ export default function DiagnosticTestPage() {
           <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
             Every student learns differently. Our free diagnostic test identifies exactly which math and English topics your
             child has mastered — and where the gaps are — so that KHM Tutoring can build a personalized plan from day one.
-            Serving K-12 students across Honolulu, Oahu, and all of Hawaii, our expert tutors use your child&apos;s
+            Serving K-12 students in Honolulu and online across Hawaii, our expert tutors use your child&apos;s
             diagnostic results to skip the guesswork and start making real progress immediately.
           </p>
           <p className="text-muted-foreground text-base leading-relaxed">

@@ -34,7 +34,7 @@ export function HeroSection() {
             </h1>
 
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Looking for a math tutor in Honolulu? KHM Tutoring provides expert <Link href="/educators" className="text-primary hover:underline">tutoring services</Link> across Oahu,
+              Looking for a math tutor in Honolulu? KHM Tutoring provides expert <Link href="/educators" className="text-primary hover:underline">tutoring services</Link> in Honolulu and online across Hawaiʻi,
               specializing in Math, English, SAT, and SSAT prep. Our experienced Hawaii tutors deliver personalized
               one-on-one instruction that builds confidence and achieves academic excellence for K-12 students.
             </p>
@@ -86,7 +86,6 @@ export function HeroSection() {
                 width={800}
                 height={600}
                 className="w-full h-auto"
-                priority
                 sizes="(max-width: 1024px) 0vw, 50vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />

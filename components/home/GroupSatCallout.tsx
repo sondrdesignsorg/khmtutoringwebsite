@@ -2,11 +2,12 @@ import Link from 'next/link';
 import { ArrowRight, MapPin, Users, Clock, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GROUP_SAT_START_LABEL } from '@/lib/sat-group/content';
+import { BUSINESS } from '@/lib/business/config';
 
 const stats = [
   { icon: Users, label: '6–8 students per cohort' },
   { icon: Clock, label: '20 hours of live instruction' },
-  { icon: MapPin, label: '1019 Waimanu St, Honolulu' },
+  { icon: MapPin, label: `${BUSINESS.address.streetShort}, Honolulu` },
 ];
 
 export function GroupSatCallout() {

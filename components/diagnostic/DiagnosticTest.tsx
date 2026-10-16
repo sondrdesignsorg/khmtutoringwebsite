@@ -19,6 +19,7 @@ import { StartScreen } from './StartScreen';
 import { LeadScreen } from './LeadScreen';
 import { QuizScreen } from './QuizScreen';
 import { ResultsScreen } from './ResultsScreen';
+import { trackEvent } from '@/lib/analytics';
 
 // Layout direction is a build-time flag, not a user toggle.
 // 'A' = centered card, 'B' = split navy/white panel. Flip here (or wire to a feature flag).
@@ -130,6 +131,12 @@ export function DiagnosticTest() {
     setPercentile(scorePercentile(finalScore));
     setTopicBreakdown(breakdown);
     setScreen('results');
+    trackEvent('diagnostic_complete', {
+      age_group: ageGroup,
+      subject,
+      length,
+      score: finalScore,
+    });
 
 
     setSubmitting(true);

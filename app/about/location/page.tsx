@@ -1,30 +1,48 @@
 import type { Metadata } from 'next';
+import { LocationContent } from '@/components/pages/LocationContent';
+import { BUSINESS } from '@/lib/business/config';
+
+const title = 'Our Location in Kakaʻako, Honolulu';
+const description =
+  'KHM Tutoring’s new in-person hub at Surfers Coffee inside WorkNow Hawaiʻi, 1019 Waimanu St., Unit 101, Honolulu. Individual and group tutoring daily after 3 PM, with on-site parking.';
+const url = `${BUSINESS.url}/about/location`;
 
 export const metadata: Metadata = {
-  title: 'Our Location',
-  description: 'KHM Tutoring’s new physical location is coming soon.',
+  title,
+  description,
+  keywords: [
+    'tutoring Kakaako',
+    'Kakaʻako tutoring',
+    'Honolulu tutoring center',
+    'in-person tutoring Honolulu',
+    'group tutoring Honolulu',
+    'KHM Tutoring location',
+    'Waimanu St tutoring',
+  ],
   alternates: {
-    canonical: 'https://www.khmtutoring.com/about/location',
+    canonical: url,
+  },
+  openGraph: {
+    title: `${title} | KHM Tutoring`,
+    description,
+    url,
+    images: [
+      {
+        url: '/images/location/kakaako-cafe-interior.jpg',
+        width: 1152,
+        height: 840,
+        alt: 'Inside Surfers Coffee in Kakaʻako, home of KHM Tutoring’s in-person sessions',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${title} | KHM Tutoring`,
+    description,
+    images: ['/images/location/kakaako-cafe-interior.jpg'],
   },
 };
 
 export default function OurLocationPage() {
-  return (
-    <main className="min-h-[70vh] bg-gradient-to-b from-white via-primary/[0.03] to-white px-4 pb-20 pt-28 md:pt-36">
-      <div className="container mx-auto">
-        <div className="mx-auto max-w-3xl rounded-[2rem] border border-primary/15 bg-white px-6 py-16 text-center shadow-[0_18px_55px_rgba(15,23,42,0.08)] sm:px-10 md:py-24">
-          <p className="mb-5 text-sm font-bold uppercase tracking-[0.2em] text-primary">
-            Our Location
-          </p>
-          <h1 className="mb-6 text-4xl font-heading font-bold text-gray-900 md:text-6xl">
-            Coming Soon
-          </h1>
-          <p className="mx-auto max-w-2xl text-lg leading-8 text-gray-600 md:text-xl">
-            KHM Tutoring&apos;s new physical location, in collaboration with Surfers Coffee Hawaiʻi –
-            Kakaʻako, is coming soon. Stay tuned for more details.
-          </p>
-        </div>
-      </div>
-    </main>
-  );
+  return <LocationContent />;
 }

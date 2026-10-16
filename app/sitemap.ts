@@ -1,12 +1,14 @@
 import type { MetadataRoute } from 'next';
+import { BUSINESS } from '@/lib/business/config';
+import { SERVICES } from '@/lib/services/content';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://www.khmtutoring.com';
+  const baseUrl = BUSINESS.url;
 
-  return [
+  const core: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date('2026-08-28'),
+      lastModified: new Date('2026-10-15'),
       changeFrequency: 'weekly',
       priority: 1.0,
     },
@@ -24,7 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/about/location`,
-      lastModified: new Date('2026-10-13'),
+      lastModified: new Date('2026-10-15'),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
@@ -48,15 +50,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/diagnostic-test`,
-      lastModified: new Date('2026-07-24'),
+      lastModified: new Date('2026-10-15'),
       changeFrequency: 'monthly',
       priority: 0.9,
     },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date('2026-03-15'),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
   ];
+
+  const services: MetadataRoute.Sitemap = SERVICES.map((service) => ({
+    url: `${baseUrl}${service.path}`,
+    lastModified: new Date(service.lastModified),
+    changeFrequency: service.changeFrequency,
+    priority: service.priority,
+  }));
+
+  return [...core, ...services];
 }

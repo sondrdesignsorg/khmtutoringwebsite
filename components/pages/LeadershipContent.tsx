@@ -37,7 +37,7 @@ const leaders: Leader[] = [
   {
     name: 'Connor Takemoto',
     role: 'Business Operations & Finance Analyst',
-    imageUrl: '/images/leadership/connor-takemoto.png',
+    imageUrl: '/images/leadership/connor-takemoto.webp',
     imageClassName: 'origin-bottom object-contain object-bottom scale-[1.7] translate-y-24',
     bio: [
       'Connor has been with KHM for over a year and has benefited greatly from Kody’s mentorship. Connor is focused on business operations and financial analysis at KHM Tutoring. He is currently a junior at the University of Hawaiʻi. Through his experience helping build KHM, he has gained valuable insight into scaling a business through financial discipline, marketing strategy, and product ideation. He has also learned the importance of supporting sustainable growth through internal process development.',

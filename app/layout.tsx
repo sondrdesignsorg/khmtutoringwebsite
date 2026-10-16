@@ -5,6 +5,7 @@ import { Navigation } from '@/components/Navigation';
 import { AnnouncementBanner } from '@/components/AnnouncementBanner';
 import { Footer } from '@/components/Footer';
 import { HideOnStaff } from '@/components/staff/HideOnStaff';
+import { Analytics } from '@/components/Analytics';
 import Script from 'next/script';
 
 const inter = Inter({
@@ -90,8 +91,9 @@ export default function RootLayout({
         <HideOnStaff>
           <Footer />
         </HideOnStaff>
+        <Analytics />
 
-        {/* Google Analytics */}
+        {/* Google tag (Google Ads + GA4) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=AW-17881935420"
           strategy="afterInteractive"
@@ -102,6 +104,7 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'AW-17881935420');
+            ${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? `gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}');` : ''}
           `}
         </Script>
       </body>

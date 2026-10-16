@@ -1,5 +1,5 @@
 import { HeroSection } from '@/components/home/HeroSection';
-import { CoursesSection } from '@/components/home/CoursesSection';
+import { ServiceLinksSection } from '@/components/home/ServiceLinksSection';
 import { GroupSatCallout } from '@/components/home/GroupSatCallout';
 import { MissionSection } from '@/components/home/MissionSection';
 import { WhyChooseUsSection } from '@/components/home/WhyChooseUsSection';
@@ -13,7 +13,7 @@ export default function Home() {
       <StructuredData type="home" />
       <div className="bg-background">
         <HeroSection />
-        <CoursesSection />
+        <ServiceLinksSection />
         <GroupSatCallout />
         <MissionSection />
         <WhyChooseUsSection />

@@ -3,7 +3,7 @@ import { EducatorsContent } from '@/components/pages/EducatorsContent';
 import { StructuredData } from '@/components/StructuredData';
 import { listPublishedTutorsSafe } from '@/lib/staff/tutor-repo';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 export const runtime = 'nodejs';
 
 export const metadata: Metadata = {

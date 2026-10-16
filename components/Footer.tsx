@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { BUSINESS } from '@/lib/business/config';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -7,6 +8,15 @@ const navLinks = [
   { href: '/educators', label: 'Educators' },
   { href: '/contact', label: 'Contact Us' },
   { href: '/privacy', label: 'Privacy Policy' },
+];
+
+const serviceLinks = [
+  { href: '/sat-prep-honolulu', label: 'SAT Prep' },
+  { href: '/math-tutoring-honolulu', label: 'Math Tutoring' },
+  { href: '/ssat-prep-hawaii', label: 'SSAT Prep' },
+  { href: '/ap-tutoring-honolulu', label: 'AP Tutoring' },
+  { href: '/college-essay-help-honolulu', label: 'College Essay Help' },
+  { href: '/online-tutoring-hawaii', label: 'Online Tutoring' },
 ];
 
 export function Footer() {
@@ -47,29 +57,47 @@ export function Footer() {
           <div className="space-y-2 md:space-y-2.5 md:text-right">
             <div>
               <p className="text-white text-xs md:text-sm break-all">
-                Email: <a href="mailto:khmtutoring1@gmail.com" className="hover:underline">khmtutoring1@gmail.com</a>
+                Email: <a href={`mailto:${BUSINESS.email}`} className="hover:underline">{BUSINESS.email}</a>
               </p>
             </div>
             <div>
               <p className="text-white text-xs md:text-sm">
-                Phone: <a href="tel:+18083817856" className="hover:underline">(808) 381-7856</a>
+                Phone: <a href={BUSINESS.phone.href} className="hover:underline">{BUSINESS.phone.display}</a>
               </p>
             </div>
             <div>
               <p className="text-white/80 text-xs md:text-sm font-semibold">
-                Serving Honolulu, Oahu & All of Hawaii
+                Serving Honolulu &amp; online across Hawaiʻi
               </p>
             </div>
             <div>
               <p className="text-white/80 text-xs md:text-sm">
-                Group Tutoring: 1019 Waimanu St., Unit 101, Honolulu, HI 96814
+                Visit: {BUSINESS.address.full}
               </p>
             </div>
             <div>
               <p className="text-white/80 text-xs md:text-sm">
-                Open Daily: 8 AM – 10 PM
+                Hours: Daily after 3 PM · By appointment
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Services Links */}
+        <div className="mt-6 border-t border-white/10 pt-5">
+          <p className="mb-3 text-center text-[11px] font-semibold uppercase tracking-widest text-white/60 md:text-left">
+            Tutoring Services
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 md:justify-start">
+            {serviceLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm text-white/80 hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
