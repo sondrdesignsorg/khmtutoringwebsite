@@ -22,7 +22,7 @@ export function StaffLoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(() => {
     const code = params.get('error');
-    if (code === 'not_staff') return 'That Google account is not authorized for the staff portal. Contact Kody if you need access.';
+    if (code === 'not_staff') return 'That Google account has been disabled for the staff portal. Contact Kody if you think this is a mistake.';
     if (code === 'invalid_link') return 'That sign-in link was invalid or expired.';
     return null;
   });
@@ -65,7 +65,7 @@ export function StaffLoginForm() {
           {error && <p className="mt-4 text-center text-sm text-destructive">{error}</p>}
 
           <p className="mt-4 text-center text-xs text-muted-foreground">
-            Tutors &amp; staff only. Contact Kody if you need access.
+            New tutors: sign in with Google, then enter the staff PIN Kody gave you.
           </p>
         </div>
       </div>

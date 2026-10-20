@@ -68,9 +68,9 @@ export async function GET(request: NextRequest) {
     return clearState(NextResponse.redirect(`${origin}/staff/login?error=not_staff`));
   }
 
-  // Unknown accounts continue to the PIN gate: entering a valid unclaimed
-  // staff PIN authorizes and binds their account there. Accounts whose entry
-  // is already active have verified their PIN once, so they skip the gate.
+  // Unknown accounts continue to the PIN gate: entering the shared staff PIN
+  // activates and adds their email automatically. Accounts whose entry is
+  // already active have verified their PIN once, so they skip the gate.
   const role: StaffRole | null = isOwner ? 'admin' : entry ? entry.role : null;
   const pinVerified = isOwner || entry?.status === 'active';
   const name = payload.name ?? email.split('@')[0];

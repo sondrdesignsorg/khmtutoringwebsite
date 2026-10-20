@@ -100,7 +100,7 @@ export function ServiceLanding({ service }: { service: ServiceContent }) {
               <div>
                 <p className="text-sm font-semibold text-foreground">Where we tutor</p>
                 <p className="text-sm text-muted-foreground">
-                  In person in {SERVICE_AREAS.inPerson.label}, at our Kakaʻako space with {BUSINESS.location.partnerVenue}, and online across {SERVICE_AREAS.online.label}.
+                  In person in {SERVICE_AREAS.inPerson.label}, at our Kakaʻako space with {BUSINESS.location.partnerVenue}, and online across {SERVICE_AREAS.online.label}. {BUSINESS.location.spacePolicy}
                 </p>
               </div>
             </div>

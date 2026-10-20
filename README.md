@@ -60,9 +60,9 @@
     `/staff/management`, which issues a unique 6-digit PIN and emails it. The
     PIN is stored hashed (scrypt) with lockout after repeated failures.
   - **Universal PIN:** `013100` by default, overridable with the
-    `UNIVERSAL_STAFF_PIN` env var. It is honored **only for emails already on
-    the staff allowlist** (add the email first, then the person signs in with
-    Google and enters the universal PIN). An unknown Google account cannot
-    self-admit. Every universal-PIN activation is written to
+    `UNIVERSAL_STAFF_PIN` env var. New tutors sign in with Google, enter this
+    PIN, and their email is automatically added to the staff allowlist and
+    activated as a tutor — no admin-side setup needed. Disabled accounts stay
+    blocked. Every universal-PIN activation is written to
     `staff_pin_activations` and logged to the server output.
   

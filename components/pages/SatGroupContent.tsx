@@ -178,7 +178,7 @@ export function SatGroupContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          phone: form.phone || null,
+          phone: form.phone.trim(),
           grade: form.grade || null,
           satDate: form.satDate || null,
           currentScore: form.currentScore || null,
@@ -394,7 +394,7 @@ export function SatGroupContent() {
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Email" type="email" value={form.email} onChange={(value) => updateField('email', value)} required />
-                  <Field label="Phone" value={form.phone} onChange={(value) => updateField('phone', value)} />
+                  <Field label="Phone" type="tel" value={form.phone} onChange={(value) => updateField('phone', value)} required />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="block">

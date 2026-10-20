@@ -176,7 +176,7 @@ export async function POST(req: Request) {
     parentName: data.parentName,
     studentName: data.studentName,
     email: data.email,
-    phone: data.phone || null,
+    phone: data.phone,
     grade: data.grade || null,
     cohort: data.cohort,
     satDate: data.satDate || null,

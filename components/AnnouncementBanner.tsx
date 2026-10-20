@@ -20,6 +20,9 @@ export function AnnouncementBanner() {
         </span>
         <span> – </span>
         <em>WITH PARKING! </em>
+        <span className="font-extrabold uppercase">
+          After 2 PM the space is exclusively KHM’s — not a public café.{' '}
+        </span>
         <span>– For Additional Info, Click Here.</span>
       </Link>
     </div>

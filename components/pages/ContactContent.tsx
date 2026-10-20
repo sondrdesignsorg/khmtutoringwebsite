@@ -317,7 +317,7 @@ export function ContactContent() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-sm md:text-base">Phone Number (Optional)</Label>
+                  <Label htmlFor="phone" className="text-sm md:text-base">Phone Number *</Label>
                   <Input
                     id="phone"
                     name="phone"
@@ -325,6 +325,7 @@ export function ContactContent() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="(808) 123-4567"
+                    required
                     className="h-11 md:h-12"
                   />
                 </div>

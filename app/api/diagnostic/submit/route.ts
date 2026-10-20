@@ -28,7 +28,13 @@ const SubmitSchema = z.object({
   studentName: z.string().trim().min(1).max(120),
   studentGrade: z.string().trim().max(20).optional().nullable(),
   email: z.string().trim().email().max(200),
-  phone: z.string().trim().max(40).optional().nullable(),
+  phone: z
+    .string()
+    .trim()
+    .min(1, 'Phone number is required')
+    .max(40)
+    .refine((value) => /^\+?[\d\s().-]+$/.test(value), 'Invalid phone number')
+    .refine((value) => (value.match(/\d/g)?.length ?? 0) >= 7, 'Invalid phone number'),
   ageGroup: z.enum(['elementary', 'middle', 'high', 'satact']),
   subject: z.enum(['math', 'reading']),
   length: z.number().int().min(1).max(100),
@@ -343,7 +349,7 @@ export async function POST(req: Request) {
       studentName: data.studentName,
       studentGrade: data.studentGrade || null,
       email: data.email,
-      phone: data.phone || null,
+      phone: data.phone,
       ageGroup: data.ageGroup,
       subject: data.subject,
       length: data.length,

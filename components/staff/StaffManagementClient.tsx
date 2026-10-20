@@ -121,7 +121,7 @@ export function StaffManagementClient({
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="mb-1.5 font-heading text-4xl font-bold">Staff Management</h1>
-            <p className="text-base text-muted-foreground">Invite tutors by email, issue PINs, and control access. Visible to admins only.</p>
+            <p className="text-base text-muted-foreground">Tutors can self-activate with the shared staff PIN, or you can invite a specific email and issue an individual PIN. Visible to admins only.</p>
           </div>
           <button
             onClick={() => router.push('/staff/library')}
@@ -160,7 +160,7 @@ export function StaffManagementClient({
             </button>
           </div>
           <p className="mt-3 text-[12.5px] text-muted-foreground">
-            The tutor signs in with Google using this email, then enters the PIN. The invite email includes the PIN automatically.
+            Optional: the tutor signs in with Google using this email, then enters the PIN from the invite email. New tutors can also self-activate at sign-in by entering the shared staff PIN.
           </p>
         </div>
 

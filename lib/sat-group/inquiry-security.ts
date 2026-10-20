@@ -13,14 +13,13 @@ export const GROUP_SAT_GRADES = ['7', '8', '9', '10', '11', '12', 'Other'] as co
 
 const optionalText = (max: number) => z.string().trim().max(max).optional().nullable();
 
-const optionalPhone = z
+const requiredPhone = z
   .string()
   .trim()
+  .min(1, 'Phone number is required')
   .max(40)
-  .refine((value) => value === '' || /^\+?[\d\s().-]+$/.test(value), 'Invalid phone number')
-  .refine((value) => value === '' || (value.match(/\d/g)?.length ?? 0) >= 7, 'Invalid phone number')
-  .optional()
-  .nullable();
+  .refine((value) => /^\+?[\d\s().-]+$/.test(value), 'Invalid phone number')
+  .refine((value) => (value.match(/\d/g)?.length ?? 0) >= 7, 'Invalid phone number');
 
 const optionalDate = z
   .string()
@@ -34,7 +33,7 @@ export const GroupSatInquirySchema = z
     parentName: z.string().trim().min(1).max(120),
     studentName: z.string().trim().min(1).max(120),
     email: z.string().trim().email().max(200),
-    phone: optionalPhone,
+    phone: requiredPhone,
     grade: z.enum(GROUP_SAT_GRADES).optional().nullable(),
     cohort: z.enum(GROUP_SAT_COHORTS),
     satDate: optionalDate,

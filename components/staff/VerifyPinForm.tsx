@@ -66,7 +66,7 @@ export function VerifyPinForm({ email }: { email: string }) {
         <form onSubmit={submit} className="rounded-2xl border border-border bg-card p-7 shadow-lg">
           <div className="mb-5 flex items-center gap-2 rounded-md border border-border bg-secondary/30 px-3.5 py-2.5 text-[13px] text-muted-foreground">
             <ShieldCheck className="size-4 shrink-0 text-primary" />
-            Enter the 6-digit PIN Kody or an admin gave you to activate staff access.
+            Enter the 6-digit PIN Kody gave you. A correct PIN activates your account automatically.
           </div>
 
           <div className="mb-5 flex justify-between gap-2">
@@ -112,7 +112,7 @@ export function VerifyPinForm({ email }: { email: string }) {
           </button>
 
           <p className="mt-4 text-center text-xs text-muted-foreground">
-            Lost your PIN? Ask Kody or an admin to reset it for you.
+            Need help? Ask Kody or an admin.
           </p>
         </form>
       </div>

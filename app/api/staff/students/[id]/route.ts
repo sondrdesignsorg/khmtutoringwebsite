@@ -14,8 +14,14 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const { id } = await params;
   const patch = await req.json() as Partial<StudentDraft>;
-  if (patch.email?.trim() && !isValidEmail(patch.email)) {
+  if (!patch.email?.trim()) {
+    return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+  }
+  if (!isValidEmail(patch.email)) {
     return NextResponse.json({ error: 'Enter a valid email address' }, { status: 400 });
+  }
+  if (!patch.phone?.trim()) {
+    return NextResponse.json({ error: 'Phone number is required' }, { status: 400 });
   }
 
   try {

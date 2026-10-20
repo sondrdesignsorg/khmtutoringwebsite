@@ -99,6 +99,14 @@ export function DiagnosticTest() {
       setEmailFieldError(true);
       return;
     }
+    if (!phone.trim()) {
+      setLeadError('A phone number is required so we can follow up about the results.');
+      return;
+    }
+    if ((phone.match(/\d/g)?.length ?? 0) < 7) {
+      setLeadError('Please enter a valid phone number.');
+      return;
+    }
     const qs = generateTest(ageGroup, subject, length);
     setQuestions(qs);
     setAnswers(new Array(qs.length).fill(null));
@@ -150,7 +158,7 @@ export function DiagnosticTest() {
           studentName: studentName.trim(),
           studentGrade: studentGrade.trim() || null,
           email: email.trim(),
-          phone: phone.trim() || null,
+          phone: phone.trim(),
           ageGroup,
           subject,
           length,

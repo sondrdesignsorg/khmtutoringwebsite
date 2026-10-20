@@ -38,7 +38,7 @@ export const DELIVERY_MODES = [
   {
     id: 'partner-cafe',
     label: 'In-store at our partner cafe',
-    detail: 'Sessions at our physical tutoring space in Kakaʻako, in collaboration with Surfers Coffee Hawaiʻi.',
+    detail: 'Sessions at our physical tutoring space in Kakaʻako, in collaboration with Surfers Coffee Hawaiʻi. After 2 PM the space is reserved exclusively for KHM families — it is not open to the public.',
   },
   {
     id: 'in-home',
@@ -86,6 +86,14 @@ export const BUSINESS = {
     partnerVenueShort: 'Surfers Coffee',
     neighborhood: 'Kakaʻako',
     parking: 'Use of the on-site parking lot, with easy drop-off and pick-up.',
+    /** Time the café closes to the public; after this it is KHM's space. */
+    publicAccessEnds: '2 PM',
+    /** When KHM's space is open to families on the location page. */
+    spaceHours: 'Daily, after 2 PM',
+    /** Use anywhere the location could be mistaken for a public café. */
+    spacePolicy:
+      'After 2 PM, Surfers Coffee closes to the public and the space becomes KHM Tutoring’s own — reserved exclusively for our students and their families.',
+    spacePolicyShort: 'Private KHM space after 2 PM — not open to the public.',
   },
   hours: {
     byAppointment: true,

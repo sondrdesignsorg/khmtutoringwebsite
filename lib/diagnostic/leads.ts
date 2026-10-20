@@ -29,7 +29,7 @@ interface CreateLeadInput {
   studentName: string;
   studentGrade: string | null;
   email: string;
-  phone: string | null;
+  phone: string;
   ageGroup: string;
   subject: string;
   length: number;

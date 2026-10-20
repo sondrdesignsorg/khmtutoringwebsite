@@ -50,12 +50,13 @@ export function StudentFormModal({
           </Field>
         </div>
 
-        <Field label="Email" hint="Where worksheets are sent">
+        <Field label="Email" hint="Where worksheets are sent" required>
           <Input
             type="email"
             value={draft.email}
             onChange={(e) => set({ email: e.target.value })}
             placeholder="student@example.com"
+            required
           />
         </Field>
 
@@ -63,8 +64,14 @@ export function StudentFormModal({
           <Field label="Parent / Guardian">
             <Input value={draft.parentName} onChange={(e) => set({ parentName: e.target.value })} placeholder="e.g. Jamie Chen" />
           </Field>
-          <Field label="Phone">
-            <Input value={draft.phone} onChange={(e) => set({ phone: e.target.value })} placeholder="(555) 123-4567" />
+          <Field label="Phone" required>
+            <Input
+              type="tel"
+              value={draft.phone}
+              onChange={(e) => set({ phone: e.target.value })}
+              placeholder="(555) 123-4567"
+              required
+            />
           </Field>
         </div>
 
@@ -79,7 +86,7 @@ export function StudentFormModal({
         </button>
         <button
           onClick={() => onSave({ ...draft, name: draft.name.trim() })}
-          disabled={!draft.name.trim()}
+          disabled={!draft.name.trim() || !draft.email.trim() || !draft.phone.trim()}
           className="inline-flex h-9 items-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
         >
           {isNew ? <Plus className="size-4" /> : <Check className="size-4" />}

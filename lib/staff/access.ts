@@ -6,9 +6,10 @@ import type { StaffRole } from './types';
 /**
  * Staff access control for the Google sign-in flow.
  *
- * Google users are only granted access when their email is in
- * `staff_allowlist` and they have verified a PIN issued by an admin.
- * The PIN is scrypt-hashed at rest and verified with a rate limit.
+ * New tutors sign in with Google and then enter the shared staff PIN. A
+ * correct PIN adds their email to `staff_allowlist` and activates it, so no
+ * admin-side setup is required. Returning staff still verify their PIN, and
+ * individual (non-universal) PINs can be issued from the management page.
  */
 
 export const PIN_LENGTH = 6;
@@ -98,17 +99,15 @@ export async function verifyStaffPin(email: string, pin: string): Promise<
     return { ok: false, error: 'This staff account has been disabled. Contact Kody.' };
   }
 
-  // Universal PIN: honored only for emails an admin has already added to the
-  // allowlist (or the owner). An unknown Google account cannot self-admit.
+  // Universal PIN: self-serve onboarding. Any Google account that enters the
+  // shared PIN is added to the allowlist as a tutor and activated immediately,
+  // so Kody never has to pre-create the account from the admin side.
   const universal = universalPin();
   if (universal && pin === universal) {
-    if (!entry && !isOwnerEmail(email)) {
-      return { ok: false, error: 'This email is not on the staff list yet. Ask Kody to add you first.' };
-    }
     if (!entry) {
       await sql`
         INSERT INTO staff_allowlist (id, email, role, status, invited_by)
-        VALUES (${randomUUID()}, ${normalized}, 'tutor', 'invited', 'self-claim')
+        VALUES (${randomUUID()}, ${normalized}, 'tutor', 'active', 'self-claim')
         ON CONFLICT (email) DO NOTHING
       `;
       entry = await getAllowlistEntry(email);

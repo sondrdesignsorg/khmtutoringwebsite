@@ -49,7 +49,7 @@ export const SERVICES: ServiceContent[] = [
     metaTitle: 'SAT Prep in Honolulu | 1-on-1 SAT Tutoring | KHM Tutoring',
     metaDescription:
       'One-on-one SAT prep in Honolulu with 10+ expert tutors. Personalized math and reading & writing coaching, full-length practice, and proven score strategies. Free diagnostic.',
-    h1: 'SAT Prep in Honolulu',
+    h1: 'SAT Prep',
     intro: [
       'The SAT rewards students who know the test, not just the material. KHM Tutoring pairs Honolulu students with tutors who have scored in the top percentiles and know exactly where the Digital SAT sets its traps — from the adaptive module structure to the pacing decisions that protect a score under time pressure.',
       'Every SAT plan starts with a free diagnostic so we can see the student’s current level by topic. From there, a tutor builds a session plan around the sections and question types that actually move the score, whether the goal is a first strong attempt or a competitive retake.',
@@ -106,7 +106,7 @@ export const SERVICES: ServiceContent[] = [
     metaTitle: 'Math Tutoring in Honolulu | K-12 Math Tutors | KHM Tutoring',
     metaDescription:
       'Expert math tutoring in Honolulu for K-12 students, from arithmetic to AP Calculus. Patient, personalized one-on-one instruction in person or online. Free diagnostic.',
-    h1: 'Math Tutoring in Honolulu',
+    h1: 'Math Tutoring',
     intro: [
       'Math is cumulative, and gaps hide easily. A student who is struggling in Algebra II is often missing a skill from earlier that never fully landed. KHM’s Honolulu math tutors find the specific break in the foundation and rebuild it, rather than repeating the same chapter the classroom already moved past.',
       'Tutors work from where the student actually is — not where the syllabus says they should be — and explain each step in a way the student can reproduce on their own. Sessions are available in person across Honolulu and online statewide.',
@@ -163,7 +163,7 @@ export const SERVICES: ServiceContent[] = [
     metaTitle: 'SSAT Prep in Hawaii | Private School Test Prep | KHM Tutoring',
     metaDescription:
       'SSAT prep for Hawaii families applying to private schools like Punahou and Iolani. One-on-one verbal, quantitative, and reading coaching, in person or online. Free diagnostic.',
-    h1: 'SSAT Prep in Hawaii',
+    h1: 'SSAT Prep',
     intro: [
       'For Hawaii families, the SSAT is often the first high-stakes test a student faces — and the first time a strong student meets a test designed to run them out of time. KHM’s SSAT tutors teach the content and, just as importantly, the test-taking habits that keep a student calm and accurate under pressure.',
       'We know the Hawaii private-school landscape, including what schools like Punahou and Iolani look for. Prep is tailored to whether the student is aiming for a middle-level or upper-level SSAT.',
@@ -220,7 +220,7 @@ export const SERVICES: ServiceContent[] = [
     metaTitle: 'AP Tutoring in Honolulu | AP Calculus, Sciences & More | KHM Tutoring',
     metaDescription:
       'AP tutoring in Honolulu for Calculus, Statistics, Physics, Biology, Chemistry, and more. Exam-focused one-on-one coaching with confident subject experts. Free diagnostic.',
-    h1: 'AP Tutoring in Honolulu',
+    h1: 'AP Tutoring',
     intro: [
       'Advanced Placement courses move fast, and a rough unit early can shadow the whole year. KHM’s AP tutors help Honolulu students keep pace with the course while steadily building toward the May exam — so students walk into the test already comfortable with its format and difficulty.',
       'Tutors match the student’s specific AP course and teacher’s pacing, covering both the classroom material and the exam skills the class may not have time to drill.',
@@ -278,7 +278,7 @@ export const SERVICES: ServiceContent[] = [
     metaTitle: 'College Essay Help in Honolulu | Admissions Essays | KHM Tutoring',
     metaDescription:
       'College essay and application help in Honolulu. One-on-one coaching on personal statements and supplementals with admissions-experienced mentors. Free consultation.',
-    h1: 'College Essay Help in Honolulu',
+    h1: 'College Essay Help',
     intro: [
       'A strong college essay sounds like the student, not like an adult who rewrote it. KHM’s writing mentors help Honolulu students find the story only they can tell, then shape it into clear, specific prose that holds an admissions reader’s attention.',
       'We coach from the first brainstorm to the final polish, and we work on supplementals and the activities list too. The student does the writing — we ask the questions that unlock it.',
@@ -335,7 +335,7 @@ export const SERVICES: ServiceContent[] = [
     metaTitle: 'Online Tutoring in Hawaii | Live 1-on-1 Zoom Tutoring | KHM Tutoring',
     metaDescription:
       'Live online tutoring for students across all of Hawaii. One-on-one math, English, SAT, SSAT, and AP coaching via Zoom with the same expert tutors. Free diagnostic.',
-    h1: 'Online Tutoring in Hawaii',
+    h1: 'Online Tutoring',
     intro: [
       'Distance should never decide whether a student gets a great tutor. KHM’s online tutoring brings the same one-on-one instruction to families anywhere in Hawaii, from neighbor islands to the far side of Oahu, over live interactive Zoom sessions.',
       'Online sessions use the same tutors, the same diagnostic process, and the same personalized plan as in-person prep. Students share work on screen in real time, and parents get the same progress updates.',
@@ -392,7 +392,7 @@ export const SERVICES: ServiceContent[] = [
     metaTitle: 'Private School Entrance Prep in Hawaii | KHM Tutoring',
     metaDescription:
       'Private school entrance prep for Hawaii families: SSAT/ISEE test prep, interviews, essays, and application strategy for schools like Punahou and Iolani.',
-    h1: 'Private School Entrance Prep in Hawaii',
+    h1: 'Private School Entrance Prep',
     intro: [
       'Hawaii’s independent schools are competitive, and admission is about more than a test score. KHM supports families through the whole private-school application: entrance-test preparation, the student essay, the parent statement, and the interview.',
       'Our tutors include graduates of Punahou, Iolani, DAMIEN, and Phillips Exeter, so we understand what these schools value and how to help a student present their strongest, most authentic self.',

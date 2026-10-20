@@ -44,14 +44,21 @@ const infoCards: InfoCard[] = [
   {
     icon: AlarmClock,
     title: 'Hours',
-    highlight: BUSINESS.hours.schedule,
-    detail: 'Individual and group tutoring sessions',
+    highlight: BUSINESS.location.spaceHours,
+    detail: (
+      <>
+        Individual and group tutoring sessions begin after 3 PM.
+        <span className="mt-1 block font-semibold text-foreground">
+          {BUSINESS.location.spacePolicyShort}
+        </span>
+      </>
+    ),
   },
   {
     icon: Users,
     title: 'Parents Welcome',
-    highlight: 'A comfortable café to wait or work',
-    detail: 'Wi-Fi and plenty of seating',
+    highlight: 'Wait or work in KHM’s private space',
+    detail: 'After 2 PM the café is reserved for KHM families, with Wi-Fi and plenty of seating.',
   },
   {
     icon: Car,
@@ -63,28 +70,28 @@ const infoCards: InfoCard[] = [
 
 const photos: LocationPhoto[] = [
   {
-    src: '/images/location/kakaako-cafe-interior.jpg',
-    width: 1152,
-    height: 840,
-    alt: 'Inside Surfers Coffee in Kakaʻako: lounge chairs, café tables, bookshelves and woven pendant lights under an open wood ceiling',
+    src: '/images/location/kakaako-tutoring-window-table.jpg',
+    width: 1200,
+    height: 1600,
+    alt: 'Two KHM students working together at a window table inside the Kakaʻako space',
   },
   {
-    src: '/images/location/surfers-coffee-sign.jpg',
-    width: 505,
-    height: 870,
-    alt: 'Surfers Coffee Kakaʻako logo over the building’s street-front exterior and garden',
+    src: '/images/location/kakaako-study-lounge.jpg',
+    width: 1200,
+    height: 1600,
+    alt: 'KHM’s Kakaʻako study lounge with armchairs, a surfboard and café seating',
   },
   {
-    src: '/images/location/kakaako-window-seating.jpg',
-    width: 1035,
-    height: 1413,
-    alt: 'Round study table with chairs beside large windows at the Kakaʻako hub',
+    src: '/images/location/kakaako-study-floor.jpg',
+    width: 1400,
+    height: 1050,
+    alt: 'Students studying at tables across the Kakaʻako learning space',
   },
   {
-    src: '/images/location/kakaako-group-table.jpg',
-    width: 775,
-    height: 930,
-    alt: 'Long table with seating for group tutoring sessions at the Kakaʻako hub',
+    src: '/images/location/kakaako-lounge-seating.jpg',
+    width: 1400,
+    height: 1050,
+    alt: 'Leather armchairs and a round table in the Kakaʻako lounge',
   },
 ];
 
@@ -104,13 +111,27 @@ export function LocationContent() {
                 Our New Home <span className="whitespace-nowrap text-[hsl(214_33%_58%)]">in Kakaʻako</span>
               </h1>
 
-              <p className="mb-8 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
+              <p className="mb-6 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
                 KHM builds environments where youth make academic progress, hit{' '}
                 <strong className="font-semibold text-foreground">personal milestones</strong> and
                 can learn <strong className="font-semibold text-foreground">together, in person</strong>,
                 away from screens. Our new hub is a place where learning becomes second nature in a
                 world that changes every day.
               </p>
+
+              <div
+                role="note"
+                className="mb-8 max-w-2xl rounded-2xl border-2 border-red-600 bg-red-50 p-5 md:p-6"
+              >
+                <p className="mb-1 text-sm font-bold uppercase tracking-wide text-red-700">
+                  After 2 PM, this is KHM’s space
+                </p>
+                <p className="text-base font-medium leading-7 text-foreground">
+                  Surfers Coffee is a public café only until 2 PM. From 2 PM onward, the space is
+                  reserved exclusively for KHM Tutoring students and families — it is{' '}
+                  <strong className="font-semibold">not open to the public</strong>.
+                </p>
+              </div>
 
               <ul className="grid gap-4 sm:grid-cols-2">
                 {infoCards.map(({ icon: Icon, title, highlight, detail }) => (

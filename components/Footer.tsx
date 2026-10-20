@@ -79,6 +79,9 @@ export function Footer() {
               <p className="text-white/80 text-xs md:text-sm">
                 Hours: Daily after 3 PM · By appointment
               </p>
+              <p className="text-white/70 text-xs md:text-sm">
+                KHM private space after 2 PM — not open to the public
+              </p>
             </div>
           </div>
         </div>

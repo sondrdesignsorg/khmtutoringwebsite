@@ -5,7 +5,8 @@ import { SESSION_COOKIE, verifySessionToken } from '@/lib/staff/session';
 import { VerifyPinForm } from '@/components/staff/VerifyPinForm';
 import { SignOutNotice } from '@/components/staff/SignOutNotice';
 
-// PIN gate for Google sign-in: shown after OAuth for allowlisted staff.
+// PIN gate for Google sign-in: new tutors are added automatically after a
+// correct PIN; returning staff verify and continue to the library.
 export default async function VerifyPinPage() {
   const jar = await cookies();
   const token = jar.get(SESSION_COOKIE)?.value;

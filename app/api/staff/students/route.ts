@@ -25,8 +25,14 @@ export async function POST(req: Request) {
   if (!draft?.name?.trim()) {
     return NextResponse.json({ error: 'Name is required' }, { status: 400 });
   }
-  if (draft.email?.trim() && !isValidEmail(draft.email)) {
+  if (!draft.email?.trim()) {
+    return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+  }
+  if (!isValidEmail(draft.email)) {
     return NextResponse.json({ error: 'Enter a valid email address' }, { status: 400 });
+  }
+  if (!draft.phone?.trim()) {
+    return NextResponse.json({ error: 'Phone number is required' }, { status: 400 });
   }
 
   try {

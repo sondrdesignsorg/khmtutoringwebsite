@@ -4,7 +4,7 @@ import { BUSINESS } from '@/lib/business/config';
 
 const title = 'Our Location in Kakaʻako, Honolulu';
 const description =
-  'KHM Tutoring’s new in-person hub at Surfers Coffee inside WorkNow Hawaiʻi, 1019 Waimanu St., Unit 101, Honolulu. Individual and group tutoring daily after 3 PM, with on-site parking.';
+  'KHM Tutoring’s in-person hub at Surfers Coffee inside WorkNow Hawaiʻi, 1019 Waimanu St., Unit 101, Honolulu. After 2 PM the café is not open to the public — the space is reserved exclusively for KHM students and families. Tutoring daily after 3 PM, with on-site parking.';
 const url = `${BUSINESS.url}/about/location`;
 
 export const metadata: Metadata = {
@@ -28,10 +28,10 @@ export const metadata: Metadata = {
     url,
     images: [
       {
-        url: '/images/location/kakaako-cafe-interior.jpg',
-        width: 1152,
-        height: 840,
-        alt: 'Inside Surfers Coffee in Kakaʻako, home of KHM Tutoring’s in-person sessions',
+        url: '/images/location/kakaako-study-floor.jpg',
+        width: 1400,
+        height: 1050,
+        alt: 'Students studying at tables across KHM Tutoring’s Kakaʻako learning space',
       },
     ],
   },
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `${title} | KHM Tutoring`,
     description,
-    images: ['/images/location/kakaako-cafe-interior.jpg'],
+    images: ['/images/location/kakaako-study-floor.jpg'],
   },
 };
 

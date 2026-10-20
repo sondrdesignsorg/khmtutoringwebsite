@@ -102,7 +102,7 @@ export function LeadScreen({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="phone" className="text-sm">
-              Phone (optional)
+              Phone <span className="text-destructive">*</span>
             </Label>
             <Input
               id="phone"
@@ -111,6 +111,8 @@ export function LeadScreen({
               onChange={(e) => onChangeField('phone', e.target.value)}
               placeholder="(808) 555-0100"
               className="h-11"
+              required
+              aria-required="true"
             />
           </div>
         </div>
