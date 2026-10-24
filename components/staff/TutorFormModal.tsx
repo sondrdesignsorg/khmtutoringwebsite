@@ -8,6 +8,7 @@ import { Modal, ModalCloseButton } from './Modal';
 import { StaffSelect } from './StaffSelect';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { compressImageForUpload } from '@/lib/image-compress';
 import { cn } from '@/lib/utils';
 
 const CATEGORIES = [
@@ -47,24 +48,30 @@ export function TutorFormModal({
   const [subjectsText, setSubjectsText] = useState(initial.subjects.join(', '));
   const [achievementsText, setAchievementsText] = useState(initial.achievements.join('\n'));
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState('');
 
   const set = (patch: Partial<FormValue>) => setDraft((d) => ({ ...d, ...patch }));
 
   async function handleImage(file: File) {
     setUploading(true);
+    setUploadProgress(0);
     setUploadError('');
     try {
-      const blob = await upload(`tutor-images/${Date.now()}-${file.name}`, file, {
+      const optimized = await compressImageForUpload(file);
+      const safeName = optimized.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-') || 'image';
+      const blob = await upload(`tutor-images/${Date.now()}-${safeName}`, optimized, {
         access: 'public',
         handleUploadUrl: '/api/staff/tutors/image',
-        contentType: file.type || 'image/jpeg',
+        contentType: optimized.type || 'image/jpeg',
+        onUploadProgress: ({ percentage }) => setUploadProgress(Math.round(percentage)),
       });
       set({ imageUrl: blob.url, imageKey: blob.pathname });
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : 'Image upload failed');
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   }
 
@@ -96,8 +103,9 @@ export function TutorFormModal({
               </span>
             )}
             {uploading && (
-              <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-white">
+              <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/40 text-white">
                 <Loader2 className="size-5 animate-spin" />
+                {uploadProgress > 0 && <span className="text-[10px] font-semibold">{uploadProgress}%</span>}
               </span>
             )}
           </div>
@@ -110,6 +118,7 @@ export function TutorFormModal({
                   type="file"
                   accept="image/png,image/jpeg,image/webp,image/gif"
                   className="hidden"
+                  disabled={uploading}
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleImage(f); }}
                 />
               </label>
