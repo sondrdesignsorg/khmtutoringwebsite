@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import {
-  ArrowRight, BookOpen, ChevronDown, ClipboardCheck, ClipboardList, FileText, Folder, FolderSearch, Layers, Search, SlidersHorizontal, X,
+  ArrowRight, BookOpen, ChevronDown, ClipboardCheck, ClipboardList, ExternalLink, FileText, Folder, FolderSearch, Layers, Search, SlidersHorizontal, X,
 } from 'lucide-react';
 import type { LibraryFolder, Resource, ResourceType, Student } from '@/lib/staff/types';
 import type { StaffSession } from '@/lib/staff/auth';
@@ -19,6 +19,7 @@ import { matchesAllTerms } from '@/lib/search';
 type SortKey = 'newest' | 'az' | 'pages';
 
 const UNFILED_KEY = '__unfiled__';
+const TUTOR_TRACK_URL = 'https://khm-tutor-track--cgmt7247.replit.app/';
 
 export function LibraryClient({
   initialResources,
@@ -177,9 +178,19 @@ export function LibraryClient({
       <PortalChrome session={session} crumbs={[{ label: 'Resource Library' }]} showAdminLink showStaffLink showTutorsLink showStudentsLink />
 
       <div className="mx-auto max-w-[1280px] px-6 pb-32 pt-8">
-        <div className="mb-6">
-          <h1 className="mb-1.5 font-heading text-4xl font-bold">Resource Library</h1>
-          <p className="text-base text-muted-foreground">Browse, preview, and assemble worksheets, quizzes &amp; tests for your students.</p>
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h1 className="mb-1.5 font-heading text-4xl font-bold">Resource Library</h1>
+            <p className="text-base text-muted-foreground">Browse, preview, and assemble worksheets, quizzes &amp; tests for your students.</p>
+          </div>
+          <a
+            href={TUTOR_TRACK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-9 items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-5 text-sm font-semibold text-primary transition-colors hover:bg-primary/15"
+          >
+            <ExternalLink className="size-4" />Open Tutor Track
+          </a>
         </div>
 
         {/* Toolbar */}
