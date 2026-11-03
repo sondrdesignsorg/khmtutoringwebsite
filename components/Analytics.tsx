@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { Analytics as VercelAnalytics } from '@vercel/analytics/react';
 import { trackEvent } from '@/lib/analytics';
 
 /**
@@ -22,5 +23,9 @@ export function Analytics() {
     return () => document.removeEventListener('click', handleClick);
   }, []);
 
-  return null;
+  return (
+    <VercelAnalytics
+      beforeSend={(event) => event.url.includes('/staff') ? null : event}
+    />
+  );
 }
