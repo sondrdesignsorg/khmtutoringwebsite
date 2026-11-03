@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 const CATEGORIES = [
   'SAT/SSAT', 'Math', 'English', 'AP Subjects', 'Chemistry', 'Biology', 'College Counseling', 'Science', 'Other',
 ];
+const UPLOAD_TIMEOUT_MS = 60_000;
 
 export const BLANK_TUTOR: TutorDraft = {
   name: '',
@@ -49,6 +50,7 @@ export function TutorFormModal({
   const [achievementsText, setAchievementsText] = useState(initial.achievements.join('\n'));
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadPhase, setUploadPhase] = useState<'preparing' | 'connecting' | 'uploading'>('preparing');
   const [uploadError, setUploadError] = useState('');
 
   const set = (patch: Partial<FormValue>) => setDraft((d) => ({ ...d, ...patch }));
@@ -56,22 +58,47 @@ export function TutorFormModal({
   async function handleImage(file: File) {
     setUploading(true);
     setUploadProgress(0);
+    setUploadPhase('preparing');
     setUploadError('');
+    const timeout = new AbortController();
+    let timeoutId = 0;
     try {
-      const optimized = await compressImageForUpload(file);
-      const safeName = optimized.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-') || 'image';
-      const blob = await upload(`tutor-images/${Date.now()}-${safeName}`, optimized, {
-        access: 'public',
-        handleUploadUrl: '/api/staff/tutors/image',
-        contentType: optimized.type || 'image/jpeg',
-        onUploadProgress: ({ percentage }) => setUploadProgress(Math.round(percentage)),
+      if (!file.type.startsWith('image/')) throw new Error('Choose an image file.');
+      const timedOut = new Promise<never>((_, reject) => {
+        timeoutId = window.setTimeout(() => {
+          timeout.abort();
+          reject(new Error('Upload timed out. Check your connection and try again.'));
+        }, UPLOAD_TIMEOUT_MS);
       });
-      set({ imageUrl: blob.url, imageKey: blob.pathname });
+      const task = (async () => {
+        const optimized = await compressImageForUpload(file);
+        if (optimized.size > 5 * 1024 * 1024) {
+          throw new Error('Image must be 5 MB or smaller after compression.');
+        }
+        setUploadPhase('connecting');
+        const safeName = optimized.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-') || 'image';
+        const blob = await upload(`tutor-images/${Date.now()}-${safeName}`, optimized, {
+          access: 'public',
+          handleUploadUrl: '/api/staff/tutors/image',
+          contentType: optimized.type || 'image/jpeg',
+          abortSignal: timeout.signal,
+          onUploadProgress: ({ percentage }) => {
+            setUploadPhase('uploading');
+            setUploadProgress(Math.round(percentage));
+          },
+        });
+        set({ imageUrl: blob.url, imageKey: blob.pathname });
+      })();
+      await Promise.race([task, timedOut]);
     } catch (err) {
-      setUploadError(err instanceof Error ? err.message : 'Image upload failed');
+      setUploadError(timeout.signal.aborted && err instanceof Error && err.message === 'Upload timed out. Check your connection and try again.'
+        ? 'Upload timed out. Check your connection and try again.'
+        : err instanceof Error ? err.message : 'Image upload failed. Please try again.');
     } finally {
+      window.clearTimeout(timeoutId);
       setUploading(false);
       setUploadProgress(0);
+      setUploadPhase('preparing');
     }
   }
 
@@ -105,7 +132,13 @@ export function TutorFormModal({
             {uploading && (
               <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/40 text-white">
                 <Loader2 className="size-5 animate-spin" />
-                {uploadProgress > 0 && <span className="text-[10px] font-semibold">{uploadProgress}%</span>}
+                <span className="text-[10px] font-semibold">
+                  {uploadPhase === 'preparing'
+                    ? 'Preparing'
+                    : uploadPhase === 'connecting'
+                      ? 'Connecting'
+                      : `${uploadProgress}%`}
+                </span>
               </span>
             )}
           </div>
@@ -119,7 +152,7 @@ export function TutorFormModal({
                   accept="image/png,image/jpeg,image/webp,image/gif"
                   className="hidden"
                   disabled={uploading}
-                  onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleImage(f); }}
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleImage(f); e.currentTarget.value = ''; }}
                 />
               </label>
               {draft.imageUrl && (
