@@ -1,5 +1,6 @@
 import { del } from '@vercel/blob';
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import type { TutorDraft } from '@/lib/staff/types';
 import { requireAdmin } from '@/lib/staff/auth';
 import { getTutor, updateTutor, deleteTutor } from '@/lib/staff/tutor-repo';
@@ -25,6 +26,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     });
   }
 
+  revalidatePath('/educators');
   return NextResponse.json({ tutor });
 }
 
@@ -44,5 +46,6 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
     });
   }
 
+  revalidatePath('/educators');
   return NextResponse.json({ id, deleted: true });
 }

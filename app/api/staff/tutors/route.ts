@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import type { TutorDraft } from '@/lib/staff/types';
 import { requireAdmin, getStaffSession } from '@/lib/staff/auth';
 import { listAllTutors, createTutor } from '@/lib/staff/tutor-repo';
@@ -27,5 +28,6 @@ export async function POST(req: Request) {
   }
 
   const tutor = await createTutor({ ...draft, name: draft.name.trim() });
+  revalidatePath('/educators');
   return NextResponse.json({ tutor }, { status: 201 });
 }

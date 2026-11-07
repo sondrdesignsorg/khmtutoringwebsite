@@ -9,12 +9,21 @@ import { StaffSelect } from './StaffSelect';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { compressImageForUpload } from '@/lib/image-compress';
+import {
+  IMAGE_ACCEPT,
+  IMAGE_UPLOAD_TIMEOUT_MS,
+  MAX_IMAGE_INPUT_BYTES,
+  MAX_IMAGE_UPLOAD_BYTES,
+  RECOMMENDED_IMAGE_DIMENSION,
+  RECOMMENDED_IMAGE_MAX_BYTES,
+  formatFileSize,
+  inferImageMimeType,
+} from '@/lib/image-upload';
 import { cn } from '@/lib/utils';
 
 const CATEGORIES = [
   'SAT/SSAT', 'Math', 'English', 'AP Subjects', 'Chemistry', 'Biology', 'College Counseling', 'Science', 'Other',
 ];
-const UPLOAD_TIMEOUT_MS = 60_000;
 
 export const BLANK_TUTOR: TutorDraft = {
   name: '',
@@ -63,37 +72,41 @@ export function TutorFormModal({
     const timeout = new AbortController();
     let timeoutId = 0;
     try {
-      if (!file.type.startsWith('image/')) throw new Error('Choose an image file.');
+      const mime = inferImageMimeType(file.name, file.type);
+      if (!mime) {
+        throw new Error('Choose a JPG, PNG, WebP, GIF, AVIF, HEIC, BMP, or TIFF image.');
+      }
+      if (file.size > MAX_IMAGE_INPUT_BYTES) {
+        throw new Error(`Image is too large (${formatFileSize(file.size)}). Choose a file up to ${formatFileSize(MAX_IMAGE_INPUT_BYTES)}.`);
+      }
+      const normalized = file.type === mime ? file : new File([file], file.name, { type: mime });
+      const optimized = await compressImageForUpload(normalized);
+      if (optimized.size > MAX_IMAGE_UPLOAD_BYTES) {
+        throw new Error(`Image is still too large after resizing (${formatFileSize(optimized.size)}). Use a file under ${formatFileSize(MAX_IMAGE_UPLOAD_BYTES)}.`);
+      }
+      setUploadPhase('connecting');
       const timedOut = new Promise<never>((_, reject) => {
         timeoutId = window.setTimeout(() => {
           timeout.abort();
           reject(new Error('Upload timed out. Check your connection and try again.'));
-        }, UPLOAD_TIMEOUT_MS);
+        }, IMAGE_UPLOAD_TIMEOUT_MS);
       });
-      const task = (async () => {
-        const optimized = await compressImageForUpload(file);
-        if (optimized.size > 5 * 1024 * 1024) {
-          throw new Error('Image must be 5 MB or smaller after compression.');
-        }
-        setUploadPhase('connecting');
-        const safeName = optimized.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-') || 'image';
-        const blob = await upload(`tutor-images/${Date.now()}-${safeName}`, optimized, {
-          access: 'public',
-          handleUploadUrl: '/api/staff/tutors/image',
-          contentType: optimized.type || 'image/jpeg',
-          abortSignal: timeout.signal,
-          onUploadProgress: ({ percentage }) => {
-            setUploadPhase('uploading');
-            setUploadProgress(Math.round(percentage));
-          },
-        });
+      const safeName = optimized.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-') || 'image';
+      const uploadTask = upload(`tutor-images/${Date.now()}-${safeName}`, optimized, {
+        access: 'public',
+        handleUploadUrl: '/api/staff/tutors/image',
+        contentType: optimized.type || 'image/jpeg',
+        abortSignal: timeout.signal,
+        onUploadProgress: ({ percentage }) => {
+          setUploadPhase('uploading');
+          setUploadProgress(Math.round(percentage));
+        },
+      }).then((blob) => {
         set({ imageUrl: blob.url, imageKey: blob.pathname });
-      })();
-      await Promise.race([task, timedOut]);
+      });
+      await Promise.race([uploadTask, timedOut]);
     } catch (err) {
-      setUploadError(timeout.signal.aborted && err instanceof Error && err.message === 'Upload timed out. Check your connection and try again.'
-        ? 'Upload timed out. Check your connection and try again.'
-        : err instanceof Error ? err.message : 'Image upload failed. Please try again.');
+      setUploadError(err instanceof Error ? err.message : 'Image upload failed. Please try again.');
     } finally {
       window.clearTimeout(timeoutId);
       setUploading(false);
@@ -149,7 +162,7 @@ export function TutorFormModal({
                 <ImagePlus className="size-4" />Upload image
                 <input
                   type="file"
-                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  accept={IMAGE_ACCEPT}
                   className="hidden"
                   disabled={uploading}
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleImage(f); e.currentTarget.value = ''; }}
@@ -164,6 +177,10 @@ export function TutorFormModal({
                 </button>
               )}
             </div>
+            <p className="mt-1.5 text-xs leading-5 text-muted-foreground">
+              JPG, PNG, WebP, GIF, AVIF, HEIC, BMP, or TIFF. Up to {formatFileSize(MAX_IMAGE_INPUT_BYTES)} ({formatFileSize(RECOMMENDED_IMAGE_MAX_BYTES)} or less is ideal) — large photos are resized automatically.
+              Square images at least {RECOMMENDED_IMAGE_DIMENSION} × {RECOMMENDED_IMAGE_DIMENSION} look best.
+            </p>
             <Input
               value={draft.imageUrl}
               onChange={(e) => set({ imageUrl: e.target.value, imageKey: undefined })}

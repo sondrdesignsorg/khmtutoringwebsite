@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import { requireAdmin } from '@/lib/staff/auth';
-
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+import { MAX_IMAGE_UPLOAD_BYTES, UPLOADABLE_IMAGE_MIME_TYPES } from '@/lib/image-upload';
 
 export async function POST(req: Request) {
   try {
@@ -16,8 +15,8 @@ export async function POST(req: Request) {
       request: req,
       body,
       onBeforeGenerateToken: async () => ({
-        allowedContentTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
-        maximumSizeInBytes: MAX_IMAGE_SIZE,
+        allowedContentTypes: [...UPLOADABLE_IMAGE_MIME_TYPES],
+        maximumSizeInBytes: MAX_IMAGE_UPLOAD_BYTES,
         addRandomSuffix: true,
       }),
     });
