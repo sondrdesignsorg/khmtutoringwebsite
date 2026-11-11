@@ -15,6 +15,7 @@ interface StructuredDataProps {
     | 'organization'
     | 'home'
     | 'about'
+    | 'location'
     | 'educators'
     | 'contact'
     | 'diagnostic'
@@ -493,6 +494,8 @@ export function StructuredData({ type, tutors, service }: StructuredDataProps) {
         return [organizationSchema, websiteSchema, serviceSchema];
       case 'about':
         return [organizationSchema, getBreadcrumbSchema('About', `${baseUrl}/about`)];
+      case 'location':
+        return [organizationSchema, getBreadcrumbSchema('Our Location', `${baseUrl}/about/location`)];
       case 'educators': {
         const educatorSchemas = tutors ? buildEducatorSchemas(tutors) : educatorPersonSchemas;
         return [organizationSchema, ...educatorSchemas, getBreadcrumbSchema('Educators', `${baseUrl}/educators`)];

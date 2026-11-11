@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { LocationContent } from '@/components/pages/LocationContent';
 import { BUSINESS } from '@/lib/business/config';
+import { StructuredData } from '@/components/StructuredData';
 
 const title = 'Our Location in Kakaʻako, Honolulu';
 const description =
@@ -44,5 +45,8 @@ export const metadata: Metadata = {
 };
 
 export default function OurLocationPage() {
-  return <LocationContent />;
+  return <>
+    <StructuredData type="location" />
+    <LocationContent />
+  </>;
 }
