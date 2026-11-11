@@ -1,6 +1,6 @@
 # KHM Tutoring SEO/GEO Audit
 
-Audited November 10, 2026 (Hawaii time). Production: https://www.khmtutoring.com. Method: live HTTP crawl of the XML sitemap and linked pages, inspection of rendered metadata and JSON-LD, and source review using the [B12Labs SEO audit skill](https://github.com/B12Labs/skills/blob/main/skills/agentic-seo/SKILL.md) as a checklist. This is a technical and content consistency audit, not a ranking or traffic report.
+Audited November 10–11, 2026 (Hawaii time). Production: https://www.khmtutoring.com. Method: live HTTP crawl of the XML sitemap and linked pages, inspection of rendered metadata and JSON-LD, and source review using the [B12Labs SEO audit skill](https://github.com/B12Labs/skills/blob/main/skills/agentic-seo/SKILL.md) as a checklist. This is a technical and content consistency audit, not a ranking or traffic report.
 
 ## Result
 
@@ -9,6 +9,10 @@ The site's crawl foundation is healthy. All 15 sitemap URLs returned HTTP 200. E
 The homepage publishes valid JSON-LD for the business, website, and tutoring service. The educators page publishes business and tutor `Person` data. The location page now publishes business and breadcrumb data. These checks establish that the structured data is present and parseable; they do not guarantee search engine rich results.
 
 The public site has clear Honolulu, Kakaʻako, Oʻahu, and statewide online tutoring descriptions. The sitemap includes dedicated pages for seven service topics, a location page, educators, contact, diagnostic, and group SAT prep. `robots.txt` allows major search crawlers and named AI search crawlers while excluding staff and API routes. `llms.txt` offers a structured summary and links for AI systems.
+
+## Tutor admin photo verification
+
+The production admin page loaded 12 published tutors, and the Add Tutor form accepted a test PNG after the upload path was corrected for the site's private Blob store. The image preview loaded at its expected 64 × 64 dimensions. Its public tutor-photo URL returned HTTP 200, `image/png`, and the exact 266 bytes of the source file. The Add Tutor form was cancelled, leaving the published roster unchanged. This verifies a PNG photo upload, storage, and delivery end to end; other image formats and large-file uploads were not exercised live.
 
 ## Confirmed finding corrected
 
@@ -23,4 +27,4 @@ The public site has clear Honolulu, Kakaʻako, Oʻahu, and statewide online tuto
 
 ## Limits
 
-The internal link check covered rendered same-site paths from sitemap pages. It did not test form submissions, external links, image visual quality, or search ranking. Sitemap URLs and on-page metadata were inspected in production after commit `b0fedf9` deployed. The corrected `llms.txt` was subsequently deployed from commit `940d684` and verified on the live site. An authenticated tutor photo upload was attempted with a 266-byte PNG; the client transfer stayed at 0% and timed out. A same-site upload path for ordinary photos has been added and awaits live verification.
+The internal link check covered rendered same-site paths from sitemap pages. It did not test other form submissions, external links, image visual quality, or search ranking. Sitemap URLs and on-page metadata were inspected in production after commit `b0fedf9` deployed. The corrected `llms.txt` was subsequently deployed from commit `940d684` and verified on the live site. The first authenticated photo upload timed out because it requested public access from a private Blob store. A same-site upload route, private Blob storage, and public tutor-photo delivery route were deployed and verified with a PNG on November 11.
