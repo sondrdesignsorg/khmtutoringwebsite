@@ -159,7 +159,7 @@ function parentEmailHtml(p: {
         <!-- Footer -->
         <tr><td style="background:#f8fafc;border-top:1px solid #e5e7eb;padding:20px 40px;text-align:center;">
           <p style="margin:0;font-size:12px;color:#9ca3af;">KHM Tutoring · Honolulu, Hawaii · (808) 381-7856</p>
-          <p style="margin:4px 0 0;font-size:12px;color:#9ca3af;">khmtutoring1@gmail.com</p>
+          <p style="margin:4px 0 0;font-size:12px;color:#9ca3af;">info@khmtutoring.com</p>
         </td></tr>
 
       </table>

@@ -14,6 +14,7 @@ import {
   IMAGE_UPLOAD_TIMEOUT_MS,
   MAX_IMAGE_INPUT_BYTES,
   MAX_IMAGE_UPLOAD_BYTES,
+  MAX_SERVER_IMAGE_BYTES,
   RECOMMENDED_IMAGE_DIMENSION,
   RECOMMENDED_IMAGE_MAX_BYTES,
   formatFileSize,
@@ -91,19 +92,36 @@ export function TutorFormModal({
           reject(new Error('Upload timed out. Check your connection and try again.'));
         }, IMAGE_UPLOAD_TIMEOUT_MS);
       });
-      const safeName = optimized.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-') || 'image';
-      const uploadTask = upload(`tutor-images/${Date.now()}-${safeName}`, optimized, {
-        access: 'public',
-        handleUploadUrl: '/api/staff/tutors/image',
-        contentType: optimized.type || 'image/jpeg',
-        abortSignal: timeout.signal,
-        onUploadProgress: ({ percentage }) => {
+      const uploadTask = (async () => {
+        if (optimized.size <= MAX_SERVER_IMAGE_BYTES) {
           setUploadPhase('uploading');
-          setUploadProgress(Math.round(percentage));
-        },
-      }).then((blob) => {
+          const response = await fetch('/api/staff/tutors/image/server', {
+            method: 'POST',
+            headers: { 'Content-Type': optimized.type },
+            body: optimized,
+            signal: timeout.signal,
+          });
+          const result = await response.json() as { url?: string; pathname?: string; error?: string };
+          if (!response.ok || !result.url || !result.pathname) {
+            throw new Error(result.error || 'Photo upload failed. Please try again.');
+          }
+          set({ imageUrl: result.url, imageKey: result.pathname });
+          return;
+        }
+
+        const safeName = optimized.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-') || 'image';
+        const blob = await upload(`tutor-images/${Date.now()}-${safeName}`, optimized, {
+          access: 'public',
+          handleUploadUrl: '/api/staff/tutors/image',
+          contentType: optimized.type || 'image/jpeg',
+          abortSignal: timeout.signal,
+          onUploadProgress: ({ percentage }) => {
+            setUploadPhase('uploading');
+            setUploadProgress(Math.round(percentage));
+          },
+        });
         set({ imageUrl: blob.url, imageKey: blob.pathname });
-      });
+      })();
       await Promise.race([uploadTask, timedOut]);
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : 'Image upload failed. Please try again.');
@@ -150,7 +168,7 @@ export function TutorFormModal({
                     ? 'Preparing'
                     : uploadPhase === 'connecting'
                       ? 'Connecting'
-                      : `${uploadProgress}%`}
+                      : uploadProgress > 0 ? `${uploadProgress}%` : 'Uploading'}
                 </span>
               </span>
             )}

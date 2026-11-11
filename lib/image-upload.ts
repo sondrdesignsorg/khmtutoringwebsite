@@ -30,6 +30,8 @@ export const IMAGE_ACCEPT = [
 
 export const MAX_IMAGE_INPUT_BYTES = 25 * 1024 * 1024;
 export const MAX_IMAGE_UPLOAD_BYTES = 10 * 1024 * 1024;
+// Leave room for request overhead under Vercel's 4.5 MB Function body limit.
+export const MAX_SERVER_IMAGE_BYTES = 4 * 1024 * 1024;
 export const RECOMMENDED_IMAGE_MAX_BYTES = 5 * 1024 * 1024;
 export const MAX_IMAGE_DIMENSION = 1600;
 export const RECOMMENDED_IMAGE_DIMENSION = 600;

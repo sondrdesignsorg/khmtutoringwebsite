@@ -51,7 +51,7 @@ function parentConfirmationHtml(p: Inquiry & { id: string }): string {
           </p>
         </td></tr>
         <tr><td style="background:#f8fafc;border-top:1px solid #e5e7eb;padding:18px 36px;text-align:center;">
-          <p style="margin:0;font-size:12px;color:#9ca3af;">KHM Tutoring - Honolulu, Hawaii - khmtutoring1@gmail.com</p>
+          <p style="margin:0;font-size:12px;color:#9ca3af;">KHM Tutoring - Honolulu, Hawaii - info@khmtutoring.com</p>
         </td></tr>
       </table>
     </td></tr>

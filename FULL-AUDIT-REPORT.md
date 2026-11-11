@@ -12,7 +12,7 @@ The public site has clear Honolulu, Kakaʻako, Oʻahu, and statewide online tuto
 
 ## Confirmed finding corrected
 
-**GEO contact inconsistency, medium impact.** `llms.txt` listed `khmtutoring1@gmail.com` while the site's public contact address and business structured data use `info@khmtutoring.com`. The file also named the partner venue differently from the site. Both entries were aligned in this audit. This prevents AI readers of `llms.txt` from repeating outdated contact details.
+**GEO contact inconsistency, medium impact.** `llms.txt` listed `khmtutoring1@gmail.com` while the site's public contact address and business structured data use `info@khmtutoring.com`. The file also named the partner venue differently from the site. Both entries were aligned in this audit. The same outdated address was removed from two customer-facing email footers. This prevents AI readers of `llms.txt` and recipients of those emails from repeating outdated contact details.
 
 ## Items requiring evidence outside the website
 
@@ -23,4 +23,4 @@ The public site has clear Honolulu, Kakaʻako, Oʻahu, and statewide online tuto
 
 ## Limits
 
-The internal link check covered rendered same-site paths from sitemap pages. It did not test form submissions, authenticated pages, external links, image visual quality, search ranking, or an authenticated tutor photo upload. Sitemap URLs and on-page metadata were inspected in production after commit `b0fedf9` deployed; the `llms.txt` correction is included in the next commit.
+The internal link check covered rendered same-site paths from sitemap pages. It did not test form submissions, external links, image visual quality, or search ranking. Sitemap URLs and on-page metadata were inspected in production after commit `b0fedf9` deployed. The corrected `llms.txt` was subsequently deployed from commit `940d684` and verified on the live site. An authenticated tutor photo upload was attempted with a 266-byte PNG; the client transfer stayed at 0% and timed out. A same-site upload path for ordinary photos has been added and awaits live verification.
