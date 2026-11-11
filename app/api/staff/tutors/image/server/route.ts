@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     }
     const extension = EXTENSIONS[contentType];
     const blob = await put(`tutor-images/${Date.now()}-photo.${extension}`, bytes, {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: true,
       contentType,
     });

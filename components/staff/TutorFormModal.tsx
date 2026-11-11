@@ -19,6 +19,7 @@ import {
   RECOMMENDED_IMAGE_MAX_BYTES,
   formatFileSize,
   inferImageMimeType,
+  tutorPhotoUrl,
 } from '@/lib/image-upload';
 import { cn } from '@/lib/utils';
 
@@ -105,13 +106,13 @@ export function TutorFormModal({
           if (!response.ok || !result.url || !result.pathname) {
             throw new Error(result.error || 'Photo upload failed. Please try again.');
           }
-          set({ imageUrl: result.url, imageKey: result.pathname });
+          set({ imageUrl: tutorPhotoUrl(result.pathname), imageKey: result.pathname });
           return;
         }
 
         const safeName = optimized.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-') || 'image';
         const blob = await upload(`tutor-images/${Date.now()}-${safeName}`, optimized, {
-          access: 'public',
+          access: 'private',
           handleUploadUrl: '/api/staff/tutors/image',
           contentType: optimized.type || 'image/jpeg',
           abortSignal: timeout.signal,
@@ -120,7 +121,7 @@ export function TutorFormModal({
             setUploadProgress(Math.round(percentage));
           },
         });
-        set({ imageUrl: blob.url, imageKey: blob.pathname });
+        set({ imageUrl: tutorPhotoUrl(blob.pathname), imageKey: blob.pathname });
       })();
       await Promise.race([uploadTask, timedOut]);
     } catch (err) {

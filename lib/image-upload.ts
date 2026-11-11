@@ -82,3 +82,10 @@ export function formatFileSize(bytes: number): string {
   if (bytes >= 1024) return `${Math.round(bytes / 1024)} KB`;
   return `${bytes} B`;
 }
+
+export function tutorPhotoUrl(pathname: string): string {
+  if (!pathname.startsWith('tutor-images/')) {
+    throw new Error('Unexpected tutor photo path');
+  }
+  return `/tutor-photos/${encodeURIComponent(pathname.slice('tutor-images/'.length))}`;
+}
