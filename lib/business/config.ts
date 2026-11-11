@@ -62,7 +62,7 @@ export const CLAIMS = {
 export const BUSINESS = {
   name: 'KHM Tutoring',
   url: 'https://www.khmtutoring.com',
-  email: 'khmtutoring1@gmail.com',
+  email: 'info@khmtutoring.com',
   phone: {
     display: '(808) 381-7856',
     href: 'tel:+18083817856',

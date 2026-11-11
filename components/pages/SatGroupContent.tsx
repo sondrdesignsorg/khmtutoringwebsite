@@ -47,22 +47,16 @@ const schedules = [
     name: 'Sunday Strategy Cohort',
     days: 'Sundays',
     time: '10:00 AM - 12:00 PM HST',
-    enrolled: 0,
-    capacity: 8,
   },
   {
     name: 'Weekday After-School Cohort',
     days: 'Tuesday & Thursday',
     time: '4:30 PM - 5:30 PM HST',
-    enrolled: 0,
-    capacity: 8,
   },
   {
     name: 'Evening Practice Cohort',
     days: 'Monday & Wednesday',
     time: '6:30 PM - 7:30 PM HST',
-    enrolled: 0,
-    capacity: 8,
   },
 ];
 
@@ -132,21 +126,6 @@ const initialForm = {
 
 type FormState = typeof initialForm;
 
-function CohortProgress({ enrolled, capacity }: { enrolled: number; capacity: number }) {
-  const pct = Math.round((enrolled / capacity) * 100);
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-        <span>{enrolled} students matched</span>
-        <span>{capacity - enrolled} seats open</span>
-      </div>
-      <div className="h-2.5 overflow-hidden rounded-full bg-muted">
-        <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${pct}%` }} />
-      </div>
-      <p className="text-xs text-muted-foreground">Cohorts are built for 6-8 students.</p>
-    </div>
-  );
-}
 
 export function SatGroupContent() {
   const [form, setForm] = useState<FormState>(initialForm);
@@ -330,7 +309,6 @@ export function SatGroupContent() {
                     <span>{TOTAL_HOURS} total hours</span>
                   </div>
                 </div>
-                <CohortProgress enrolled={cohort.enrolled} capacity={cohort.capacity} />
                 <Button asChild variant="outline" className="mt-auto w-full">
                   <Link href="#apply" onClick={() => updateField('cohort', cohort.name)}>
                     Choose This Window

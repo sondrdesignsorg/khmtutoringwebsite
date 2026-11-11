@@ -101,7 +101,7 @@ export default function PrivacyPage() {
               If you have questions about this privacy policy or your personal data, please contact us:
             </p>
             <ul className="list-none text-muted-foreground space-y-1">
-              <li><strong>Email:</strong> khmtutoring1@gmail.com</li>
+              <li><strong>Email:</strong> info@khmtutoring.com</li>
               <li><strong>Phone:</strong> (808) 381-7856</li>
             </ul>
 

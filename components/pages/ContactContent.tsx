@@ -90,7 +90,7 @@ export function ContactContent() {
       }
 
       const templateParams = {
-        to_email: 'khmtutoring1@gmail.com',
+        to_email: 'info@khmtutoring.com',
         from_name: formData.name,
         from_email: formData.email,
         phone: formData.phone || 'Not provided',
@@ -256,7 +256,7 @@ export function ContactContent() {
                   </div>
                   <div className="text-center">
                     <h3 className="mb-0.5 text-sm md:text-base font-semibold">Email</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground break-all">khmtutoring1@gmail.com</p>
+                    <p className="text-xs md:text-sm text-muted-foreground break-all">info@khmtutoring.com</p>
                   </div>
                 </div>
 
@@ -419,7 +419,7 @@ export function ContactContent() {
                 <noscript>
                   <p className="text-xs text-muted-foreground text-center mt-2">
                     JavaScript is required for this form. You can also reach us directly at{' '}
-                    <a href="mailto:khmtutoring1@gmail.com" className="text-primary underline">khmtutoring1@gmail.com</a>{' '}
+                    <a href="mailto:info@khmtutoring.com" className="text-primary underline">info@khmtutoring.com</a>{' '}
                     or call <a href="tel:+18083817856" className="text-primary underline">(808) 381-7856</a>.
                   </p>
                 </noscript>
