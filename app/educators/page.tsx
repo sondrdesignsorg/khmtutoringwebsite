@@ -8,21 +8,21 @@ export const runtime = 'nodejs';
 
 export const metadata: Metadata = {
   title: 'Meet Our Expert Tutors',
-  description: 'Meet 10+ expert tutors from Harvard, Princeton & Phillips Exeter. Math, English, SAT, SSAT, AP prep in Hawaii.',
+  description: 'Meet KHM Tutoring educators and explore their teaching backgrounds and subjects, including math, English, SAT, SSAT, and AP tutoring in Hawaii.',
   keywords: ['SAT tutoring Hawaii', 'SSAT Tutor hawaii', 'math tutor hawaii', 'best tutor near me', 'tutors', 'educators', 'math tutors', 'English tutors', 'SAT tutors', 'AP tutors', 'certified tutors', 'experienced teachers', 'test prep specialists', 'Hawaii tutors', 'best tutors Hawaii'],
   alternates: {
     canonical: 'https://www.khmtutoring.com/educators',
   },
   openGraph: {
     title: 'Meet Our Expert Tutors | KHM Tutoring Hawaii',
-    description: 'Meet 10+ expert tutors from Harvard, Princeton & Phillips Exeter. Math, English, SAT, SSAT, AP prep in Hawaii.',
+    description: 'Meet KHM Tutoring educators and explore their teaching backgrounds and subjects, including math, English, SAT, SSAT, and AP tutoring in Hawaii.',
     url: 'https://www.khmtutoring.com/educators',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'KHM Tutoring Expert Tutors in Hawaii' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Meet Our Expert Tutors | KHM Tutoring Hawaii',
-    description: 'Meet 10+ expert tutors from Harvard, Princeton & Phillips Exeter. Math, English, SAT, SSAT, AP prep in Hawaii.',
+    description: 'Meet KHM Tutoring educators and explore their teaching backgrounds and subjects, including math, English, SAT, SSAT, and AP tutoring in Hawaii.',
     images: ['/og-image.png'],
   },
 };

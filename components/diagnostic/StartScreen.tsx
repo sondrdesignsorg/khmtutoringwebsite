@@ -57,15 +57,8 @@ export function StartScreen({
             <p className="text-base md:text-lg text-white/90 leading-relaxed max-w-md">
               A quick, level-appropriate assessment that shows strengths and gaps by topic — plus a free consultation with one of our tutors.
             </p>
-            <div className="flex gap-7 mt-3">
-              <div>
-                <div className="font-bold text-2xl">300+</div>
-                <div className="text-sm text-white/80">Students Helped</div>
-              </div>
-              <div>
-                <div className="font-bold text-2xl">5.0</div>
-                <div className="text-sm text-white/80">Parent Rating</div>
-              </div>
+            <div className="mt-3 text-sm text-white/85">
+              Choose math or reading and receive a topic-by-topic report for your student.
             </div>
           </div>
           <div className="bg-card p-10 md:p-14 flex flex-col gap-7 justify-center">

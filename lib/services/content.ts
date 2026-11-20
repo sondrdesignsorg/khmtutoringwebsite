@@ -48,10 +48,10 @@ export const SERVICES: ServiceContent[] = [
     navLabel: 'SAT Prep',
     metaTitle: 'SAT Prep in Honolulu | 1-on-1 SAT Tutoring | KHM Tutoring',
     metaDescription:
-      'One-on-one SAT prep in Honolulu with 10+ expert tutors. Personalized math and reading & writing coaching, full-length practice, and proven score strategies. Free diagnostic.',
-    h1: 'SAT Prep',
+      'Personalized one-on-one Digital SAT prep in Honolulu. Targeted math and reading & writing coaching, timed practice, and a study plan based on a free diagnostic.',
+    h1: 'SAT Prep & Tutoring in Honolulu',
     intro: [
-      'The SAT rewards students who know the test, not just the material. KHM Tutoring pairs Honolulu students with tutors who have scored in the top percentiles and know exactly where the Digital SAT sets its traps — from the adaptive module structure to the pacing decisions that protect a score under time pressure.',
+      'KHM Tutoring provides one-on-one SAT prep and SAT tutoring in Honolulu for students preparing for the Digital SAT. The SAT rewards students who know the test, not just the material. Our tutors understand the adaptive module structure and the pacing decisions that protect a score under time pressure.',
       'Every SAT plan starts with a free diagnostic so we can see the student’s current level by topic. From there, a tutor builds a session plan around the sections and question types that actually move the score, whether the goal is a first strong attempt or a competitive retake.',
     ],
     audiences: ['High school students (grades 9–12)', 'Rising juniors planning early', 'Seniors targeting fall deadlines'],
@@ -72,8 +72,8 @@ export const SERVICES: ServiceContent[] = [
         body: 'Students sit realistic timed sections, then spend session time on the misses that repeat. We fix patterns, not just individual questions.',
       },
       {
-        title: 'Proof from real results',
-        body: 'KHM’s team has helped 300+ students, with families reporting measurable score and grade improvement. Several tutors scored in the top 1% of the SAT.',
+        title: 'Start with a diagnostic',
+        body: 'Students begin with a diagnostic and practice review. Tutors use the results to identify recurring gaps and focus sessions on the skills most relevant to the student’s goals.',
       },
     ],
     faqs: [
@@ -96,7 +96,7 @@ export const SERVICES: ServiceContent[] = [
     related: ['math-tutoring-honolulu', 'online-tutoring-hawaii', 'college-essay-help-honolulu'],
     priority: 0.95,
     changeFrequency: 'weekly',
-    lastModified: '2026-10-15',
+    lastModified: '2026-11-19',
   },
   {
     slug: 'math-tutoring-honolulu',
@@ -106,9 +106,9 @@ export const SERVICES: ServiceContent[] = [
     metaTitle: 'Math Tutoring in Honolulu | K-12 Math Tutors | KHM Tutoring',
     metaDescription:
       'Expert math tutoring in Honolulu for K-12 students, from arithmetic to AP Calculus. Patient, personalized one-on-one instruction in person or online. Free diagnostic.',
-    h1: 'Math Tutoring',
+    h1: 'Math Tutoring in Honolulu',
     intro: [
-      'Math is cumulative, and gaps hide easily. A student who is struggling in Algebra II is often missing a skill from earlier that never fully landed. KHM’s Honolulu math tutors find the specific break in the foundation and rebuild it, rather than repeating the same chapter the classroom already moved past.',
+      'KHM Tutoring offers personalized math tutoring in Honolulu for elementary, middle, and high school students. Math is cumulative, and gaps hide easily. A student who is struggling in Algebra II is often missing a skill from earlier that never fully landed. Our Honolulu math tutors find the specific break in the foundation and rebuild it, rather than repeating the same chapter the classroom already moved past.',
       'Tutors work from where the student actually is — not where the syllabus says they should be — and explain each step in a way the student can reproduce on their own. Sessions are available in person across Honolulu and online statewide.',
     ],
     audiences: ['Elementary through high school students (K-12)', 'Students catching up on missed foundations', 'Students accelerating ahead of grade level'],
@@ -153,7 +153,7 @@ export const SERVICES: ServiceContent[] = [
     related: ['sat-prep-honolulu', 'ap-tutoring-honolulu', 'online-tutoring-hawaii'],
     priority: 0.94,
     changeFrequency: 'weekly',
-    lastModified: '2026-10-15',
+    lastModified: '2026-11-19',
   },
   {
     slug: 'ssat-prep-hawaii',

@@ -29,11 +29,11 @@ const reasons: ScrollStackItem[] = [
   },
   {
     icon: 'award',
-    title: 'Proven Track Record',
-    description: 'With over 300 students helped and a 15% average score improvement, our Hawaii tutoring services deliver measurable results. Parents across Oahu trust us for math tutoring, SAT prep, and academic excellence.',
-    points: ['300+ students helped', '+15% average score improvement', '5.0 parent rating'],
-    cta: 'Explore tutoring services →',
-    href: '/#services',
+    title: 'A Clear Starting Point',
+    description: 'A free diagnostic helps identify the skills your student has mastered and the topics that need more attention. Use that picture to plan focused tutoring in math, SAT prep, and other subjects.',
+    points: ['See strengths and gaps by topic', 'Build a focused tutoring plan', 'Choose in-person or online sessions'],
+    cta: 'Take the free diagnostic →',
+    href: '/diagnostic-test',
   },
   {
     icon: 'clock',
@@ -83,9 +83,8 @@ export function WhyChooseUsSection() {
             <span className="text-gradient font-bold">KHM Tutoring?</span>
           </h2>
           <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto">
-            KHM Tutoring has helped hundreds of students across Hawaii achieve their academic goals.
-            From Honolulu math tutors to SAT prep specialists, discover why we&apos;re Oahu&apos;s
-            trusted choice for personalized education.
+            From Honolulu math tutoring to Digital SAT preparation, explore personalized support
+            for students and families across Hawaiʻi.
           </p>
         </div>
       </div>
@@ -106,8 +105,8 @@ export function WhyChooseUsSection() {
             </h3>
             <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
               We come to your home across the Honolulu corridor, meet at our Kakaʻako space, or teach live
-              online anywhere in Hawaiʻi. Join the 300+ students who have improved their grades and test
-              scores with Hawaiʻi&apos;s premier tutoring service.
+              online anywhere in Hawaiʻi. Start with a diagnostic and discuss a plan for your student&apos;s
+              math, SAT, or other academic goals.
             </p>
             <Link
               href="/contact"

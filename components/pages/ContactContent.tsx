@@ -479,7 +479,7 @@ export function ContactContent() {
                   <ChevronRight className="w-4 h-4 text-muted-foreground group-open:rotate-90 transition-transform" />
                 </summary>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                  KHM Tutoring is locally owned in Honolulu — not a franchise. We have 10+ expert tutors from institutions like Harvard, Princeton, and Phillips Exeter Academy. We use a proprietary tutor-matching process and have helped 300+ students with a 5.0 parent rating. <Link href="/about" className="text-primary hover:underline">Learn more about our approach</Link>.
+                  KHM Tutoring is locally owned in Honolulu and provides personalized one-on-one tutoring. We match students with tutors based on subject, learning needs, and goals. <Link href="/about" className="text-primary hover:underline">Learn more about our approach</Link>.
                 </p>
               </details>
               <details className="bg-card rounded-xl border border-border p-5 group">

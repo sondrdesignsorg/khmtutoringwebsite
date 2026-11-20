@@ -71,11 +71,8 @@ export function EducatorsContent({ educators = DEFAULT_EDUCATORS }: { educators?
               Experienced, passionate tutors in Hawaii and Honolulu dedicated to your child&apos;s success.
             </p>
             <p className="text-muted-foreground max-w-3xl mx-auto text-xs md:text-sm mt-3 leading-relaxed">
-              KHM Tutoring employs 10+ tutors with credentials from Harvard University (Magna Cum Laude),
-              Princeton University, Phillips Exeter Academy, Penn State, and University of Hawaii. Our team
-              includes a Fulbright Scholar, a medical student with a top-0.5% MCAT score (525/528), a 35-year
-              Iolani School teaching veteran, and current teachers at Damien Memorial School. All tutors are
-              vetted for subject expertise and teaching ability.
+              Meet the tutors who support KHM students in math, English, SAT, SSAT, and AP subjects. Each profile
+              shares the tutor&apos;s background, subjects, and teaching approach to help families find a good fit.
             </p>
           </div>
         </div>

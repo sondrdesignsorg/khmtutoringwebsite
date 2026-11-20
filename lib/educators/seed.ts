@@ -37,7 +37,7 @@ export const DEFAULT_EDUCATORS: Tutor[] = [
     achievements: [
       'Attended Phillips Exeter Academy and University of Chicago',
       'Practiced law internationally (London, Dubai, Sydney, Australia)',
-      'Developed an SAT curriculum used by hundreds of students',
+      'Developed an SAT curriculum for student test preparation',
       'MCAT score: 525/528 (top 0.5% nationwide)',
       'Students have been accepted to Stanford, Yale, UC Berkeley, UC Irvine, and more',
     ],

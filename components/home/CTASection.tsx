@@ -16,7 +16,7 @@ export function CTASection() {
             Ready to Help Your Child <span className="text-white/90">Thrive Academically</span>?
           </h2>
           <p className="text-base md:text-lg text-white/90 max-w-2xl mx-auto">
-            Join hundreds of families across Hawaii and Honolulu who trust KHM Tutoring for personalized, results-driven education.
+            Get personalized tutoring for your student, with in-person sessions in Honolulu and online options across Hawaiʻi.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center">
@@ -43,21 +43,9 @@ export function CTASection() {
             </Button>
           </div>
 
-          <div className="pt-6 md:pt-8 flex flex-wrap justify-center items-center gap-6 md:gap-8 text-white/80 w-full">
-            <div className="min-w-[100px] text-center flex flex-col justify-center">
-              <p className="text-2xl md:text-3xl font-bold text-white">300+</p>
-              <p className="text-sm md:text-base">Students Helped</p>
-            </div>
-            <div className="w-px bg-white/20 hidden sm:block self-stretch" />
-            <div className="min-w-[120px] md:min-w-[150px] text-center flex flex-col justify-center">
-              <p className="text-xl md:text-2xl font-bold text-white leading-tight pl-1 md:pl-2">Iolani &amp; Punahou</p>
-              <p className="text-xs md:text-sm mt-1 pl-1 md:pl-2">Alumni &amp; Teaching Experience</p>
-            </div>
-            <div className="w-px bg-white/20 hidden sm:block self-stretch" />
-            <div className="min-w-[100px] text-center flex flex-col justify-center">
-              <p className="text-2xl md:text-3xl font-bold text-white">5.0</p>
-              <p className="text-sm md:text-base">Parent Rating</p>
-            </div>
+          <div className="flex flex-wrap justify-center gap-5 pt-2 text-sm font-semibold text-white underline underline-offset-4">
+            <Link href="/math-tutoring-honolulu">Math tutoring in Honolulu</Link>
+            <Link href="/sat-prep-honolulu">SAT prep in Honolulu</Link>
           </div>
         </div>
       </div>

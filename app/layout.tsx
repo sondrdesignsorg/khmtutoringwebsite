@@ -24,10 +24,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.khmtutoring.com'),
   title: {
-    default: 'Math & SAT Tutoring in Honolulu, Hawaii | KHM Tutoring',
+    default: 'Math Tutoring & SAT Prep in Honolulu | KHM Tutoring',
     template: '%s | KHM Tutoring Hawaii',
   },
-  description: 'Expert tutoring in Hawaii & Honolulu. Math, SAT, SSAT prep with proven results. 300+ students helped. Book your free consultation today!',
+  description: 'Personalized math tutoring and one-on-one Digital SAT prep in Honolulu, with online tutoring available across Hawaiʻi. Start with a free consultation.',
   keywords: ['hawaii tutoring', 'tutoring hawaii', 'honolulu tutoring', 'math tutoring honolulu', 'hawaii tutors', 'tutors in hawaii', 'oahu tutoring', 'honolulu math tutor', 'SAT prep hawaii', 'SSAT tutor honolulu', 'math tutor oahu', 'english tutor hawaii'],
   authors: [{ name: 'KHM Tutoring' }],
   creator: 'KHM Tutoring',
@@ -52,8 +52,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://www.khmtutoring.com',
     siteName: 'KHM Tutoring',
-    title: 'Math & SAT Tutoring in Honolulu, Hawaii | KHM Tutoring',
-    description: 'Expert tutoring in Hawaii & Honolulu. Math, SAT, SSAT prep. 300+ students helped. Free consultation!',
+    title: 'Math Tutoring & SAT Prep in Honolulu | KHM Tutoring',
+    description: 'Personalized math tutoring and one-on-one Digital SAT prep in Honolulu, with online tutoring available across Hawaiʻi. Start with a free consultation.',
     images: [
       {
         url: '/og-image.png',
@@ -65,8 +65,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Math & SAT Tutoring in Honolulu, Hawaii | KHM Tutoring',
-    description: 'Expert tutoring in Hawaii & Honolulu. Math, SAT prep. 300+ students helped.',
+    title: 'Math Tutoring & SAT Prep in Honolulu | KHM Tutoring',
+    description: 'Personalized math tutoring and one-on-one Digital SAT prep in Honolulu, with online tutoring available across Hawaiʻi.',
     images: ['/og-image.png'],
   },
   alternates: {

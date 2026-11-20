@@ -103,7 +103,7 @@ const serviceSchema = {
     itemListElement: [
       { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Math Tutoring', description: 'Expert math tutoring from arithmetic through advanced calculus for K-12 students in Hawaii.' } },
       { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'English Tutoring', description: 'Reading comprehension, essay writing, grammar, and vocabulary tutoring in Honolulu.' } },
-      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'SAT Prep', description: 'Comprehensive SAT preparation with proven score improvement strategies.' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'SAT Prep', description: 'Digital SAT preparation covering content, adaptive test strategy, timing, and practice review.' } },
       { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'SSAT Prep', description: 'SSAT test preparation for private school admissions in Hawaii.' } },
       { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'AP Subject Tutoring', description: 'Advanced Placement exam preparation across multiple subjects.' } },
       { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'College Counseling', description: 'College application guidance, essay writing, and admissions consulting.' } },
@@ -144,7 +144,7 @@ const faqSchema = {
       name: 'What makes KHM Tutoring different from other tutoring services?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'KHM Tutoring is locally owned in Honolulu (not a franchise) with 10+ expert tutors from institutions like Harvard, Princeton, and Phillips Exeter Academy. We use a proprietary tutor-matching process, provide personalized one-on-one instruction, and have helped 300+ students with a 5.0 parent rating.',
+        text: 'KHM Tutoring is locally owned in Honolulu and provides personalized one-on-one tutoring. Students can start with a free consultation and diagnostic to discuss academic goals and tutoring needs.',
       },
     },
     {

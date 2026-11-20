@@ -141,7 +141,7 @@ export function AboutContent() {
                 <span className="text-primary font-bold">Choose Us</span>
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Join hundreds of families who trust us to help their students excel
+                Learn how KHM supports students with personalized tutoring and test preparation
               </p>
             </div>
 

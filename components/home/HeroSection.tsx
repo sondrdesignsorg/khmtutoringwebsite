@@ -1,14 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Users, TrendingUp, GraduationCap, Star, Brain } from 'lucide-react';
-
-const stats = [
-  { icon: Users, value: '300+', label: 'Students Helped', color: 'text-primary', fill: '' },
-  { icon: TrendingUp, value: '+15%', label: 'Avg. Score Boost', color: 'text-emerald-500', fill: '' },
-  { icon: GraduationCap, value: '10+', label: 'Expert Tutors', color: 'text-secondary', fill: '' },
-  { icon: Star, value: '5.0', label: 'Parent Rating', color: 'text-yellow-500', fill: 'fill-yellow-500' },
-];
+import { ArrowRight, Star, Brain } from 'lucide-react';
 
 export function HeroSection() {
   return (
@@ -29,15 +22,22 @@ export function HeroSection() {
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-bold leading-tight">
-              <span className="text-gradient font-bold">Hawaii Tutoring</span>{' '}
-              That Gets Results
+              <span className="text-gradient font-bold">Math &amp; SAT Tutoring</span>{' '}
+              in Honolulu
             </h1>
 
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Looking for a math tutor in Honolulu? KHM Tutoring provides expert <Link href="/educators" className="text-primary hover:underline">tutoring services</Link> in Honolulu and online across Hawaiʻi,
-              specializing in Math, English, SAT, and SSAT prep. Our experienced Hawaii tutors deliver personalized
-              one-on-one instruction that builds confidence and achieves academic excellence for K-12 students.
+              Looking for a math tutor in Honolulu or SAT prep in Honolulu? KHM Tutoring provides personalized math and Digital SAT tutoring in person across Honolulu and online throughout Hawaiʻi. Meet our <Link href="/educators" className="text-primary hover:underline">experienced tutors</Link> and get a one-on-one plan built around your student&apos;s needs.
             </p>
+
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-semibold lg:justify-start">
+              <Link href="/math-tutoring-honolulu" className="text-primary underline-offset-4 hover:underline">
+                Explore math tutoring in Honolulu
+              </Link>
+              <Link href="/sat-prep-honolulu" className="text-primary underline-offset-4 hover:underline">
+                Explore SAT prep in Honolulu
+              </Link>
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start">
               <Button
@@ -63,19 +63,6 @@ export function HeroSection() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 md:pt-8">
-              {stats.map((stat) => (
-                <div key={stat.label} className="text-center lg:text-left">
-                  <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
-                    <stat.icon className={`w-4 h-4 md:w-5 md:h-5 ${stat.color} ${stat.fill}`} />
-                    <span className={`text-xl md:text-2xl font-bold ${stat.color}`}>
-                      {stat.value}
-                    </span>
-                  </div>
-                  <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="relative mt-8 lg:mt-0 hidden lg:block">

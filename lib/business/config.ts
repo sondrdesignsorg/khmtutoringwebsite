@@ -2,7 +2,7 @@
  * Single source of truth for verified KHM Tutoring business identity.
  *
  * Everything that renders the business name, contact details, address,
- * service areas, hours, or proof points should import from here so the
+ * service areas, or hours should import from here so the
  * footer, pages, JSON-LD, and sitemap cannot drift apart.
  *
  * Only verified facts belong in this file. Do not add a claim, address,
@@ -52,13 +52,6 @@ export const DELIVERY_MODES = [
   },
 ] as const;
 
-export const CLAIMS = {
-  studentsHelped: '300+',
-  avgScoreBoost: '+15%',
-  parentRating: '5.0',
-  tutors: '10+',
-} as const;
-
 export const BUSINESS = {
   name: 'KHM Tutoring',
   url: 'https://www.khmtutoring.com',
@@ -106,7 +99,6 @@ export const BUSINESS = {
   /** Service areas, re-exported here for a single import path. */
   serviceAreas: SERVICE_AREAS,
   deliveryModes: DELIVERY_MODES,
-  claims: CLAIMS,
   sameAs: [
     'https://www.yelp.com/biz/khm-tutoring-urban-honolulu',
     'https://www.linkedin.com/company/khm-tutoring/',

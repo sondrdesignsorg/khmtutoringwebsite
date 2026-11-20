@@ -1,17 +1,17 @@
 # KHM Tutoring
 
-> Expert K-12 tutoring services in Honolulu, Hawaii. Founded 2016. 300+ students helped. 5.0 parent rating.
+> Personalized K-12 tutoring in Honolulu and online throughout Hawaii, founded in 2016.
 
 ## About
 
-KHM Tutoring is a premium K-12 tutoring service in Honolulu, Hawaii, founded in 2016 by Kody Kim (Punahou School, UC Irvine). The company provides personalized one-on-one tutoring with 10+ expert educators, including graduates from Harvard University (Magna Cum Laude), Princeton University, Phillips Exeter Academy, and Penn State. Tutors include a Fulbright Scholar, a medical student with a top-0.5% MCAT score (525/528), and a 35-year Iolani School teaching veteran.
+KHM Tutoring is a Honolulu-based K-12 tutoring service founded in 2016. The company provides personalized one-on-one tutoring in math, English, SAT and SSAT preparation, AP subjects, and college essay support. In-person sessions are available across the Honolulu corridor; online tutoring is available throughout Hawaii. Families can begin with a free consultation and diagnostic.
 
 ## Pages
 
 - [Home](https://www.khmtutoring.com/): Main page with services overview, testimonials, and consultation booking
 - [About](https://www.khmtutoring.com/about): Company story, mission, team approach, and founder background
 - [Our Location](https://www.khmtutoring.com/about/location): Physical tutoring space at Surfers Coffee, inside WorkNow Hawaiʻi — 1019 Waimanu St., Unit 101, Honolulu (Kakaʻako). Parking available; sessions daily after 3 PM by appointment.
-- [Educators](https://www.khmtutoring.com/educators): Full team of 10+ tutors with bios, credentials, and subject specialties
+- [Educators](https://www.khmtutoring.com/educators): Tutor profiles, backgrounds, and subject specialties
 - [Contact](https://www.khmtutoring.com/contact): Contact form, email, phone, and scheduling for booking consultations
 - [SAT Prep in Honolulu](https://www.khmtutoring.com/sat-prep-honolulu): One-on-one Digital SAT prep with top-percentile tutors
 - [Math Tutoring in Honolulu](https://www.khmtutoring.com/math-tutoring-honolulu): K-12 math tutoring from arithmetic through AP Calculus
@@ -36,7 +36,7 @@ KHM Tutoring offers a small-cohort SAT prep program at https://www.khmtutoring.c
 
 - Math Tutoring (arithmetic through AP Calculus)
 - English Tutoring (reading comprehension, essay writing, grammar, vocabulary)
-- SAT Prep (comprehensive test preparation with proven score improvement)
+- SAT Prep (Digital SAT content, adaptive strategy, timing, and practice review)
 - SSAT Prep (private school admissions test preparation)
 - AP Subject Tutoring (Advanced Placement exam preparation)
 - College Counseling & Essay Writing (applications, admissions consulting)
@@ -48,9 +48,6 @@ KHM Tutoring offers a small-cohort SAT prep program at https://www.khmtutoring.c
 ## Key Facts
 
 - Founded: 2016 by Kody Kim
-- Students helped: 300+
-- Parent rating: 5.0 / 5.0
-- Team size: 10+ expert tutors
 - Service area: In person in Honolulu (Pearl City to Hawaiʻi Kai); online across all of Hawaii
 - Delivery: In-store in Kakaʻako, in-home/meet-up in Honolulu, or online via Zoom statewide
 - Hours: Daily after 3 PM (by appointment)
