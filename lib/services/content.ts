@@ -51,7 +51,7 @@ export const SERVICES: ServiceContent[] = [
       'Personalized one-on-one Digital SAT prep in Honolulu. Targeted math and reading & writing coaching, timed practice, and a study plan based on a free diagnostic.',
     h1: 'SAT Prep & Tutoring in Honolulu',
     intro: [
-      'KHM Tutoring provides one-on-one SAT prep and SAT tutoring in Honolulu for students preparing for the Digital SAT. The SAT rewards students who know the test, not just the material. Our tutors understand the adaptive module structure and the pacing decisions that protect a score under time pressure.',
+      'KHM Tutoring offers one-on-one SAT prep in Honolulu for students taking the Digital SAT. Tutors help students practice the adaptive format, manage their time, and review the questions they miss.',
       'Every SAT plan starts with a free diagnostic so we can see the student’s current level by topic. From there, a tutor builds a session plan around the sections and question types that actually move the score, whether the goal is a first strong attempt or a competitive retake.',
     ],
     audiences: ['High school students (grades 9–12)', 'Rising juniors planning early', 'Seniors targeting fall deadlines'],
@@ -65,15 +65,15 @@ export const SERVICES: ServiceContent[] = [
     highlights: [
       {
         title: 'Built around the Digital SAT',
-        body: 'Tutors coach the adaptive format specifically — how to bank early accuracy, manage the two modules, and use the built-in tools to protect time.',
+        body: 'Tutors explain how the adaptive modules work, how to pace each section, and when to use the test’s built-in tools.',
       },
       {
         title: 'Full-length practice with review',
         body: 'Students sit realistic timed sections, then spend session time on the misses that repeat. We fix patterns, not just individual questions.',
       },
       {
-        title: 'Start with a diagnostic',
-        body: 'Students begin with a diagnostic and practice review. Tutors use the results to identify recurring gaps and focus sessions on the skills most relevant to the student’s goals.',
+        title: 'Review the diagnostic',
+        body: 'A diagnostic and practice review help tutors find recurring gaps and choose what to work on in each session.',
       },
     ],
     faqs: [
@@ -108,8 +108,8 @@ export const SERVICES: ServiceContent[] = [
       'Expert math tutoring in Honolulu for K-12 students, from arithmetic to AP Calculus. Patient, personalized one-on-one instruction in person or online. Free diagnostic.',
     h1: 'Math Tutoring in Honolulu',
     intro: [
-      'KHM Tutoring offers personalized math tutoring in Honolulu for elementary, middle, and high school students. Math is cumulative, and gaps hide easily. A student who is struggling in Algebra II is often missing a skill from earlier that never fully landed. Our Honolulu math tutors find the specific break in the foundation and rebuild it, rather than repeating the same chapter the classroom already moved past.',
-      'Tutors work from where the student actually is — not where the syllabus says they should be — and explain each step in a way the student can reproduce on their own. Sessions are available in person across Honolulu and online statewide.',
+      'KHM Tutoring offers math tutoring in Honolulu for elementary, middle, and high school students. A student who struggles in Algebra II may still be missing a skill from an earlier course. Our tutors identify those gaps and work through them, so students can follow new lessons with more confidence.',
+      'Tutors start with what the student understands and explain each step clearly, so the student can solve similar problems independently. Sessions are available in person across Honolulu and online statewide.',
     ],
     audiences: ['Elementary through high school students (K-12)', 'Students catching up on missed foundations', 'Students accelerating ahead of grade level'],
     topics: [
@@ -126,7 +126,7 @@ export const SERVICES: ServiceContent[] = [
       },
       {
         title: 'Step-by-step, reproducible methods',
-        body: 'Students learn a consistent process they can repeat on homework and tests — the goal is independence, not a tutor who does the problem for them.',
+        body: 'Students practice methods they can use on homework and tests, then solve problems on their own.',
       },
       {
         title: 'All levels, one subject',
@@ -165,7 +165,7 @@ export const SERVICES: ServiceContent[] = [
       'SSAT prep for Hawaii families applying to private schools like Punahou and Iolani. One-on-one verbal, quantitative, and reading coaching, in person or online. Free diagnostic.',
     h1: 'SSAT Prep',
     intro: [
-      'For Hawaii families, the SSAT is often the first high-stakes test a student faces — and the first time a strong student meets a test designed to run them out of time. KHM’s SSAT tutors teach the content and, just as importantly, the test-taking habits that keep a student calm and accurate under pressure.',
+      'Many Hawaii students take the SSAT when applying to private school. The test is timed, so preparation covers both subject matter and pacing. Tutors help students decide when to skip a question, when to make an educated guess, and how to stay on track through a difficult section.',
       'We know the Hawaii private-school landscape, including what schools like Punahou and Iolani look for. Prep is tailored to whether the student is aiming for a middle-level or upper-level SSAT.',
     ],
     audiences: ['Students applying to grades 6–12 at private schools', 'Families targeting Hawaii independent schools', 'Students new to standardized testing'],
@@ -187,7 +187,7 @@ export const SERVICES: ServiceContent[] = [
       },
       {
         title: 'Confidence under time pressure',
-        body: 'We rehearse the decisions that trip students up — when to skip, when to guess, and how to recover after a hard section.',
+        body: 'Students practice when to skip, when to guess, and how to regain pace after a difficult section.',
       },
     ],
     faqs: [
@@ -222,7 +222,7 @@ export const SERVICES: ServiceContent[] = [
       'AP tutoring in Honolulu for Calculus, Statistics, Physics, Biology, Chemistry, and more. Exam-focused one-on-one coaching with confident subject experts. Free diagnostic.',
     h1: 'AP Tutoring',
     intro: [
-      'Advanced Placement courses move fast, and a rough unit early can shadow the whole year. KHM’s AP tutors help Honolulu students keep pace with the course while steadily building toward the May exam — so students walk into the test already comfortable with its format and difficulty.',
+      'AP courses move quickly. Our tutors help Honolulu students keep up with class material and prepare for May exams. Sessions cover difficult topics, question types, and exam timing.',
       'Tutors match the student’s specific AP course and teacher’s pacing, covering both the classroom material and the exam skills the class may not have time to drill.',
     ],
     audiences: ['High school students in AP courses', 'Students balancing multiple AP classes', 'Students targeting AP exam credit or course grades'],
@@ -245,14 +245,14 @@ export const SERVICES: ServiceContent[] = [
       },
       {
         title: 'Strong subject matches',
-        body: 'We route each student to a tutor who has genuinely mastered that AP subject — including engineering and pre-med students for the STEM exams.',
+        body: 'We match students with tutors who know their AP subject. STEM tutors may have backgrounds in engineering or pre-med studies.',
       },
     ],
     faqs: [
       {
         question: 'Which AP subjects do you cover?',
         answer:
-          'We regularly tutor AP Calculus, Statistics, Physics, Biology, Chemistry, and English, along with Computer Science. If you do not see your subject, ask — we will tell you whether we have the right tutor.',
+          'We tutor AP Calculus, Statistics, Physics, Biology, Chemistry, English, and Computer Science. Ask us if you need help with another subject, and we will let you know whether a tutor is available.',
       },
       {
         question: 'Should we start AP tutoring at the beginning of the year or before the exam?',
@@ -281,7 +281,7 @@ export const SERVICES: ServiceContent[] = [
     h1: 'College Essay Help',
     intro: [
       'A strong college essay sounds like the student, not like an adult who rewrote it. KHM’s writing mentors help Honolulu students find the story only they can tell, then shape it into clear, specific prose that holds an admissions reader’s attention.',
-      'We coach from the first brainstorm to the final polish, and we work on supplementals and the activities list too. The student does the writing — we ask the questions that unlock it.',
+      'We help students brainstorm, revise, and work on supplemental essays and activities lists. Students write their own essays. Tutors ask questions and give feedback to help them express their ideas clearly.',
     ],
     audiences: ['Juniors and seniors applying to college', 'Students staring at a blank personal statement', 'Families managing many supplementals at once'],
     topics: [
@@ -309,7 +309,7 @@ export const SERVICES: ServiceContent[] = [
       {
         question: 'Do you write the essay for the student?',
         answer:
-          'No. We coach the student through brainstorming, drafting, and revision. The writing stays theirs — which is both the ethical choice and the one that produces a better essay.',
+          'No. Tutors guide students through brainstorming, drafting, and revision, but the student writes the essay.',
       },
       {
         question: 'When should a student start their college essays?',
@@ -412,7 +412,7 @@ export const SERVICES: ServiceContent[] = [
       },
       {
         title: 'The full application, not just the test',
-        body: 'We help with essays, interviews, and timelines — the parts families most often underestimate.',
+        body: 'We help families plan essays, interviews, and application timelines.',
       },
       {
         title: 'Age-appropriate coaching',

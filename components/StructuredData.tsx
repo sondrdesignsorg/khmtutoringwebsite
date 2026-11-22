@@ -136,7 +136,7 @@ const faqSchema = {
       name: 'How do I get started with KHM Tutoring?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Getting started is easy — schedule a free consultation through our contact page or call us at ${BUSINESS.phone.display}. We will discuss your child's needs, match them with the ideal tutor, and create a personalized learning plan.`,
+        text: `To get started, schedule a free consultation through our contact page or call ${BUSINESS.phone.display}. We will discuss your child's needs and help find a tutor who fits.`,
       },
     },
     {

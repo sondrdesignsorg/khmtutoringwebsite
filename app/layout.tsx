@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     default: 'Math Tutoring & SAT Prep in Honolulu | KHM Tutoring',
     template: '%s | KHM Tutoring Hawaii',
   },
-  description: 'Personalized math tutoring and one-on-one Digital SAT prep in Honolulu, with online tutoring available across Hawaiʻi. Start with a free consultation.',
+  description: 'One-on-one math tutoring and Digital SAT prep in Honolulu, with online lessons across Hawaiʻi. Contact KHM to plan a first session.',
   keywords: ['hawaii tutoring', 'tutoring hawaii', 'honolulu tutoring', 'math tutoring honolulu', 'hawaii tutors', 'tutors in hawaii', 'oahu tutoring', 'honolulu math tutor', 'SAT prep hawaii', 'SSAT tutor honolulu', 'math tutor oahu', 'english tutor hawaii'],
   authors: [{ name: 'KHM Tutoring' }],
   creator: 'KHM Tutoring',
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     url: 'https://www.khmtutoring.com',
     siteName: 'KHM Tutoring',
     title: 'Math Tutoring & SAT Prep in Honolulu | KHM Tutoring',
-    description: 'Personalized math tutoring and one-on-one Digital SAT prep in Honolulu, with online tutoring available across Hawaiʻi. Start with a free consultation.',
+    description: 'One-on-one math tutoring and Digital SAT prep in Honolulu, with online lessons across Hawaiʻi. Contact KHM to plan a first session.',
     images: [
       {
         url: '/og-image.png',

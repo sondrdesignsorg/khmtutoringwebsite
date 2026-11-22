@@ -18,7 +18,7 @@ const reasons: ScrollStackItem[] = [
   {
     icon: 'users',
     title: 'One-on-One Attention',
-    description: 'Every tutoring session is personalized to your child\'s learning style. Our Honolulu tutors adapt their teaching methods to match how your student learns best, ensuring maximum comprehension and retention.',
+    description: 'Our Honolulu tutors adjust each lesson to what your child understands and where they need more practice.',
     points: [
       'A learning plan built around your student',
       'Teaching matched to how they learn best',
@@ -29,9 +29,9 @@ const reasons: ScrollStackItem[] = [
   },
   {
     icon: 'award',
-    title: 'A Clear Starting Point',
-    description: 'A free diagnostic helps identify the skills your student has mastered and the topics that need more attention. Use that picture to plan focused tutoring in math, SAT prep, and other subjects.',
-    points: ['See strengths and gaps by topic', 'Build a focused tutoring plan', 'Choose in-person or online sessions'],
+    title: 'Know What to Work On',
+    description: 'The free diagnostic shows which topics your student understands and where they need more practice. Use the results to plan tutoring in math, SAT prep, or another subject.',
+    points: ['Review results by topic', 'Choose what to work on first', 'Meet in person or online'],
     cta: 'Take the free diagnostic →',
     href: '/diagnostic-test',
   },
@@ -83,8 +83,7 @@ export function WhyChooseUsSection() {
             <span className="text-gradient font-bold">KHM Tutoring?</span>
           </h2>
           <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto">
-            From Honolulu math tutoring to Digital SAT preparation, explore personalized support
-            for students and families across Hawaiʻi.
+            We offer math tutoring and Digital SAT prep in Honolulu, plus online lessons for students across Hawaiʻi.
           </p>
         </div>
       </div>
@@ -105,8 +104,8 @@ export function WhyChooseUsSection() {
             </h3>
             <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
               We come to your home across the Honolulu corridor, meet at our Kakaʻako space, or teach live
-              online anywhere in Hawaiʻi. Start with a diagnostic and discuss a plan for your student&apos;s
-              math, SAT, or other academic goals.
+              online anywhere in Hawaiʻi. Take the diagnostic, then talk with us about your student&apos;s
+              math, SAT, or other learning goals.
             </p>
             <Link
               href="/contact"

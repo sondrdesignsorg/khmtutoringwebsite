@@ -27,7 +27,7 @@ export function HeroSection() {
             </h1>
 
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Looking for a math tutor in Honolulu or SAT prep in Honolulu? KHM Tutoring provides personalized math and Digital SAT tutoring in person across Honolulu and online throughout Hawaiʻi. Meet our <Link href="/educators" className="text-primary hover:underline">experienced tutors</Link> and get a one-on-one plan built around your student&apos;s needs.
+              Need a math tutor in Honolulu or help preparing for the SAT? KHM Tutoring offers one-on-one math and Digital SAT lessons in Honolulu and online across Hawaiʻi. Meet our <Link href="/educators" className="text-primary hover:underline">tutors</Link> and find a plan that fits your student.
             </p>
 
             <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-semibold lg:justify-start">

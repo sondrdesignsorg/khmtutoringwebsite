@@ -24,9 +24,16 @@ export function getEmailConfig(): EmailConfig | null {
     .map((s) => s.trim())
     .filter(Boolean);
   const staffEmail = staffList[0] || 'khmtutoring1@gmail.com';
+  const formRecipients = (
+    process.env.FORM_SUBMISSION_EMAIL ||
+    staffList.join(',')
+  )
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   if (!apiKey || !from) return null;
-  return { apiKey, from, staffEmail, staffRecipients: staffList };
+  return { apiKey, from, staffEmail, staffRecipients: formRecipients };
 }
 
 export interface EmailAttachment {

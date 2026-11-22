@@ -5,7 +5,7 @@ import { StructuredData } from '@/components/StructuredData';
 export const metadata: Metadata = {
   title: 'Free Academic Diagnostic Test for Hawaii K-12 Students',
   description:
-    'A free, level-appropriate diagnostic test that shows exactly where your child stands — with strengths and gaps by topic and a free tutoring consultation.',
+    'A free diagnostic test for K-12 students in Hawaii. See results by topic and book a free tutoring consultation.',
   keywords: [
     'free diagnostic test',
     'tutoring assessment hawaii',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Free Academic Diagnostic Test | KHM Tutoring Hawaii',
     description:
-      'See exactly where your child stands. Take a quick diagnostic and get a personalized topic breakdown — plus a free consultation with a KHM tutor.',
+      'Take the diagnostic to see results by topic, then book a free consultation with a KHM tutor.',
     url: 'https://www.khmtutoring.com/diagnostic-test',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Free Diagnostic Test - KHM Tutoring Hawaii' }],
   },
@@ -50,7 +50,7 @@ export default function DiagnosticTestPage() {
           </h2>
           <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
             Every student learns differently. Our free diagnostic test identifies exactly which math and English topics your
-            child has mastered — and where the gaps are — so that KHM Tutoring can build a personalized plan from day one.
+            child has mastered and which topics need more work. KHM can use the results to plan tutoring.
             Serving K-12 students in Honolulu and online across Hawaii, our expert tutors use your child&apos;s
             diagnostic results to skip the guesswork and start making real progress immediately.
           </p>

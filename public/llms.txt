@@ -10,7 +10,7 @@ KHM Tutoring is a Honolulu-based K-12 tutoring service founded in 2016. The comp
 
 - [Home](https://www.khmtutoring.com/): Main page with services overview, testimonials, and consultation booking
 - [About](https://www.khmtutoring.com/about): Company story, mission, team approach, and founder background
-- [Our Location](https://www.khmtutoring.com/about/location): Physical tutoring space at Surfers Coffee, inside WorkNow Hawaiʻi — 1019 Waimanu St., Unit 101, Honolulu (Kakaʻako). Parking available; sessions daily after 3 PM by appointment.
+- [Our Location](https://www.khmtutoring.com/about/location): Tutoring space at Surfers Coffee inside WorkNow Hawaiʻi, 1019 Waimanu St., Unit 101, Honolulu (Kakaʻako). Parking is available. Sessions are by appointment after 3 PM.
 - [Educators](https://www.khmtutoring.com/educators): Tutor profiles, backgrounds, and subject specialties
 - [Contact](https://www.khmtutoring.com/contact): Contact form, email, phone, and scheduling for booking consultations
 - [SAT Prep in Honolulu](https://www.khmtutoring.com/sat-prep-honolulu): One-on-one Digital SAT prep with top-percentile tutors
@@ -20,8 +20,8 @@ KHM Tutoring is a Honolulu-based K-12 tutoring service founded in 2016. The comp
 - [College Essay Help in Honolulu](https://www.khmtutoring.com/college-essay-help-honolulu): Personal statements, supplementals, and admissions essay coaching
 - [Online Tutoring in Hawaii](https://www.khmtutoring.com/online-tutoring-hawaii): Live one-on-one tutoring via Zoom for families statewide
 - [Private School Entrance Prep in Hawaii](https://www.khmtutoring.com/private-school-entrance-prep-hawaii): SSAT/ISEE prep, essays, and interviews for Hawaii independent schools
-- [Group SAT Prep](https://www.khmtutoring.com/group-sat-prep): Small-cohort SAT preparation program — 6-8 students matched by level and readiness, 20 hours of live instruction focused on SAT strategy, timing, and test-day confidence. Sessions start January 5, 2027.
-- [Free Diagnostic Test](https://www.khmtutoring.com/diagnostic-test): Free 15-70 minute academic assessment for K-12 students in Hawaii — identifies strengths and gaps by topic in Math or English, with a personalized report emailed to parents and a free consultation offer
+- [Group SAT Prep](https://www.khmtutoring.com/group-sat-prep): SAT prep for groups of 6-8 students, matched by level and readiness. The 20-hour course covers strategy, timing, and practice. Sessions start January 5, 2027.
+- [Free Diagnostic Test](https://www.khmtutoring.com/diagnostic-test): Free 15-70 minute Math or English assessment for K-12 students in Hawaii. Results show performance by topic and are emailed to parents, along with an offer for a free consultation.
 - [Privacy Policy](https://www.khmtutoring.com/privacy): Data collection and usage policies
 
 ## Free Diagnostic Test
@@ -51,7 +51,7 @@ KHM Tutoring offers a small-cohort SAT prep program at https://www.khmtutoring.c
 - Service area: In person in Honolulu (Pearl City to Hawaiʻi Kai); online across all of Hawaii
 - Delivery: In-store in Kakaʻako, in-home/meet-up in Honolulu, or online via Zoom statewide
 - Hours: Daily after 3 PM (by appointment)
-- Space: Surfers Coffee Kakaʻako is a public café only until 2 PM. After 2 PM it is KHM Tutoring's private space, reserved exclusively for students and their families — it is not open to the public.
+- Space: Surfers Coffee Kakaʻako is open to the public until 2 PM. After that, KHM students and their families use the space for tutoring.
 - Free initial consultation available
 - Not a franchise -- locally owned and operated
 - Specialized in Hawaii private school prep (Punahou, Iolani)

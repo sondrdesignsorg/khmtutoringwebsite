@@ -18,7 +18,7 @@ export function ServiceLinksSection() {
             Explore Our <span className="text-gradient font-bold">Tutoring Services</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Focused programs for Honolulu families — in person from Pearl City to Hawaiʻi Kai, and online across Hawaiʻi.
+            We meet students in person from Pearl City to Hawaiʻi Kai, and teach online throughout Hawaiʻi.
           </p>
         </div>
 

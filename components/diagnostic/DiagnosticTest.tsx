@@ -90,7 +90,7 @@ export function DiagnosticTest() {
       return;
     }
     if (!email.trim()) {
-      setLeadError('An email address is required — we\'ll send the full results there.');
+      setLeadError('Enter an email address so we can send the full results.');
       setEmailFieldError(true);
       return;
     }

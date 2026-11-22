@@ -12,7 +12,7 @@
 export const SERVICE_AREAS = {
   /** Where KHM can physically deliver in-person tutoring. */
   inPerson: {
-    label: 'Honolulu — Pearl City to Hawaiʻi Kai',
+    label: 'Honolulu, from Pearl City to Hawaiʻi Kai',
     /** Primary, ideal coverage corridor. */
     idealCorridor: {
       from: 'Pearl City',
@@ -38,7 +38,7 @@ export const DELIVERY_MODES = [
   {
     id: 'partner-cafe',
     label: 'In-store at our partner cafe',
-    detail: 'Sessions at our physical tutoring space in Kakaʻako, in collaboration with Surfers Coffee Hawaiʻi. After 2 PM the space is reserved exclusively for KHM families — it is not open to the public.',
+    detail: 'Sessions take place at our tutoring space in Kakaʻako, in partnership with Surfers Coffee Hawaiʻi. After 2 PM the space is reserved for KHM families and is closed to the public.',
   },
   {
     id: 'in-home',
@@ -85,8 +85,8 @@ export const BUSINESS = {
     spaceHours: 'Daily, after 2 PM',
     /** Use anywhere the location could be mistaken for a public café. */
     spacePolicy:
-      'After 2 PM, Surfers Coffee closes to the public and the space becomes KHM Tutoring’s own — reserved exclusively for our students and their families.',
-    spacePolicyShort: 'Private KHM space after 2 PM — not open to the public.',
+      'After 2 PM, Surfers Coffee closes to the public. KHM students and their families use the space for tutoring.',
+    spacePolicyShort: 'Private KHM space after 2 PM. Closed to the public.',
   },
   hours: {
     byAppointment: true,

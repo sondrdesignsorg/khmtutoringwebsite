@@ -5,7 +5,7 @@ import { StructuredData } from '@/components/StructuredData';
 
 const title = 'Our Location in Kakaʻako, Honolulu';
 const description =
-  'KHM Tutoring’s in-person hub at Surfers Coffee inside WorkNow Hawaiʻi, 1019 Waimanu St., Unit 101, Honolulu. After 2 PM the café is not open to the public — the space is reserved exclusively for KHM students and families. Tutoring daily after 3 PM, with on-site parking.';
+  'KHM Tutoring’s in-person hub is at Surfers Coffee inside WorkNow Hawaiʻi, 1019 Waimanu St., Unit 101, Honolulu. After 2 PM the café is closed to the public and reserved for KHM students and families. Tutoring is available daily after 3 PM, with on-site parking.';
 const url = `${BUSINESS.url}/about/location`;
 
 export const metadata: Metadata = {

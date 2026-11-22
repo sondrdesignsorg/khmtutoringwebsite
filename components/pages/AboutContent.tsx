@@ -24,7 +24,7 @@ export function AboutContent() {
               <span className="text-primary font-bold">
                 KHM Tutoring
               </span>
-              {' '}— Honolulu&apos;s Expert K-12 Tutors
+              {' '}in Honolulu
             </h1>
             <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg font-medium">
               Empowering Students to Reach Their Full Potential
@@ -47,7 +47,7 @@ export function AboutContent() {
                 At <span className="text-primary font-semibold">KHM Tutoring</span>, we believe that every student has the ability to succeed with the right tutor match. Our mission is to empower students across Honolulu and all of Hawaii to achieve academic excellence through personalized, one-on-one tutoring with quality educators who truly understand their needs.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed text-center">
-                Founded by Kody Kim, KHM Tutoring has built a team of exceptional tutors through a rigorous vetting process. Our founder brings extensive tutoring expertise and a deep understanding of what makes an effective student-tutor relationship. We don&apos;t just match students with any tutor—we use our own proven methods to find the perfect fit between each child and their tutor, ensuring a personal connection that leads to real results.
+                Kody Kim founded KHM Tutoring to give Hawaii students one-on-one academic support. We match each student with a tutor based on subject, grade level, and learning goals. Families can discuss what is working and where a student needs more help.
               </p>
             </div>
           </div>

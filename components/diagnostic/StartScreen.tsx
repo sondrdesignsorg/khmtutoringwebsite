@@ -55,7 +55,7 @@ export function StartScreen({
               See exactly where your child stands.
             </h1>
             <p className="text-base md:text-lg text-white/90 leading-relaxed max-w-md">
-              A quick, level-appropriate assessment that shows strengths and gaps by topic — plus a free consultation with one of our tutors.
+              This short assessment shows which topics your student knows and where they need help. You can also book a free consultation with a tutor.
             </p>
             <div className="mt-3 text-sm text-white/85">
               Choose math or reading and receive a topic-by-topic report for your student.
@@ -135,7 +135,7 @@ export function StartScreen({
           See exactly where your child stands
         </h1>
         <p className="text-base md:text-lg text-muted-foreground text-center max-w-xl leading-relaxed">
-          A quick, level-appropriate assessment that shows strengths and gaps by topic — plus a free consultation with one of our tutors.
+          This short assessment shows which topics your student knows and where they need help. You can also book a free consultation with a tutor.
         </p>
 
         <div className="w-full bg-card border border-border rounded-3xl p-6 md:p-8 shadow-md flex flex-col gap-6">

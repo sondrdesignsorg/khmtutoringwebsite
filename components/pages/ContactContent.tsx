@@ -218,7 +218,7 @@ export function ContactContent() {
               <div className="flex-1 text-center sm:text-left">
                 <p className="font-semibold text-foreground">Not sure where your child stands?</p>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  Take our free diagnostic first — a 15–70 minute assessment that pinpoints exactly which topics need
+                  Take our free diagnostic first. It takes 15–70 minutes and shows which topics need
                   attention so we can hit the ground running.
                 </p>
               </div>
@@ -452,7 +452,7 @@ export function ContactContent() {
                   <ChevronRight className="w-4 h-4 text-muted-foreground group-open:rotate-90 transition-transform" />
                 </summary>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                  KHM Tutoring provides in-person and online tutoring across Hawaii. In person, we serve the Honolulu corridor from Pearl City to Hawaiʻi Kai — we can travel as far as ʻEwa and West Oʻahu, though it is outside our ideal area. Online sessions via Zoom are available statewide.
+                  KHM Tutoring provides in-person and online tutoring across Hawaii. In person, we serve the Honolulu corridor from Pearl City to Hawaiʻi Kai. We can travel as far as ʻEwa and West Oʻahu, though those areas are outside our usual range. Online sessions via Zoom are available statewide.
                 </p>
               </details>
               <details className="bg-card rounded-xl border border-border p-5 group">

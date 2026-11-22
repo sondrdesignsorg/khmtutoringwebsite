@@ -21,10 +21,10 @@ export function GroupSatCallout() {
               Now Enrolling · Starts {GROUP_SAT_START_LABEL}
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Group SAT Prep — Small Cohorts, Real Results
+              Group SAT Prep for Small Cohorts
             </h2>
             <p className="text-muted-foreground mb-5 max-w-lg">
-              KHM&apos;s in-person SAT program matches students by level and readiness into cohorts of 6–8. Twenty hours of live strategy, timing, and pattern instruction — held at our Honolulu location.
+              KHM&apos;s in-person SAT program groups students by level and readiness. The 20-hour course covers test strategy, timing, and question patterns at our Honolulu location.
             </p>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 mb-6">
               {stats.map(({ icon: Icon, label }) => (

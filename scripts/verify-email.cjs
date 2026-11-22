@@ -29,7 +29,7 @@ async function main() {
   const to = argValue('--to') || process.env.EMAIL_TEST_TO;
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_ADDRESS;
-  const staffList = (process.env.KHM_STAFF_EMAIL || process.env.DIAGNOSTIC_STAFF_EMAIL || 'khmtutoring1@gmail.com')
+  const staffList = (process.env.FORM_SUBMISSION_EMAIL || process.env.KHM_STAFF_EMAIL || process.env.DIAGNOSTIC_STAFF_EMAIL || 'khmtutoring1@gmail.com')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);

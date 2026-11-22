@@ -128,7 +128,7 @@ export function LocationContent() {
                 </p>
                 <p className="text-base font-medium leading-7 text-foreground">
                   Surfers Coffee is a public café only until 2 PM. From 2 PM onward, the space is
-                  reserved exclusively for KHM Tutoring students and families — it is{' '}
+                  reserved for KHM Tutoring students and families. It is{' '}
                   <strong className="font-semibold">not open to the public</strong>.
                 </p>
               </div>

@@ -16,7 +16,7 @@ export function CTASection() {
             Ready to Help Your Child <span className="text-white/90">Thrive Academically</span>?
           </h2>
           <p className="text-base md:text-lg text-white/90 max-w-2xl mx-auto">
-            Get personalized tutoring for your student, with in-person sessions in Honolulu and online options across Hawaiʻi.
+            We tutor students in person across Honolulu and online throughout Hawaiʻi. Tell us what your student needs, and we&apos;ll help plan the next step.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center">
