@@ -33,6 +33,7 @@ export function ContactContent() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [submittedName, setSubmittedName] = useState('');
+  const [confirmationSent, setConfirmationSent] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -97,6 +98,7 @@ export function ContactContent() {
         body: JSON.stringify({ ...inquiry, submissionId: pendingSubmission.current.id }),
       });
       if (!response.ok) throw new Error(`Inquiry request failed (${response.status})`);
+      const body = await response.json() as { confirmationSent?: boolean };
       pendingSubmission.current = null;
 
       if (diagnosticLeadId) {
@@ -108,6 +110,7 @@ export function ContactContent() {
       }
 
       setSubmittedName(formData.name);
+      setConfirmationSent(body.confirmationSent === true);
       setSubmitStatus('success');
       setShowSuccessDialog(true);
       trackEvent('consultation_submit', { subject: formData.subject });
@@ -508,7 +511,9 @@ export function ContactContent() {
               Message Sent Successfully!
             </DialogTitle>
             <DialogDescription className="text-center pt-2">
-              Thank you for contacting us{submittedName ? `, ${submittedName}` : ''}! We&apos;ll get back to you within 24 hours.
+              Thank you for contacting us{submittedName ? `, ${submittedName}` : ''}!{' '}
+              {confirmationSent ? 'We sent you a confirmation email.' : 'The confirmation email could not be sent.'}{' '}
+              We&apos;ll get back to you within 24 hours.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="justify-center">

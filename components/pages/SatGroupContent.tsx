@@ -173,8 +173,8 @@ export function SatGroupContent() {
         throw new Error(body.error || 'Could not submit the form.');
       }
 
-      const body = (await res.json()) as { emailed?: boolean };
-      setEmailStatus(body.emailed ? 'sent' : 'pending');
+      const body = (await res.json()) as { parentEmailed?: boolean; emailed?: boolean };
+      setEmailStatus((body.parentEmailed ?? body.emailed) ? 'sent' : 'pending');
       trackInquiryConversion();
       setSubmitted(true);
     } catch (err) {
@@ -348,7 +348,7 @@ export function SatGroupContent() {
                 <h3 className="mb-2 text-2xl font-bold text-foreground">Form received</h3>
                 <p className="max-w-md text-muted-foreground">
                   {emailStatus === 'sent'
-                    ? 'KHM has the cohort-fit details. A confirmation was sent to your email and KHM has been notified.'
+                    ? 'KHM has your cohort-fit details. We sent a confirmation to your email.'
                     : 'KHM has the cohort-fit details. KHM will follow up by email to coordinate final scheduling.'}
                 </p>
               </div>

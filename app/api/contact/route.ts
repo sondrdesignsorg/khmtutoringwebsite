@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { BUSINESS } from '@/lib/business/config';
 import { CONTACT_SUBJECTS } from '@/lib/contact/subjects';
-import { sendFormNotification } from '@/lib/email/resend';
+import { sendEmail, sendFormNotification } from '@/lib/email/resend';
 import { escapeHtml } from '@/lib/html';
 import { checkRateLimit, clientIp, tooManyRequests } from '@/lib/rate-limit';
 
@@ -59,5 +60,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Could not submit inquiry' }, { status: 502 });
   }
 
-  return NextResponse.json({ ok: true });
+  const confirmation = await sendEmail({
+    to: email,
+    replyTo: BUSINESS.email,
+    subject: 'We received your KHM Tutoring inquiry',
+    html: [
+      '<h1>Thank you for contacting KHM Tutoring</h1>',
+      '<p>We received your inquiry. Our team will get back to you within 24 hours.</p>',
+      '<p>If you have anything to add, reply to this email.</p>',
+      '<p>KHM Tutoring</p>',
+    ].join(''),
+    idempotencyKey: `contact-confirmation/${submissionId}`,
+  });
+
+  if (!confirmation.ok) console.error('contact confirmation email failed');
+
+  return NextResponse.json({ ok: true, confirmationSent: confirmation.ok });
 }
