@@ -45,15 +45,20 @@ describe('public form email routing', () => {
 
   afterEach(() => vi.unstubAllEnvs());
 
-  it('sends Contact inquiries only to info, with the visitor as reply-to', async () => {
+  it('sends the full Contact inquiry to info and a separate confirmation to the visitor', async () => {
     const response = await submitContact(request('contact', { ...contact, to: 'other@example.com' }));
 
     expect(response.status).toBe(200);
-    expect(send).toHaveBeenCalledTimes(1);
-    expect(send).toHaveBeenCalledWith(expect.objectContaining({
+    expect(await response.json()).toEqual({ ok: true, confirmationSent: true });
+    expect(send).toHaveBeenCalledTimes(2);
+    expect(send).toHaveBeenNthCalledWith(1, expect.objectContaining({
       to: inbox, replyTo: parent, subject: 'New Website Inquiry: Mathematics',
       html: expect.stringContaining('&lt;b&gt;First&lt;/b&gt;<br>Second'),
     }), { idempotencyKey: `contact-inquiry/${contact.submissionId}` });
+    expect(send).toHaveBeenNthCalledWith(2, expect.objectContaining({
+      to: parent, replyTo: inbox, subject: 'We received your KHM Tutoring inquiry',
+    }), { idempotencyKey: `contact-confirmation/${contact.submissionId}` });
+    expect(send.mock.calls[1][0].html).not.toContain('First');
   });
 
   it('rejects contact spam before sending', async () => {
@@ -63,11 +68,20 @@ describe('public form email routing', () => {
     expect(send).not.toHaveBeenCalled();
   });
 
-  it('surfaces a contact delivery failure to the form', async () => {
+  it('sends no confirmation when KHM has not received the inquiry', async () => {
     send.mockResolvedValue({ error: { message: 'Provider rejected the send' } });
     const response = await submitContact(request('contact', contact));
 
     expect(response.status).toBe(502);
+    expect(send).toHaveBeenCalledTimes(1);
+  });
+
+  it('preserves an accepted inquiry when the visitor confirmation fails', async () => {
+    send.mockResolvedValueOnce({ error: null }).mockResolvedValueOnce({ error: { message: 'Provider rejected the send' } });
+    const response = await submitContact(request('contact', contact));
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ ok: true, confirmationSent: false });
   });
 
   it('sends Group SAT staff notifications and parent replies to info', async () => {
