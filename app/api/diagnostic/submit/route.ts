@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createDiagnosticLead, markDiagnosticLeadEmailed } from '@/lib/diagnostic/leads';
-import { getEmailConfig, sendEmail } from '@/lib/email/resend';
+import { BUSINESS } from '@/lib/business/config';
+import { getEmailConfig, sendEmail, sendFormNotification } from '@/lib/email/resend';
 import { escapeHtml, safeEmailSubject } from '@/lib/html';
 import { checkRateLimit, clientIp, tooManyRequests } from '@/lib/rate-limit';
 
@@ -281,20 +282,18 @@ async function sendResultsEmail(params: {
   tier: string;
   topicBreakdown: TopicResult[];
 }): Promise<{ ok: boolean; error?: string }> {
-  const config = getEmailConfig();
-  if (!config) {
+  if (!getEmailConfig()) {
     return { ok: false, error: 'RESEND_API_KEY and RESEND_FROM_ADDRESS must be configured.' };
   }
 
   const [parentResult, staffResult] = await Promise.allSettled([
     sendEmail({
       to: params.email,
-      replyTo: config.staffEmail,
+      replyTo: BUSINESS.email,
       subject: safeEmailSubject(`${params.studentName}'s KHM Diagnostic Results - ${params.tier}`),
       html: parentEmailHtml(params),
     }),
-    sendEmail({
-      to: config.staffRecipients,
+    sendFormNotification({
       replyTo: params.email,
       subject: safeEmailSubject(`New Diagnostic Lead: ${params.studentName} scored ${params.score}% (${params.tier})`),
       html: staffEmailHtml(params),

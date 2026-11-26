@@ -76,7 +76,7 @@ export default function PrivacyPage() {
               We use the following third-party services:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-1">
-              <li><strong>EmailJS</strong> — to process contact form submissions</li>
+              <li><strong>Resend</strong> — to deliver form submissions, confirmations, and diagnostic results</li>
               <li><strong>Google Analytics</strong> — for website analytics</li>
               <li><strong>Vercel</strong> — for website hosting</li>
             </ul>

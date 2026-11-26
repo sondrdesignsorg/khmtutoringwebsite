@@ -14,8 +14,9 @@ import {
 } from '@/components/ui/select';
 import { Mail, Clock, CheckCircle2, AlertCircle, Phone, ChevronRight, Brain } from 'lucide-react';
 import Link from 'next/link';
-import emailjs from '@emailjs/browser';
 import { trackEvent } from '@/lib/analytics';
+import { BUSINESS } from '@/lib/business/config';
+import { CONTACT_SUBJECTS } from '@/lib/contact/subjects';
 import {
   Dialog,
   DialogContent,
@@ -27,6 +28,7 @@ import {
 
 export function ContactContent() {
   const formRef = useRef<HTMLFormElement>(null);
+  const pendingSubmission = useRef<{ payload: string; id: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -77,31 +79,25 @@ export function ContactContent() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
     try {
-      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
-      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
-      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
-      
-      if (serviceId === 'YOUR_SERVICE_ID' || templateId === 'YOUR_TEMPLATE_ID' || publicKey === 'YOUR_PUBLIC_KEY') {
-        throw new Error('EmailJS is not configured. Please set up your EmailJS credentials.');
+      const website = new FormData(e.currentTarget).get('website');
+      const inquiry = { ...formData, website };
+      const payload = JSON.stringify(inquiry);
+      if (pendingSubmission.current?.payload !== payload) {
+        pendingSubmission.current = { payload, id: crypto.randomUUID() };
       }
 
-      const templateParams = {
-        to_email: 'info@khmtutoring.com',
-        from_name: formData.name,
-        from_email: formData.email,
-        phone: formData.phone || 'Not provided',
-        grade: formData.grade || 'Not provided',
-        school: formData.school || 'Not provided',
-        subject: formData.subject,
-        message: formData.message,
-        reply_to: formData.email,
-      };
-
-      await emailjs.send(serviceId, templateId, templateParams, publicKey);
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...inquiry, submissionId: pendingSubmission.current.id }),
+      });
+      if (!response.ok) throw new Error(`Inquiry request failed (${response.status})`);
+      pendingSubmission.current = null;
 
       if (diagnosticLeadId) {
         fetch('/api/diagnostic/booked', {
@@ -256,7 +252,7 @@ export function ContactContent() {
                   </div>
                   <div className="text-center">
                     <h3 className="mb-0.5 text-sm md:text-base font-semibold">Email</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground break-all">info@khmtutoring.com</p>
+                    <p className="text-xs md:text-sm text-muted-foreground break-all">{BUSINESS.email}</p>
                   </div>
                 </div>
 
@@ -289,6 +285,7 @@ export function ContactContent() {
                 onSubmit={handleSubmit}
                 className="bg-card rounded-2xl md:rounded-3xl shadow-xl border border-border p-6 md:p-8 space-y-5 md:space-y-6"
               >
+                <input type="text" name="website" autoComplete="off" tabIndex={-1} hidden />
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-sm md:text-base">Full Name *</Label>
                   <Input
@@ -297,6 +294,7 @@ export function ContactContent() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="John Doe"
+                    maxLength={120}
                     required
                     className="h-11 md:h-12"
                   />
@@ -311,6 +309,7 @@ export function ContactContent() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="john@example.com"
+                    maxLength={254}
                     required
                     className="h-11 md:h-12"
                   />
@@ -325,6 +324,7 @@ export function ContactContent() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="(808) 123-4567"
+                    maxLength={60}
                     required
                     className="h-11 md:h-12"
                   />
@@ -338,6 +338,7 @@ export function ContactContent() {
                     value={formData.grade}
                     onChange={handleChange}
                     placeholder="e.g., 10th Grade"
+                    maxLength={120}
                     className="h-11 md:h-12"
                   />
                 </div>
@@ -350,6 +351,7 @@ export function ContactContent() {
                     value={formData.school}
                     onChange={handleChange}
                     placeholder="e.g., Punahou School, Iolani School"
+                    maxLength={200}
                     className="h-11 md:h-12"
                   />
                 </div>
@@ -357,17 +359,13 @@ export function ContactContent() {
                 <div className="space-y-2">
                   <Label htmlFor="subject" className="text-sm md:text-base">Subject / Area of Interest *</Label>
                   <Select required value={formData.subject} onValueChange={handleSelectChange}>
-                    <SelectTrigger className="h-11 md:h-12">
+                    <SelectTrigger id="subject" className="h-11 md:h-12">
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="k12">K-12 General</SelectItem>
-                      <SelectItem value="math">Mathematics</SelectItem>
-                      <SelectItem value="english">English</SelectItem>
-                      <SelectItem value="ap">AP Subjects</SelectItem>
-                      <SelectItem value="sat">SAT Prep</SelectItem>
-                      <SelectItem value="ssat">SSAT Prep</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      {Object.entries(CONTACT_SUBJECTS).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -380,6 +378,7 @@ export function ContactContent() {
                     value={formData.message}
                     onChange={handleChange}
                     placeholder="Tell us about your learning goals and how we can help..."
+                    maxLength={5000}
                     required
                     className="min-h-[100px] md:min-h-[120px] resize-none"
                   />
@@ -419,7 +418,7 @@ export function ContactContent() {
                 <noscript>
                   <p className="text-xs text-muted-foreground text-center mt-2">
                     JavaScript is required for this form. You can also reach us directly at{' '}
-                    <a href="mailto:info@khmtutoring.com" className="text-primary underline">info@khmtutoring.com</a>{' '}
+                    <a href={`mailto:${BUSINESS.email}`} className="text-primary underline">{BUSINESS.email}</a>{' '}
                     or call <a href="tel:+18083817856" className="text-primary underline">(808) 381-7856</a>.
                   </p>
                 </noscript>

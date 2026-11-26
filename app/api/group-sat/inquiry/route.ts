@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createGroupSatInquiry, markGroupSatInquiryEmails } from '@/lib/sat-group/inquiries';
-import { getEmailConfig, sendEmail } from '@/lib/email/resend';
+import { BUSINESS } from '@/lib/business/config';
+import { getEmailConfig, sendEmail, sendFormNotification } from '@/lib/email/resend';
 import { checkRateLimit, clientIp, tooManyRequests } from '@/lib/rate-limit';
 import {
   escapeHtml,
@@ -110,8 +111,7 @@ async function sendInquiryEmails(params: Inquiry & { id: string }): Promise<{
   staff: boolean;
   error?: string;
 }> {
-  const config = getEmailConfig();
-  if (!config) {
+  if (!getEmailConfig()) {
     return {
       parent: false,
       staff: false,
@@ -122,12 +122,11 @@ async function sendInquiryEmails(params: Inquiry & { id: string }): Promise<{
   const [parentResult, staffResult] = await Promise.allSettled([
     sendEmail({
       to: params.email,
-      replyTo: config.staffEmail,
+      replyTo: BUSINESS.email,
       subject: 'KHM SAT Cohort Fit Form Received',
       html: parentConfirmationHtml(params),
     }),
-    sendEmail({
-      to: config.staffRecipients,
+    sendFormNotification({
       replyTo: params.email,
       subject: safeEmailSubject(`New Group SAT Inquiry: ${params.studentName}`),
       html: staffNotificationHtml(params),

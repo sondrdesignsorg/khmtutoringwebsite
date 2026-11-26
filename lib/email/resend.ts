@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { BUSINESS } from '@/lib/business/config';
 
 export interface EmailSendResult {
   ok: boolean;
@@ -8,32 +9,14 @@ export interface EmailSendResult {
 export interface EmailConfig {
   apiKey: string;
   from: string;
-  staffEmail: string;
-  staffRecipients: string[];
 }
 
 export function getEmailConfig(): EmailConfig | null {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_ADDRESS;
-  const staffList = (
-    process.env.KHM_STAFF_EMAIL ||
-    process.env.DIAGNOSTIC_STAFF_EMAIL ||
-    'khmtutoring1@gmail.com'
-  )
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const staffEmail = staffList[0] || 'khmtutoring1@gmail.com';
-  const formRecipients = (
-    process.env.FORM_SUBMISSION_EMAIL ||
-    staffList.join(',')
-  )
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
 
   if (!apiKey || !from) return null;
-  return { apiKey, from, staffEmail, staffRecipients: formRecipients };
+  return { apiKey, from };
 }
 
 export interface EmailAttachment {
@@ -42,13 +25,20 @@ export interface EmailAttachment {
   content: string;
 }
 
-export async function sendEmail(params: {
+interface SendEmailParams {
   to: string | string[];
   subject: string;
   html: string;
   replyTo?: string;
   attachments?: EmailAttachment[];
-}): Promise<EmailSendResult> {
+  idempotencyKey?: string;
+}
+
+export function sendFormNotification(params: Omit<SendEmailParams, 'to'>): Promise<EmailSendResult> {
+  return sendEmail({ ...params, to: BUSINESS.email });
+}
+
+export async function sendEmail(params: SendEmailParams): Promise<EmailSendResult> {
   const config = getEmailConfig();
   if (!config) {
     return {
@@ -66,7 +56,7 @@ export async function sendEmail(params: {
       html: params.html,
       replyTo: params.replyTo,
       ...(params.attachments?.length ? { attachments: params.attachments } : {}),
-    });
+    }, params.idempotencyKey ? { idempotencyKey: params.idempotencyKey } : undefined);
 
     if (result.error) {
       return { ok: false, error: result.error.message };
